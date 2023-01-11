@@ -1,9 +1,16 @@
 using System;
+using System.IO;
+using System.Net;
 using JetBrains.Annotations;
 using JetBrains.Application.Progress;
+using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.ContextActions;
+using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.ExtensionsAPI;
+using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.TextControl;
 using JetBrains.Util;
 
@@ -34,8 +41,30 @@ public class SampleContextAction : ContextActionBase
 
     protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress)
     {
-        var commentUpdater = solution.GetComponent<CommentUpdater>();
-        commentUpdater.UpdateComment(myDeclaration);
+        var kek = Get("https://google.com/");
+        using (WriteLockCookie.Create())
+        {
+            var oldCommentBlock = SharedImplUtil.GetDocCommentBlockNode(myDeclaration);
+            var newCommentBlock = CSharpElementFactory
+                .GetInstance(myDeclaration)
+                .CreateDocCommentBlock("Hello\nWorld\n!");
+
+            if (oldCommentBlock != null)
+                ModificationUtil.ReplaceChild(oldCommentBlock, newCommentBlock);
+            else
+                ModificationUtil.AddChildBefore(myDeclaration.FirstChild.NotNull(), newCommentBlock);
+        }
         return null;
+    }
+
+    private static string Get(string uri)
+    {
+        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+        request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+        using HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+        using Stream stream = response.GetResponseStream();
+        using StreamReader reader = new StreamReader(stream);
+        return reader.ReadToEnd();
     }
 }
