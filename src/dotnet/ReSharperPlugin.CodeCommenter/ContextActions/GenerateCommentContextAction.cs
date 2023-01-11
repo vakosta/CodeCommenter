@@ -17,22 +17,24 @@ using JetBrains.Util;
 namespace ReSharperPlugin.CodeCommenter;
 
 [ContextAction(
-    Name = "ToLowerCase",
+    Name = "GenerateComment",
     Description = "Convert the text to lowercase",
     Group = "C#",
     Disabled = false,
     Priority = 1
 )]
-public class SampleContextAction : ContextActionBase
+public class GenerateCommentContextAction : ContextActionBase
 {
+    private const string URL = "https://google.com/";
+
     private readonly ICSharpDeclaration myDeclaration;
 
-    public SampleContextAction([NotNull] LanguageIndependentContextActionDataProvider dataProvider)
+    public GenerateCommentContextAction([NotNull] LanguageIndependentContextActionDataProvider dataProvider)
     {
         myDeclaration = dataProvider.GetSelectedElement<IMethodDeclaration>();
     }
 
-    public override string Text => "123";
+    public override string Text => "Generate comment";
 
     public override bool IsAvailable(IUserDataHolder cache)
     {
@@ -41,7 +43,8 @@ public class SampleContextAction : ContextActionBase
 
     protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress)
     {
-        var kek = Get("https://google.com/");
+        var response = Get(URL);
+
         using (WriteLockCookie.Create())
         {
             var oldCommentBlock = SharedImplUtil.GetDocCommentBlockNode(myDeclaration);
@@ -54,17 +57,18 @@ public class SampleContextAction : ContextActionBase
             else
                 ModificationUtil.AddChildBefore(myDeclaration.FirstChild.NotNull(), newCommentBlock);
         }
+
         return null;
     }
 
     private static string Get(string uri)
     {
-        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(uri);
+        var request = (HttpWebRequest)WebRequest.Create(uri);
         request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
-        using HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-        using Stream stream = response.GetResponseStream();
-        using StreamReader reader = new StreamReader(stream);
+        using var response = (HttpWebResponse)request.GetResponse();
+        using var stream = response.GetResponseStream();
+        using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
     }
 }
