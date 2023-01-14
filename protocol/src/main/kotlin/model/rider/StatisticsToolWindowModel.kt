@@ -21,7 +21,7 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
         property("activateToolWindow", bool)
 
         @Suppress("LocalVariableName")
-        val StatisticsToolWindowPanel = classdef("StatisticsToolWindowPanel") extends BeControl {
+        val StatisticsToolWindowPanel = classdef("BeStatisticsToolWindowPanel") extends BeControl {
             field("url", string.nullable)
             field("html", string.nullable)
 

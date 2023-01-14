@@ -16,7 +16,7 @@ class StatisticsToolWindowModelHost(project: Project) : ProtocolSubscribedProjec
         interactionModel.activateToolWindow.change.advise(projectComponentLifetime) {
             if (!it) return@advise
             val toolWindowManager = ToolWindowManager.getInstance(project)
-            toolWindowManager.getToolWindow("CefToolWindow")!!.show()
+            toolWindowManager.getToolWindow("StatisticsToolWindow")!!.show()
         }
     }
 

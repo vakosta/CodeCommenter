@@ -16,8 +16,9 @@ class StatisticsToolWindowFactory : ToolWindowFactory {
             )
         }
 
+        val myToolWindow = StatisticsToolWindow()
         val contentFactory = ContentFactory.getInstance()
-        val content = contentFactory.createContent(component, null, false)
+        val content = contentFactory.createContent(myToolWindow, null, false)
         toolWindow.contentManager.addContent(content)
     }
 }

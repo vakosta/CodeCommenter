@@ -26,7 +26,7 @@ class StatisticsToolWindowModel private constructor(
     companion object : ISerializersOwner {
         
         override fun registerSerializersCore(serializers: ISerializers)  {
-            serializers.register(StatisticsToolWindowPanel)
+            serializers.register(BeStatisticsToolWindowPanel)
         }
         
         
@@ -50,7 +50,7 @@ class StatisticsToolWindowModel private constructor(
         }
         
         
-        const val serializationHash = -6019309499586322188L
+        const val serializationHash = -1801903868957702223L
         
     }
     override val serializersOwner: ISerializersOwner get() = StatisticsToolWindowModel
@@ -104,7 +104,7 @@ val IProtocol.statisticsToolWindowModel get() = getOrCreateExtension(StatisticsT
 /**
  * #### Generated from [StatisticsToolWindowModel.kt:24]
  */
-class StatisticsToolWindowPanel private constructor(
+class BeStatisticsToolWindowPanel private constructor(
     val url: String?,
     val html: String?,
     private val _openDevTools: RdSignal<Boolean>,
@@ -126,11 +126,11 @@ class StatisticsToolWindowPanel private constructor(
 ) {
     //companion
     
-    companion object : IMarshaller<StatisticsToolWindowPanel> {
-        override val _type: KClass<StatisticsToolWindowPanel> = StatisticsToolWindowPanel::class
+    companion object : IMarshaller<BeStatisticsToolWindowPanel> {
+        override val _type: KClass<BeStatisticsToolWindowPanel> = BeStatisticsToolWindowPanel::class
         
         @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): StatisticsToolWindowPanel  {
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): BeStatisticsToolWindowPanel  {
             val _id = RdId.read(buffer)
             val _enabled = RdProperty.read(ctx, buffer, FrameworkMarshallers.Bool)
             val _controlId = RdProperty.read(ctx, buffer, FrameworkMarshallers.String)
@@ -144,10 +144,10 @@ class StatisticsToolWindowPanel private constructor(
             val _getResource = RdCall.read(ctx, buffer, FrameworkMarshallers.String, FrameworkMarshallers.String)
             val _sendMessage = RdCall.read(ctx, buffer, FrameworkMarshallers.String, FrameworkMarshallers.Void)
             val _messageReceived = RdSignal.read(ctx, buffer, FrameworkMarshallers.String)
-            return StatisticsToolWindowPanel(url, html, _openDevTools, _openUrl, _getResource, _sendMessage, _messageReceived, _enabled, _controlId, _tooltip, _focus, _visible).withId(_id)
+            return BeStatisticsToolWindowPanel(url, html, _openDevTools, _openUrl, _getResource, _sendMessage, _messageReceived, _enabled, _controlId, _tooltip, _focus, _visible).withId(_id)
         }
         
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: StatisticsToolWindowPanel)  {
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: BeStatisticsToolWindowPanel)  {
             value.rdid.write(buffer)
             RdProperty.write(ctx, buffer, value._enabled)
             RdProperty.write(ctx, buffer, value._controlId)
@@ -211,7 +211,7 @@ class StatisticsToolWindowPanel private constructor(
     //hash code trait
     //pretty print
     override fun print(printer: PrettyPrinter)  {
-        printer.println("StatisticsToolWindowPanel (")
+        printer.println("BeStatisticsToolWindowPanel (")
         printer.indent {
             print("url = "); url.print(printer); println()
             print("html = "); html.print(printer); println()
@@ -229,8 +229,8 @@ class StatisticsToolWindowPanel private constructor(
         printer.print(")")
     }
     //deepClone
-    override fun deepClone(): StatisticsToolWindowPanel   {
-        return StatisticsToolWindowPanel(
+    override fun deepClone(): BeStatisticsToolWindowPanel   {
+        return BeStatisticsToolWindowPanel(
             url,
             html,
             _openDevTools.deepClonePolymorphic(),

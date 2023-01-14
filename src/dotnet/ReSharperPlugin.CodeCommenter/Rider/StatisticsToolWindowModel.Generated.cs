@@ -76,12 +76,12 @@ namespace JetBrains.Rider.Model
     
     
     
-    protected override long SerializationHash => -6019309499586322188L;
+    protected override long SerializationHash => -1801903868957702223L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
     {
-      serializers.Register(StatisticsToolWindowPanel.Read, StatisticsToolWindowPanel.Write);
+      serializers.Register(BeStatisticsToolWindowPanel.Read, BeStatisticsToolWindowPanel.Write);
       
       serializers.RegisterToplevelOnce(typeof(IdeRoot), IdeRoot.RegisterDeclaredTypesSerializers);
     }
@@ -121,7 +121,7 @@ namespace JetBrains.Rider.Model
   /// <summary>
   /// <p>Generated from: StatisticsToolWindowModel.kt:24</p>
   /// </summary>
-  public sealed class StatisticsToolWindowPanel : JetBrains.Rider.Model.UIAutomation.BeControl
+  public sealed class BeStatisticsToolWindowPanel : JetBrains.Rider.Model.UIAutomation.BeControl
   {
     //fields
     //public fields
@@ -141,7 +141,7 @@ namespace JetBrains.Rider.Model
     [NotNull] private readonly RdSignal<string> _MessageReceived;
     
     //primary constructor
-    private StatisticsToolWindowPanel(
+    private BeStatisticsToolWindowPanel(
       [CanBeNull] string url,
       [CanBeNull] string html,
       [NotNull] RdSignal<bool> openDevTools,
@@ -185,7 +185,7 @@ namespace JetBrains.Rider.Model
       BindableChildren.Add(new KeyValuePair<string, object>("messageReceived", _MessageReceived));
     }
     //secondary constructor
-    public StatisticsToolWindowPanel (
+    public BeStatisticsToolWindowPanel (
       [CanBeNull] string url,
       [CanBeNull] string html
     ) : this (
@@ -205,7 +205,7 @@ namespace JetBrains.Rider.Model
     //deconstruct trait
     //statics
     
-    public static new CtxReadDelegate<StatisticsToolWindowPanel> Read = (ctx, reader) => 
+    public static new CtxReadDelegate<BeStatisticsToolWindowPanel> Read = (ctx, reader) => 
     {
       var _id = RdId.Read(reader);
       var enabled = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
@@ -220,13 +220,13 @@ namespace JetBrains.Rider.Model
       var getResource = RdCall<string, string>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString);
       var sendMessage = RdCall<string, Unit>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
       var messageReceived = RdSignal<string>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString);
-      var _result = new StatisticsToolWindowPanel(url, html, openDevTools, openUrl, getResource, sendMessage, messageReceived, enabled, controlId, tooltip, focus, visible).WithId(_id);
+      var _result = new BeStatisticsToolWindowPanel(url, html, openDevTools, openUrl, getResource, sendMessage, messageReceived, enabled, controlId, tooltip, focus, visible).WithId(_id);
       return _result;
     };
     public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
     public static CtxReadDelegate<JetBrains.Rider.Model.UIAutomation.ControlVisibility> ReadControlVisibility = new CtxReadDelegate<JetBrains.Rider.Model.UIAutomation.ControlVisibility>(JetBrains.Rd.Impl.Serializers.ReadEnum<JetBrains.Rider.Model.UIAutomation.ControlVisibility>);
     
-    public static new CtxWriteDelegate<StatisticsToolWindowPanel> Write = (ctx, writer, value) => 
+    public static new CtxWriteDelegate<BeStatisticsToolWindowPanel> Write = (ctx, writer, value) => 
     {
       value.RdId.Write(writer);
       RdProperty<bool>.Write(ctx, writer, value._Enabled);
@@ -254,7 +254,7 @@ namespace JetBrains.Rider.Model
     //pretty print
     public override void Print(PrettyPrinter printer)
     {
-      printer.Println("StatisticsToolWindowPanel (");
+      printer.Println("BeStatisticsToolWindowPanel (");
       using (printer.IndentCookie()) {
         printer.Print("url = "); Url.PrintEx(printer); printer.Println();
         printer.Print("html = "); Html.PrintEx(printer); printer.Println();
