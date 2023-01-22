@@ -4,4 +4,9 @@ import javax.swing.tree.DefaultMutableTreeNode
 
 data class DataNode(
     var name: String,
-) : DefaultMutableTreeNode()
+    var description: String,
+) : DefaultMutableTreeNode() {
+    override fun toString(): String {
+        return name
+    }
+}

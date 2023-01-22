@@ -21,14 +21,10 @@
   </project-components>
 
   <extensions defaultExtensionNs="com.intellij">
-    <rdclient.view
-        key="com.jetbrains.rd.ide.model.BeStatisticsToolWindowPanel"
-        implementationClass="com.jetbrains.rider.plugins.codecommenter.toolwindows.StatisticsToolWindowPanel" />
-
     <toolWindow
         id="Statistics"
         secondary="true"
-        icon="AllIcons.General.Modified"
+        icon="AllIcons.Toolwindows.Documentation"
         anchor="right"
         factoryClass="com.jetbrains.rider.plugins.codecommenter.toolwindows.StatisticsToolWindowFactory" />
   </extensions>

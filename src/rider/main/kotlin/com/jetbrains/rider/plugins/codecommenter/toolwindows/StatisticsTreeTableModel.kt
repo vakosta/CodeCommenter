@@ -7,13 +7,15 @@ import javax.swing.tree.DefaultMutableTreeNode
 class StatisticsTreeTableModel(
     root: DefaultMutableTreeNode,
 ) : ListTreeTableModelOnColumns(root, columns.toTypedArray()) {
-    override fun getValueAt(p0: Any?, p1: Int): Any {
-        return (p0 as DataNode).name
+    override fun getValueAt(value: Any?, column: Int): Any {
+        // TODO: Replace with renderers (TableCellRenderer)
+        return (value as DataNode).description
     }
 
     companion object {
         val columns = listOf(
             TreeColumnInfo("Name"),
+            TreeColumnInfo("Description"),
         )
     }
 }

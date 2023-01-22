@@ -17,18 +17,23 @@ class StatisticsToolWindowFactory : ToolWindowFactory {
             )
         }
 
+        val treeTableView = StatisticsTreeTableView(StatisticsTreeTableModel(getTreeNodes()))
+        val contentFactory = ContentFactory.getInstance()
+        val content = contentFactory.createContent(treeTableView, null, false)
+        toolWindow.contentManager.addContent(content)
+    }
+
+    private fun getTreeNodes(): DefaultMutableTreeNode {
         val root = DefaultMutableTreeNode()
-        val dataNode1 = DataNode("13123")
-        val dataNode2 = DataNode("131234")
-        val dataNode3 = DataNode("131234")
+
+        val dataNode1 = DataNode("Name 1", "Description 1")
+        val dataNode2 = DataNode("Name 2", "Description 2")
+        val dataNode3 = DataNode("Name 3", "Description 3")
+
         root.add(dataNode1)
         dataNode1.add(dataNode2)
         root.add(dataNode3)
 
-        val myToolWindow = StatisticsTreeTableView(StatisticsTreeTableModel(root))
-
-        val contentFactory = ContentFactory.getInstance()
-        val content = contentFactory.createContent(myToolWindow, null, false)
-        toolWindow.contentManager.addContent(content)
+        return root
     }
 }
