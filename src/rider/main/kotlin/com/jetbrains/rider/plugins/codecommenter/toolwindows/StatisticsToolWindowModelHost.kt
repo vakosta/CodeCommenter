@@ -1,7 +1,7 @@
 package com.jetbrains.rider.plugins.codecommenter.toolwindows
 
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.wm.ToolWindowManager
+import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.ide.model.StatisticsToolWindowModel
 import com.jetbrains.rd.ide.model.statisticsToolWindowModel
 import com.jetbrains.rd.platform.util.getComponent
@@ -13,10 +13,8 @@ class StatisticsToolWindowModelHost(project: Project) : ProtocolSubscribedProjec
 
     init {
         interactionModel = project.protocol.statisticsToolWindowModel
-        interactionModel.activateToolWindow.change.advise(projectComponentLifetime) {
-            if (!it) return@advise
-            val toolWindowManager = ToolWindowManager.getInstance(project)
-            toolWindowManager.getToolWindow("StatisticsToolWindow")!!.show()
+        interactionModel.onContentUpdated.set { _, toolWindowContent ->
+            RdTask.fromResult(toolWindowContent)
         }
     }
 

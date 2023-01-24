@@ -36,52 +36,50 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:18</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:13</p>
   /// </summary>
   [JetBrains.Application.ShellComponent]
   public class StatisticsToolWindowModel : RdExtBase
   {
     //fields
     //public fields
-    [NotNull] public IViewableProperty<JetBrains.Rider.Model.UIAutomation.BeControl> ToolWindowContent => _ToolWindowContent;
-    [NotNull] public IViewableProperty<bool> ActivateToolWindow => _ActivateToolWindow;
+    [NotNull] public IRdEndpoint<Unit, Unit> GetContent => _GetContent;
+    [NotNull] public IRdCall<ToolWindowContent, ToolWindowContent> OnContentUpdated => _OnContentUpdated;
     
     //private fields
-    [NotNull] private readonly RdProperty<JetBrains.Rider.Model.UIAutomation.BeControl> _ToolWindowContent;
-    [NotNull] private readonly RdProperty<bool> _ActivateToolWindow;
+    [NotNull] private readonly RdCall<Unit, Unit> _GetContent;
+    [NotNull] private readonly RdCall<ToolWindowContent, ToolWindowContent> _OnContentUpdated;
     
     //primary constructor
     private StatisticsToolWindowModel(
-      [NotNull] RdProperty<JetBrains.Rider.Model.UIAutomation.BeControl> toolWindowContent,
-      [NotNull] RdProperty<bool> activateToolWindow
+      [NotNull] RdCall<Unit, Unit> getContent,
+      [NotNull] RdCall<ToolWindowContent, ToolWindowContent> onContentUpdated
     )
     {
-      if (toolWindowContent == null) throw new ArgumentNullException("toolWindowContent");
-      if (activateToolWindow == null) throw new ArgumentNullException("activateToolWindow");
+      if (getContent == null) throw new ArgumentNullException("getContent");
+      if (onContentUpdated == null) throw new ArgumentNullException("onContentUpdated");
       
-      _ToolWindowContent = toolWindowContent;
-      _ActivateToolWindow = activateToolWindow;
-      _ActivateToolWindow.OptimizeNested = true;
-      BindableChildren.Add(new KeyValuePair<string, object>("toolWindowContent", _ToolWindowContent));
-      BindableChildren.Add(new KeyValuePair<string, object>("activateToolWindow", _ActivateToolWindow));
+      _GetContent = getContent;
+      _OnContentUpdated = onContentUpdated;
+      BindableChildren.Add(new KeyValuePair<string, object>("getContent", _GetContent));
+      BindableChildren.Add(new KeyValuePair<string, object>("onContentUpdated", _OnContentUpdated));
     }
     //secondary constructor
     private StatisticsToolWindowModel (
     ) : this (
-      new RdProperty<JetBrains.Rider.Model.UIAutomation.BeControl>(JetBrains.Rider.Model.UIAutomation.BeControl.Read, JetBrains.Rider.Model.UIAutomation.BeControl.Write),
-      new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool)
+      new RdCall<Unit, Unit>(JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
+      new RdCall<ToolWindowContent, ToolWindowContent>(ToolWindowContent.Read, ToolWindowContent.Write, ToolWindowContent.Read, ToolWindowContent.Write)
     ) {}
     //deconstruct trait
     //statics
     
     
     
-    protected override long SerializationHash => -1801903868957702223L;
+    protected override long SerializationHash => 934911186581831628L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
     {
-      serializers.Register(BeStatisticsToolWindowPanel.Read, BeStatisticsToolWindowPanel.Write);
       
       serializers.RegisterToplevelOnce(typeof(IdeRoot), IdeRoot.RegisterDeclaredTypesSerializers);
     }
@@ -103,8 +101,8 @@ namespace JetBrains.Rider.Model
     {
       printer.Println("StatisticsToolWindowModel (");
       using (printer.IndentCookie()) {
-        printer.Print("toolWindowContent = "); _ToolWindowContent.PrintEx(printer); printer.Println();
-        printer.Print("activateToolWindow = "); _ActivateToolWindow.PrintEx(printer); printer.Println();
+        printer.Print("getContent = "); _GetContent.PrintEx(printer); printer.Println();
+        printer.Print("onContentUpdated = "); _OnContentUpdated.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -119,155 +117,173 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:24</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:14</p>
   /// </summary>
-  public sealed class BeStatisticsToolWindowPanel : JetBrains.Rider.Model.UIAutomation.BeControl
+  public sealed class Row : IPrintable, IEquatable<Row>
   {
     //fields
     //public fields
-    [CanBeNull] public string Url {get; private set;}
-    [CanBeNull] public string Html {get; private set;}
-    [NotNull] public ISignal<bool> OpenDevTools => _OpenDevTools;
-    [NotNull] public ISignal<string> OpenUrl => _OpenUrl;
-    [NotNull] public IRdEndpoint<string, string> GetResource => _GetResource;
-    [NotNull] public IRdCall<string, Unit> SendMessage => _SendMessage;
-    [NotNull] public ISignal<string> MessageReceived => _MessageReceived;
+    [NotNull] public string Property {get; private set;}
+    [NotNull] public string Docstring {get; private set;}
     
     //private fields
-    [NotNull] private readonly RdSignal<bool> _OpenDevTools;
-    [NotNull] private readonly RdSignal<string> _OpenUrl;
-    [NotNull] private readonly RdCall<string, string> _GetResource;
-    [NotNull] private readonly RdCall<string, Unit> _SendMessage;
-    [NotNull] private readonly RdSignal<string> _MessageReceived;
-    
     //primary constructor
-    private BeStatisticsToolWindowPanel(
-      [CanBeNull] string url,
-      [CanBeNull] string html,
-      [NotNull] RdSignal<bool> openDevTools,
-      [NotNull] RdSignal<string> openUrl,
-      [NotNull] RdCall<string, string> getResource,
-      [NotNull] RdCall<string, Unit> sendMessage,
-      [NotNull] RdSignal<string> messageReceived,
-      [NotNull] RdProperty<bool> enabled,
-      [NotNull] RdProperty<string> controlId,
-      [NotNull] RdProperty<string> tooltip,
-      [NotNull] RdSignal<Unit> focus,
-      [NotNull] RdProperty<JetBrains.Rider.Model.UIAutomation.ControlVisibility> visible
-    ) : base (
-      enabled,
-      controlId,
-      tooltip,
-      focus,
-      visible
-     ) 
+    public Row(
+      [NotNull] string property,
+      [NotNull] string docstring
+    )
     {
-      if (openDevTools == null) throw new ArgumentNullException("openDevTools");
-      if (openUrl == null) throw new ArgumentNullException("openUrl");
-      if (getResource == null) throw new ArgumentNullException("getResource");
-      if (sendMessage == null) throw new ArgumentNullException("sendMessage");
-      if (messageReceived == null) throw new ArgumentNullException("messageReceived");
+      if (property == null) throw new ArgumentNullException("property");
+      if (docstring == null) throw new ArgumentNullException("docstring");
       
-      Url = url;
-      Html = html;
-      _OpenDevTools = openDevTools;
-      _OpenUrl = openUrl;
-      _GetResource = getResource;
-      _SendMessage = sendMessage;
-      _MessageReceived = messageReceived;
-      _GetResource.Async = true;
-      _SendMessage.Async = true;
-      _MessageReceived.Async = true;
-      BindableChildren.Add(new KeyValuePair<string, object>("openDevTools", _OpenDevTools));
-      BindableChildren.Add(new KeyValuePair<string, object>("openUrl", _OpenUrl));
-      BindableChildren.Add(new KeyValuePair<string, object>("getResource", _GetResource));
-      BindableChildren.Add(new KeyValuePair<string, object>("sendMessage", _SendMessage));
-      BindableChildren.Add(new KeyValuePair<string, object>("messageReceived", _MessageReceived));
+      Property = property;
+      Docstring = docstring;
     }
     //secondary constructor
-    public BeStatisticsToolWindowPanel (
-      [CanBeNull] string url,
-      [CanBeNull] string html
-    ) : this (
-      url,
-      html,
-      new RdSignal<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool),
-      new RdSignal<string>(JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString),
-      new RdCall<string, string>(JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString),
-      new RdCall<string, Unit>(JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdSignal<string>(JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString),
-      new RdProperty<bool>(JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool, true),
-      new RdProperty<string>(JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString, ""),
-      new RdProperty<string>(ReadStringNullable, WriteStringNullable),
-      new RdSignal<Unit>(JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdProperty<JetBrains.Rider.Model.UIAutomation.ControlVisibility>(ReadControlVisibility, WriteControlVisibility)
-    ) {}
     //deconstruct trait
+    public void Deconstruct([NotNull] out string property, [NotNull] out string docstring)
+    {
+      property = Property;
+      docstring = Docstring;
+    }
     //statics
     
-    public static new CtxReadDelegate<BeStatisticsToolWindowPanel> Read = (ctx, reader) => 
+    public static CtxReadDelegate<Row> Read = (ctx, reader) => 
     {
-      var _id = RdId.Read(reader);
-      var enabled = RdProperty<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
-      var controlId = RdProperty<string>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString);
-      var tooltip = RdProperty<string>.Read(ctx, reader, ReadStringNullable, WriteStringNullable);
-      var focus = RdSignal<Unit>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
-      var visible = RdProperty<JetBrains.Rider.Model.UIAutomation.ControlVisibility>.Read(ctx, reader, ReadControlVisibility, WriteControlVisibility);
-      var url = ReadStringNullable(ctx, reader);
-      var html = ReadStringNullable(ctx, reader);
-      var openDevTools = RdSignal<bool>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadBool, JetBrains.Rd.Impl.Serializers.WriteBool);
-      var openUrl = RdSignal<string>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString);
-      var getResource = RdCall<string, string>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString);
-      var sendMessage = RdCall<string, Unit>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid);
-      var messageReceived = RdSignal<string>.Read(ctx, reader, JetBrains.Rd.Impl.Serializers.ReadString, JetBrains.Rd.Impl.Serializers.WriteString);
-      var _result = new BeStatisticsToolWindowPanel(url, html, openDevTools, openUrl, getResource, sendMessage, messageReceived, enabled, controlId, tooltip, focus, visible).WithId(_id);
+      var property = reader.ReadString();
+      var docstring = reader.ReadString();
+      var _result = new Row(property, docstring);
       return _result;
     };
-    public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
-    public static CtxReadDelegate<JetBrains.Rider.Model.UIAutomation.ControlVisibility> ReadControlVisibility = new CtxReadDelegate<JetBrains.Rider.Model.UIAutomation.ControlVisibility>(JetBrains.Rd.Impl.Serializers.ReadEnum<JetBrains.Rider.Model.UIAutomation.ControlVisibility>);
     
-    public static new CtxWriteDelegate<BeStatisticsToolWindowPanel> Write = (ctx, writer, value) => 
+    public static CtxWriteDelegate<Row> Write = (ctx, writer, value) => 
     {
-      value.RdId.Write(writer);
-      RdProperty<bool>.Write(ctx, writer, value._Enabled);
-      RdProperty<string>.Write(ctx, writer, value._ControlId);
-      RdProperty<string>.Write(ctx, writer, value._Tooltip);
-      RdSignal<Unit>.Write(ctx, writer, value._Focus);
-      RdProperty<JetBrains.Rider.Model.UIAutomation.ControlVisibility>.Write(ctx, writer, value._Visible);
-      WriteStringNullable(ctx, writer, value.Url);
-      WriteStringNullable(ctx, writer, value.Html);
-      RdSignal<bool>.Write(ctx, writer, value._OpenDevTools);
-      RdSignal<string>.Write(ctx, writer, value._OpenUrl);
-      RdCall<string, string>.Write(ctx, writer, value._GetResource);
-      RdCall<string, Unit>.Write(ctx, writer, value._SendMessage);
-      RdSignal<string>.Write(ctx, writer, value._MessageReceived);
+      writer.Write(value.Property);
+      writer.Write(value.Docstring);
     };
-    public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
-    public static  CtxWriteDelegate<JetBrains.Rider.Model.UIAutomation.ControlVisibility> WriteControlVisibility = new CtxWriteDelegate<JetBrains.Rider.Model.UIAutomation.ControlVisibility>(JetBrains.Rd.Impl.Serializers.WriteEnum<JetBrains.Rider.Model.UIAutomation.ControlVisibility>);
     
     //constants
     
     //custom body
     //methods
     //equals trait
-    //hash code trait
-    //pretty print
-    public override void Print(PrettyPrinter printer)
+    public override bool Equals(object obj)
     {
-      printer.Println("BeStatisticsToolWindowPanel (");
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((Row) obj);
+    }
+    public bool Equals(Row other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Property == other.Property && Docstring == other.Docstring;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Property.GetHashCode();
+        hash = hash * 31 + Docstring.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("Row (");
       using (printer.IndentCookie()) {
-        printer.Print("url = "); Url.PrintEx(printer); printer.Println();
-        printer.Print("html = "); Html.PrintEx(printer); printer.Println();
-        printer.Print("openDevTools = "); _OpenDevTools.PrintEx(printer); printer.Println();
-        printer.Print("openUrl = "); _OpenUrl.PrintEx(printer); printer.Println();
-        printer.Print("getResource = "); _GetResource.PrintEx(printer); printer.Println();
-        printer.Print("sendMessage = "); _SendMessage.PrintEx(printer); printer.Println();
-        printer.Print("messageReceived = "); _MessageReceived.PrintEx(printer); printer.Println();
-        printer.Print("enabled = "); _Enabled.PrintEx(printer); printer.Println();
-        printer.Print("controlId = "); _ControlId.PrintEx(printer); printer.Println();
-        printer.Print("tooltip = "); _Tooltip.PrintEx(printer); printer.Println();
-        printer.Print("focus = "); _Focus.PrintEx(printer); printer.Println();
-        printer.Print("visible = "); _Visible.PrintEx(printer); printer.Println();
+        printer.Print("property = "); Property.PrintEx(printer); printer.Println();
+        printer.Print("docstring = "); Docstring.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:19</p>
+  /// </summary>
+  public sealed class ToolWindowContent : IPrintable, IEquatable<ToolWindowContent>
+  {
+    //fields
+    //public fields
+    [NotNull] public List<Row> Rows {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public ToolWindowContent(
+      [NotNull] List<Row> rows
+    )
+    {
+      if (rows == null) throw new ArgumentNullException("rows");
+      
+      Rows = rows;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct([NotNull] out List<Row> rows)
+    {
+      rows = Rows;
+    }
+    //statics
+    
+    public static CtxReadDelegate<ToolWindowContent> Read = (ctx, reader) => 
+    {
+      var rows = ReadRowList(ctx, reader);
+      var _result = new ToolWindowContent(rows);
+      return _result;
+    };
+    public static CtxReadDelegate<List<Row>> ReadRowList = Row.Read.List();
+    
+    public static CtxWriteDelegate<ToolWindowContent> Write = (ctx, writer, value) => 
+    {
+      WriteRowList(ctx, writer, value.Rows);
+    };
+    public static  CtxWriteDelegate<List<Row>> WriteRowList = Row.Write.List();
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((ToolWindowContent) obj);
+    }
+    public bool Equals(ToolWindowContent other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Rows.SequenceEqual(other.Rows);
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Rows.ContentHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("ToolWindowContent (");
+      using (printer.IndentCookie()) {
+        printer.Print("rows = "); Rows.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
