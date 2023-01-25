@@ -19,15 +19,15 @@ import kotlin.jvm.JvmStatic
  */
 class StatisticsToolWindowModel private constructor(
     private val _getContent: RdCall<Unit, Unit>,
-    private val _onContentUpdated: RdCall<ToolWindowContent, ToolWindowContent>
+    private val _onContentUpdated: RdCall<RdToolWindowContent, RdToolWindowContent>
 ) : RdExtBase() {
     //companion
     
     companion object : ISerializersOwner {
         
         override fun registerSerializersCore(serializers: ISerializers)  {
-            serializers.register(Row)
-            serializers.register(ToolWindowContent)
+            serializers.register(RdRow)
+            serializers.register(RdToolWindowContent)
         }
         
         
@@ -51,7 +51,7 @@ class StatisticsToolWindowModel private constructor(
         }
         
         
-        const val serializationHash = 934911186581831628L
+        const val serializationHash = -7681959170009725837L
         
     }
     override val serializersOwner: ISerializersOwner get() = StatisticsToolWindowModel
@@ -59,7 +59,7 @@ class StatisticsToolWindowModel private constructor(
     
     //fields
     val getContent: IRdCall<Unit, Unit> get() = _getContent
-    val onContentUpdated: IRdEndpoint<ToolWindowContent, ToolWindowContent> get() = _onContentUpdated
+    val onContentUpdated: IRdEndpoint<RdToolWindowContent, RdToolWindowContent> get() = _onContentUpdated
     //methods
     //initializer
     init {
@@ -71,7 +71,7 @@ class StatisticsToolWindowModel private constructor(
     private constructor(
     ) : this(
         RdCall<Unit, Unit>(FrameworkMarshallers.Void, FrameworkMarshallers.Void),
-        RdCall<ToolWindowContent, ToolWindowContent>(ToolWindowContent, ToolWindowContent)
+        RdCall<RdToolWindowContent, RdToolWindowContent>(RdToolWindowContent, RdToolWindowContent)
     )
     
     //equals trait
@@ -101,25 +101,28 @@ val IProtocol.statisticsToolWindowModel get() = getOrCreateExtension(StatisticsT
 /**
  * #### Generated from [StatisticsToolWindowModel.kt:14]
  */
-data class Row (
-    val `property`: String,
-    val docstring: String
+data class RdRow (
+    val name: String,
+    val docstring: String,
+    val children: List<RdRow>
 ) : IPrintable {
     //companion
     
-    companion object : IMarshaller<Row> {
-        override val _type: KClass<Row> = Row::class
+    companion object : IMarshaller<RdRow> {
+        override val _type: KClass<RdRow> = RdRow::class
         
         @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): Row  {
-            val `property` = buffer.readString()
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdRow  {
+            val name = buffer.readString()
             val docstring = buffer.readString()
-            return Row(`property`, docstring)
+            val children = buffer.readList { RdRow.read(ctx, buffer) }
+            return RdRow(name, docstring, children)
         }
         
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: Row)  {
-            buffer.writeString(value.`property`)
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdRow)  {
+            buffer.writeString(value.name)
             buffer.writeString(value.docstring)
+            buffer.writeList(value.children) { v -> RdRow.write(ctx, buffer, v) }
         }
         
         
@@ -133,26 +136,29 @@ data class Row (
         if (this === other) return true
         if (other == null || other::class != this::class) return false
         
-        other as Row
+        other as RdRow
         
-        if (`property` != other.`property`) return false
+        if (name != other.name) return false
         if (docstring != other.docstring) return false
+        if (children != other.children) return false
         
         return true
     }
     //hash code trait
     override fun hashCode(): Int  {
         var __r = 0
-        __r = __r*31 + `property`.hashCode()
+        __r = __r*31 + name.hashCode()
         __r = __r*31 + docstring.hashCode()
+        __r = __r*31 + children.hashCode()
         return __r
     }
     //pretty print
     override fun print(printer: PrettyPrinter)  {
-        printer.println("Row (")
+        printer.println("RdRow (")
         printer.indent {
-            print("property = "); `property`.print(printer); println()
+            print("name = "); name.print(printer); println()
             print("docstring = "); docstring.print(printer); println()
+            print("children = "); children.print(printer); println()
         }
         printer.print(")")
     }
@@ -162,24 +168,24 @@ data class Row (
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:19]
+ * #### Generated from [StatisticsToolWindowModel.kt:20]
  */
-data class ToolWindowContent (
-    val rows: List<Row>
+data class RdToolWindowContent (
+    val rows: List<RdRow>
 ) : IPrintable {
     //companion
     
-    companion object : IMarshaller<ToolWindowContent> {
-        override val _type: KClass<ToolWindowContent> = ToolWindowContent::class
+    companion object : IMarshaller<RdToolWindowContent> {
+        override val _type: KClass<RdToolWindowContent> = RdToolWindowContent::class
         
         @Suppress("UNCHECKED_CAST")
-        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): ToolWindowContent  {
-            val rows = buffer.readList { Row.read(ctx, buffer) }
-            return ToolWindowContent(rows)
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdToolWindowContent  {
+            val rows = buffer.readList { RdRow.read(ctx, buffer) }
+            return RdToolWindowContent(rows)
         }
         
-        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: ToolWindowContent)  {
-            buffer.writeList(value.rows) { v -> Row.write(ctx, buffer, v) }
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdToolWindowContent)  {
+            buffer.writeList(value.rows) { v -> RdRow.write(ctx, buffer, v) }
         }
         
         
@@ -193,7 +199,7 @@ data class ToolWindowContent (
         if (this === other) return true
         if (other == null || other::class != this::class) return false
         
-        other as ToolWindowContent
+        other as RdToolWindowContent
         
         if (rows != other.rows) return false
         
@@ -207,7 +213,7 @@ data class ToolWindowContent (
     }
     //pretty print
     override fun print(printer: PrettyPrinter)  {
-        printer.println("ToolWindowContent (")
+        printer.println("RdToolWindowContent (")
         printer.indent {
             print("rows = "); rows.print(printer); println()
         }

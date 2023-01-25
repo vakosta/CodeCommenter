@@ -18,8 +18,37 @@ public class StatisticsToolWindowManager
 #endif
         model.GetContent.Set((_, _) =>
         {
-            model.OnContentUpdated.Start(lifetime, new ToolWindowContent(new List<Row>()));
+            model.OnContentUpdated.Start(lifetime, new RdToolWindowContent(getRows()));
             return RdTask<Unit>.Successful(Unit.Instance);
         });
+    }
+
+    private List<RdRow> getRows()
+    {
+        return new List<RdRow>
+        {
+            new RdRow(
+                "Name 1",
+                "Some Docstring 1",
+                new List<RdRow>
+                {
+                    new RdRow(
+                        "Name 2",
+                        "Some Docstring 3",
+                        new List<RdRow>()
+                    ),
+                    new RdRow(
+                        "Name 3",
+                        "Some Docstring 3",
+                        new List<RdRow>()
+                    )
+                }
+            ),
+            new RdRow(
+                "Name 4",
+                "Some Docstring 4",
+                new List<RdRow>()
+            )
+        };
     }
 }

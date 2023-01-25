@@ -1,7 +1,6 @@
 package com.jetbrains.rider.plugins.codecommenter.toolwindows
 
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.ide.model.StatisticsToolWindowModel
 import com.jetbrains.rd.ide.model.statisticsToolWindowModel
 import com.jetbrains.rd.platform.util.getComponent
@@ -13,9 +12,6 @@ class StatisticsToolWindowModelHost(project: Project) : ProtocolSubscribedProjec
 
     init {
         interactionModel = project.protocol.statisticsToolWindowModel
-        interactionModel.onContentUpdated.set { _, toolWindowContent ->
-            RdTask.fromResult(toolWindowContent)
-        }
     }
 
     companion object {

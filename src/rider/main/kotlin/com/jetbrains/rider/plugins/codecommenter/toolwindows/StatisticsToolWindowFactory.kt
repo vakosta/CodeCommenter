@@ -4,36 +4,28 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
+import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.platform.util.lifetime
-import com.jetbrains.rd.ui.bindable.views.utils.BeControlHost
+import com.jetbrains.rider.plugins.codecommenter.toTreeNode
 import javax.swing.tree.DefaultMutableTreeNode
 
 class StatisticsToolWindowFactory : ToolWindowFactory {
+    private val treeTableModel = StatisticsTreeTableModel(DefaultMutableTreeNode())
+    private val treeTableView = StatisticsTreeTableView(treeTableModel)
+
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        val component = BeControlHost(project).apply {
-            bind(
-                project.lifetime,
-                StatisticsToolWindowModelHost.getInstance(project).interactionModel.toolWindowContent
-            )
+        val interactionModel = StatisticsToolWindowModelHost.getInstance(project).interactionModel
+        interactionModel.onContentUpdated.set { _, toolWindowContent ->
+            val root = DefaultMutableTreeNode()
+            for (row in toolWindowContent.rows)
+                root.add(toolWindowContent.rows[0].toTreeNode())
+            treeTableModel.setRoot(root)
+            RdTask.fromResult(toolWindowContent)
         }
 
-        val treeTableView = StatisticsTreeTableView(StatisticsTreeTableModel(getTreeNodes()))
         val contentFactory = ContentFactory.getInstance()
         val content = contentFactory.createContent(treeTableView, null, false)
         toolWindow.contentManager.addContent(content)
-    }
-
-    private fun getTreeNodes(): DefaultMutableTreeNode {
-        val root = DefaultMutableTreeNode()
-
-        val dataNode1 = DataNode("Name 1", "Description 1")
-        val dataNode2 = DataNode("Name 2", "Description 2")
-        val dataNode3 = DataNode("Name 3", "Description 3")
-
-        root.add(dataNode1)
-        dataNode1.add(dataNode2)
-        root.add(dataNode3)
-
-        return root
+        interactionModel.getContent.start(project.lifetime, Unit)
     }
 }

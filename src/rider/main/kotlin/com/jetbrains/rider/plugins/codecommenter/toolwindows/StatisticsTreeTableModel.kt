@@ -9,7 +9,7 @@ class StatisticsTreeTableModel(
 ) : ListTreeTableModelOnColumns(root, columns.toTypedArray()) {
     override fun getValueAt(value: Any?, column: Int): Any {
         // TODO: Replace with renderers (TableCellRenderer)
-        return (value as DataNode).description
+        return (value as DataNode).docstring
     }
 
     companion object {

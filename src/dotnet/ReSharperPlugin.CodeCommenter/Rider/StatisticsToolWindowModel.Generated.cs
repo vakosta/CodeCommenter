@@ -44,16 +44,16 @@ namespace JetBrains.Rider.Model
     //fields
     //public fields
     [NotNull] public IRdEndpoint<Unit, Unit> GetContent => _GetContent;
-    [NotNull] public IRdCall<ToolWindowContent, ToolWindowContent> OnContentUpdated => _OnContentUpdated;
+    [NotNull] public IRdCall<RdToolWindowContent, RdToolWindowContent> OnContentUpdated => _OnContentUpdated;
     
     //private fields
     [NotNull] private readonly RdCall<Unit, Unit> _GetContent;
-    [NotNull] private readonly RdCall<ToolWindowContent, ToolWindowContent> _OnContentUpdated;
+    [NotNull] private readonly RdCall<RdToolWindowContent, RdToolWindowContent> _OnContentUpdated;
     
     //primary constructor
     private StatisticsToolWindowModel(
       [NotNull] RdCall<Unit, Unit> getContent,
-      [NotNull] RdCall<ToolWindowContent, ToolWindowContent> onContentUpdated
+      [NotNull] RdCall<RdToolWindowContent, RdToolWindowContent> onContentUpdated
     )
     {
       if (getContent == null) throw new ArgumentNullException("getContent");
@@ -68,14 +68,14 @@ namespace JetBrains.Rider.Model
     private StatisticsToolWindowModel (
     ) : this (
       new RdCall<Unit, Unit>(JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdCall<ToolWindowContent, ToolWindowContent>(ToolWindowContent.Read, ToolWindowContent.Write, ToolWindowContent.Read, ToolWindowContent.Write)
+      new RdCall<RdToolWindowContent, RdToolWindowContent>(RdToolWindowContent.Read, RdToolWindowContent.Write, RdToolWindowContent.Read, RdToolWindowContent.Write)
     ) {}
     //deconstruct trait
     //statics
     
     
     
-    protected override long SerializationHash => 934911186581831628L;
+    protected override long SerializationHash => -7681959170009725837L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -119,48 +119,57 @@ namespace JetBrains.Rider.Model
   /// <summary>
   /// <p>Generated from: StatisticsToolWindowModel.kt:14</p>
   /// </summary>
-  public sealed class Row : IPrintable, IEquatable<Row>
+  public sealed class RdRow : IPrintable, IEquatable<RdRow>
   {
     //fields
     //public fields
-    [NotNull] public string Property {get; private set;}
+    [NotNull] public string Name {get; private set;}
     [NotNull] public string Docstring {get; private set;}
+    [NotNull] public List<RdRow> Children {get; private set;}
     
     //private fields
     //primary constructor
-    public Row(
-      [NotNull] string property,
-      [NotNull] string docstring
+    public RdRow(
+      [NotNull] string name,
+      [NotNull] string docstring,
+      [NotNull] List<RdRow> children
     )
     {
-      if (property == null) throw new ArgumentNullException("property");
+      if (name == null) throw new ArgumentNullException("name");
       if (docstring == null) throw new ArgumentNullException("docstring");
+      if (children == null) throw new ArgumentNullException("children");
       
-      Property = property;
+      Name = name;
       Docstring = docstring;
+      Children = children;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct([NotNull] out string property, [NotNull] out string docstring)
+    public void Deconstruct([NotNull] out string name, [NotNull] out string docstring, [NotNull] out List<RdRow> children)
     {
-      property = Property;
+      name = Name;
       docstring = Docstring;
+      children = Children;
     }
     //statics
     
-    public static CtxReadDelegate<Row> Read = (ctx, reader) => 
+    public static CtxReadDelegate<RdRow> Read = (ctx, reader) => 
     {
-      var property = reader.ReadString();
+      var name = reader.ReadString();
       var docstring = reader.ReadString();
-      var _result = new Row(property, docstring);
+      var children = ReadRdRowList(ctx, reader);
+      var _result = new RdRow(name, docstring, children);
       return _result;
     };
+    public static CtxReadDelegate<List<RdRow>> ReadRdRowList = RdRow.Read.List();
     
-    public static CtxWriteDelegate<Row> Write = (ctx, writer, value) => 
+    public static CtxWriteDelegate<RdRow> Write = (ctx, writer, value) => 
     {
-      writer.Write(value.Property);
+      writer.Write(value.Name);
       writer.Write(value.Docstring);
+      WriteRdRowList(ctx, writer, value.Children);
     };
+    public static  CtxWriteDelegate<List<RdRow>> WriteRdRowList = RdRow.Write.List();
     
     //constants
     
@@ -172,31 +181,33 @@ namespace JetBrains.Rider.Model
       if (ReferenceEquals(null, obj)) return false;
       if (ReferenceEquals(this, obj)) return true;
       if (obj.GetType() != GetType()) return false;
-      return Equals((Row) obj);
+      return Equals((RdRow) obj);
     }
-    public bool Equals(Row other)
+    public bool Equals(RdRow other)
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Property == other.Property && Docstring == other.Docstring;
+      return Name == other.Name && Docstring == other.Docstring && Children.SequenceEqual(other.Children);
     }
     //hash code trait
     public override int GetHashCode()
     {
       unchecked {
         var hash = 0;
-        hash = hash * 31 + Property.GetHashCode();
+        hash = hash * 31 + Name.GetHashCode();
         hash = hash * 31 + Docstring.GetHashCode();
+        hash = hash * 31 + Children.ContentHashCode();
         return hash;
       }
     }
     //pretty print
     public void Print(PrettyPrinter printer)
     {
-      printer.Println("Row (");
+      printer.Println("RdRow (");
       using (printer.IndentCookie()) {
-        printer.Print("property = "); Property.PrintEx(printer); printer.Println();
+        printer.Print("name = "); Name.PrintEx(printer); printer.Println();
         printer.Print("docstring = "); Docstring.PrintEx(printer); printer.Println();
+        printer.Print("children = "); Children.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -211,18 +222,18 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:19</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:20</p>
   /// </summary>
-  public sealed class ToolWindowContent : IPrintable, IEquatable<ToolWindowContent>
+  public sealed class RdToolWindowContent : IPrintable, IEquatable<RdToolWindowContent>
   {
     //fields
     //public fields
-    [NotNull] public List<Row> Rows {get; private set;}
+    [NotNull] public List<RdRow> Rows {get; private set;}
     
     //private fields
     //primary constructor
-    public ToolWindowContent(
-      [NotNull] List<Row> rows
+    public RdToolWindowContent(
+      [NotNull] List<RdRow> rows
     )
     {
       if (rows == null) throw new ArgumentNullException("rows");
@@ -231,25 +242,25 @@ namespace JetBrains.Rider.Model
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct([NotNull] out List<Row> rows)
+    public void Deconstruct([NotNull] out List<RdRow> rows)
     {
       rows = Rows;
     }
     //statics
     
-    public static CtxReadDelegate<ToolWindowContent> Read = (ctx, reader) => 
+    public static CtxReadDelegate<RdToolWindowContent> Read = (ctx, reader) => 
     {
-      var rows = ReadRowList(ctx, reader);
-      var _result = new ToolWindowContent(rows);
+      var rows = ReadRdRowList(ctx, reader);
+      var _result = new RdToolWindowContent(rows);
       return _result;
     };
-    public static CtxReadDelegate<List<Row>> ReadRowList = Row.Read.List();
+    public static CtxReadDelegate<List<RdRow>> ReadRdRowList = RdRow.Read.List();
     
-    public static CtxWriteDelegate<ToolWindowContent> Write = (ctx, writer, value) => 
+    public static CtxWriteDelegate<RdToolWindowContent> Write = (ctx, writer, value) => 
     {
-      WriteRowList(ctx, writer, value.Rows);
+      WriteRdRowList(ctx, writer, value.Rows);
     };
-    public static  CtxWriteDelegate<List<Row>> WriteRowList = Row.Write.List();
+    public static  CtxWriteDelegate<List<RdRow>> WriteRdRowList = RdRow.Write.List();
     
     //constants
     
@@ -261,9 +272,9 @@ namespace JetBrains.Rider.Model
       if (ReferenceEquals(null, obj)) return false;
       if (ReferenceEquals(this, obj)) return true;
       if (obj.GetType() != GetType()) return false;
-      return Equals((ToolWindowContent) obj);
+      return Equals((RdToolWindowContent) obj);
     }
-    public bool Equals(ToolWindowContent other)
+    public bool Equals(RdToolWindowContent other)
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
@@ -281,7 +292,7 @@ namespace JetBrains.Rider.Model
     //pretty print
     public void Print(PrettyPrinter printer)
     {
-      printer.Println("ToolWindowContent (");
+      printer.Println("RdToolWindowContent (");
       using (printer.IndentCookie()) {
         printer.Print("rows = "); Rows.PrintEx(printer); printer.Println();
       }

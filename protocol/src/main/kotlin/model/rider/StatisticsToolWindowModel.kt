@@ -11,17 +11,18 @@ import com.jetbrains.rider.model.nova.ide.IdeRoot
 
 @Suppress("unused")
 object StatisticsToolWindowModel : Ext(IdeRoot) {
-    private val Row = structdef {
-        field("property", string)
+    private val RdRow = structdef {
+        field("name", string)
         field("docstring", string)
+        field("children", immutableList(this))
     }
 
-    private val ToolWindowContent = structdef {
-        field("rows", immutableList(Row))
+    private val RdToolWindowContent = structdef {
+        field("rows", immutableList(RdRow))
     }
 
     init {
         call("getContent", void, void)
-        callback("onContentUpdated", ToolWindowContent, ToolWindowContent)
+        callback("onContentUpdated", RdToolWindowContent, RdToolWindowContent)
     }
 }
