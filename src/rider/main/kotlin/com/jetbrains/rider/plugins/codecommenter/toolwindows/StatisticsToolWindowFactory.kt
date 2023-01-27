@@ -18,7 +18,7 @@ class StatisticsToolWindowFactory : ToolWindowFactory {
         interactionModel.onContentUpdated.set { _, toolWindowContent ->
             val root = DefaultMutableTreeNode()
             for (row in toolWindowContent.rows)
-                root.add(toolWindowContent.rows[0].toTreeNode())
+                root.add(row.toTreeNode())
             treeTableModel.setRoot(root)
             RdTask.fromResult(toolWindowContent)
         }
