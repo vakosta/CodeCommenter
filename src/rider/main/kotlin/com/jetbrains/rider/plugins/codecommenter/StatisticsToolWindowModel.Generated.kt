@@ -15,7 +15,7 @@ import kotlin.jvm.JvmStatic
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:13]
+ * #### Generated from [StatisticsToolWindowModel.kt:14]
  */
 class StatisticsToolWindowModel private constructor(
     private val _getContent: RdCall<Unit, Unit>,
@@ -51,7 +51,7 @@ class StatisticsToolWindowModel private constructor(
         }
         
         
-        const val serializationHash = -7681959170009725837L
+        const val serializationHash = 4791266343333179109L
         
     }
     override val serializersOwner: ISerializersOwner get() = StatisticsToolWindowModel
@@ -99,11 +99,11 @@ val IProtocol.statisticsToolWindowModel get() = getOrCreateExtension(StatisticsT
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:14]
+ * #### Generated from [StatisticsToolWindowModel.kt:15]
  */
 data class RdRow (
     val name: String,
-    val docstring: String,
+    val docstring: String?,
     val children: List<RdRow>
 ) : IPrintable {
     //companion
@@ -114,14 +114,14 @@ data class RdRow (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdRow  {
             val name = buffer.readString()
-            val docstring = buffer.readString()
+            val docstring = buffer.readNullable { buffer.readString() }
             val children = buffer.readList { RdRow.read(ctx, buffer) }
             return RdRow(name, docstring, children)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdRow)  {
             buffer.writeString(value.name)
-            buffer.writeString(value.docstring)
+            buffer.writeNullable(value.docstring) { buffer.writeString(it) }
             buffer.writeList(value.children) { v -> RdRow.write(ctx, buffer, v) }
         }
         
@@ -148,7 +148,7 @@ data class RdRow (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + name.hashCode()
-        __r = __r*31 + docstring.hashCode()
+        __r = __r*31 + if (docstring != null) docstring.hashCode() else 0
         __r = __r*31 + children.hashCode()
         return __r
     }
@@ -168,7 +168,7 @@ data class RdRow (
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:20]
+ * #### Generated from [StatisticsToolWindowModel.kt:21]
  */
 data class RdToolWindowContent (
     val rows: List<RdRow>

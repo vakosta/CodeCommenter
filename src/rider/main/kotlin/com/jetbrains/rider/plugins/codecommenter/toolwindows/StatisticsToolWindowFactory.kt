@@ -6,7 +6,7 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
 import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.platform.util.lifetime
-import com.jetbrains.rider.plugins.codecommenter.toTreeNode
+import com.jetbrains.rider.plugins.codecommenter.utils.toTreeNode
 import javax.swing.tree.DefaultMutableTreeNode
 
 class StatisticsToolWindowFactory : ToolWindowFactory {

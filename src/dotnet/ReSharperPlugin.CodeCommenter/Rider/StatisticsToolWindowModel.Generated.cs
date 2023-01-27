@@ -36,7 +36,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:13</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:14</p>
   /// </summary>
   [JetBrains.Application.ShellComponent]
   public class StatisticsToolWindowModel : RdExtBase
@@ -75,7 +75,7 @@ namespace JetBrains.Rider.Model
     
     
     
-    protected override long SerializationHash => -7681959170009725837L;
+    protected override long SerializationHash => 4791266343333179109L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -117,26 +117,25 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:14</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:15</p>
   /// </summary>
   public sealed class RdRow : IPrintable, IEquatable<RdRow>
   {
     //fields
     //public fields
     [NotNull] public string Name {get; private set;}
-    [NotNull] public string Docstring {get; private set;}
+    [CanBeNull] public string Docstring {get; private set;}
     [NotNull] public List<RdRow> Children {get; private set;}
     
     //private fields
     //primary constructor
     public RdRow(
       [NotNull] string name,
-      [NotNull] string docstring,
+      [CanBeNull] string docstring,
       [NotNull] List<RdRow> children
     )
     {
       if (name == null) throw new ArgumentNullException("name");
-      if (docstring == null) throw new ArgumentNullException("docstring");
       if (children == null) throw new ArgumentNullException("children");
       
       Name = name;
@@ -145,7 +144,7 @@ namespace JetBrains.Rider.Model
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct([NotNull] out string name, [NotNull] out string docstring, [NotNull] out List<RdRow> children)
+    public void Deconstruct([NotNull] out string name, [CanBeNull] out string docstring, [NotNull] out List<RdRow> children)
     {
       name = Name;
       docstring = Docstring;
@@ -156,19 +155,21 @@ namespace JetBrains.Rider.Model
     public static CtxReadDelegate<RdRow> Read = (ctx, reader) => 
     {
       var name = reader.ReadString();
-      var docstring = reader.ReadString();
+      var docstring = ReadStringNullable(ctx, reader);
       var children = ReadRdRowList(ctx, reader);
       var _result = new RdRow(name, docstring, children);
       return _result;
     };
+    public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
     public static CtxReadDelegate<List<RdRow>> ReadRdRowList = RdRow.Read.List();
     
     public static CtxWriteDelegate<RdRow> Write = (ctx, writer, value) => 
     {
       writer.Write(value.Name);
-      writer.Write(value.Docstring);
+      WriteStringNullable(ctx, writer, value.Docstring);
       WriteRdRowList(ctx, writer, value.Children);
     };
+    public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
     public static  CtxWriteDelegate<List<RdRow>> WriteRdRowList = RdRow.Write.List();
     
     //constants
@@ -187,7 +188,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Name == other.Name && Docstring == other.Docstring && Children.SequenceEqual(other.Children);
+      return Name == other.Name && Equals(Docstring, other.Docstring) && Children.SequenceEqual(other.Children);
     }
     //hash code trait
     public override int GetHashCode()
@@ -195,7 +196,7 @@ namespace JetBrains.Rider.Model
       unchecked {
         var hash = 0;
         hash = hash * 31 + Name.GetHashCode();
-        hash = hash * 31 + Docstring.GetHashCode();
+        hash = hash * 31 + (Docstring != null ? Docstring.GetHashCode() : 0);
         hash = hash * 31 + Children.ContentHashCode();
         return hash;
       }
@@ -222,7 +223,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:20</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:21</p>
   /// </summary>
   public sealed class RdToolWindowContent : IPrintable, IEquatable<RdToolWindowContent>
   {
