@@ -8,18 +8,20 @@ import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.ide.model.StatisticsToolWindowModel
 import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rider.plugins.codecommenter.utils.toTreeNode
-import javax.swing.tree.DefaultMutableTreeNode
 
-class StatisticsToolWindowFactory(
-    private val treeTableModel: StatisticsTreeTableModel = StatisticsTreeTableModel(DefaultMutableTreeNode()),
-    private val treeTableView: StatisticsTreeTableView = StatisticsTreeTableView(treeTableModel),
-) : ToolWindowFactory {
+class StatisticsToolWindowFactory : ToolWindowFactory {
+    private val treeTableModel: StatisticsTreeTableModel = StatisticsTreeTableModel(
+        DataNode("123", "1234")
+            .apply {
+                add(DataNode("333", "4444"))
+            }
+    )
+    private val treeTableView: StatisticsTreeTableView = StatisticsTreeTableView(treeTableModel)
     private lateinit var interactionModel: StatisticsToolWindowModel
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         initListeners(project)
         initContent(toolWindow)
-
         interactionModel.getContent.start(project.lifetime, Unit)
     }
 
@@ -32,10 +34,10 @@ class StatisticsToolWindowFactory(
     private fun initListeners(project: Project) {
         interactionModel = StatisticsToolWindowModelHost.getInstance(project).interactionModel
         interactionModel.onContentUpdated.set { _, toolWindowContent ->
-            val root = DefaultMutableTreeNode()
+            val root = DataNode("", "")
             for (row in toolWindowContent.rows)
                 root.add(row.toTreeNode())
-            treeTableModel.setRoot(root)
+            treeTableModel.actualRoot = root
             RdTask.fromResult(toolWindowContent)
         }
     }

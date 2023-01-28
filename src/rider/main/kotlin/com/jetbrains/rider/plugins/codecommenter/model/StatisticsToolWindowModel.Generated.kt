@@ -9,6 +9,7 @@ import com.jetbrains.rd.util.lifetime.*
 import com.jetbrains.rd.util.reactive.*
 import com.jetbrains.rd.util.string.*
 import com.jetbrains.rd.util.*
+import kotlin.time.Duration
 import kotlin.reflect.KClass
 import kotlin.jvm.JvmStatic
 
@@ -44,10 +45,7 @@ class StatisticsToolWindowModel private constructor(
         fun create(lifetime: Lifetime, protocol: IProtocol): StatisticsToolWindowModel  {
             IdeRoot.register(protocol.serializers)
             
-            return StatisticsToolWindowModel().apply {
-                identify(protocol.identity, RdId.Null.mix("StatisticsToolWindowModel"))
-                bind(lifetime, protocol, "StatisticsToolWindowModel")
-            }
+            return StatisticsToolWindowModel()
         }
         
         

@@ -1,21 +1,21 @@
 package com.jetbrains.rider.plugins.codecommenter.toolwindows
 
 import com.intellij.ui.treeStructure.treetable.ListTreeTableModelOnColumns
-import com.intellij.ui.treeStructure.treetable.TreeColumnInfo
-import javax.swing.tree.DefaultMutableTreeNode
+import com.jetbrains.rider.plugins.codecommenter.toolwindows.columninfos.DescriptionColumnInfo
+import com.jetbrains.rider.plugins.codecommenter.toolwindows.columninfos.NameColumnInfo
+import org.jdesktop.swingx.treetable.TreeTableNode
 
 class StatisticsTreeTableModel(
-    root: DefaultMutableTreeNode,
-) : ListTreeTableModelOnColumns(root, columns.toTypedArray()) {
-    override fun getValueAt(value: Any?, column: Int): Any {
-        // TODO: Replace with renderers (TableCellRenderer)
-        return (value as DataNode).docstring
-    }
+    var actualRoot: TreeTableNode,
+) : ListTreeTableModelOnColumns(
+    actualRoot,
+    columns.toTypedArray(),
+) {
 
     companion object {
         val columns = listOf(
-            TreeColumnInfo("Name"),
-            TreeColumnInfo("Description"),
+            NameColumnInfo(),
+            DescriptionColumnInfo(),
         )
     }
 }

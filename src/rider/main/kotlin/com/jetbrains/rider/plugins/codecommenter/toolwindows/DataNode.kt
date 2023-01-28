@@ -1,12 +1,8 @@
 package com.jetbrains.rider.plugins.codecommenter.toolwindows
 
-import javax.swing.tree.DefaultMutableTreeNode
+import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode
 
 data class DataNode(
     var name: String,
     var docstring: String,
-) : DefaultMutableTreeNode() {
-    override fun toString(): String {
-        return name
-    }
-}
+) : DefaultMutableTreeTableNode()

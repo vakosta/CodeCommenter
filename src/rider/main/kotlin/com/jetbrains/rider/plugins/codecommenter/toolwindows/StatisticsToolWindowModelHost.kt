@@ -3,7 +3,6 @@ package com.jetbrains.rider.plugins.codecommenter.toolwindows
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.StatisticsToolWindowModel
 import com.jetbrains.rd.ide.model.statisticsToolWindowModel
-import com.jetbrains.rd.platform.util.getComponent
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rider.protocol.protocol
 
@@ -16,7 +15,7 @@ class StatisticsToolWindowModelHost(project: Project) : ProtocolSubscribedProjec
 
     companion object {
         fun getInstance(project: Project): StatisticsToolWindowModelHost {
-            return project.getComponent()
+            return project.getComponent(StatisticsToolWindowModelHost::class.java)
         }
     }
 }
