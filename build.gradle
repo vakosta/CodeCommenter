@@ -41,7 +41,7 @@ compileKotlin {
     kotlinOptions { jvmTarget = "11" }
 }
 
-task setBuildTool {
+tasks.register('setBuildTool') {
     doLast {
         ext.args = []
         ByteArrayOutputStream stdout = new ByteArrayOutputStream()
@@ -65,7 +65,7 @@ task setBuildTool {
     }
 }
 
-task compileDotNet {
+tasks.register('compileDotNet') {
     dependsOn setBuildTool
     doLast {
         def arguments = setBuildTool.args.clone()
@@ -78,7 +78,7 @@ task compileDotNet {
     }
 }
 
-task testDotNet {
+tasks.register('testDotNet') {
     doLast {
         exec {
             executable "dotnet"
@@ -137,8 +137,8 @@ runIde {
 
 rdgen {
     def modelDir = new File(rootDir, "protocol/src/main/kotlin/model")
-    def csOutput = new File(rootDir, "src/dotnet/${DotnetPluginId}/Rider")
-    def ktOutput = new File(rootDir, "src/rider/main/kotlin/${RiderPluginId.replace('.', '/').toLowerCase()}")
+    def csOutput = new File(rootDir, "src/dotnet/${DotnetPluginId}/Model")
+    def ktOutput = new File(rootDir, "src/rider/main/kotlin/${RiderPluginId.replace('.', '/').toLowerCase()}/model")
 
     verbose = true
     classpath {
