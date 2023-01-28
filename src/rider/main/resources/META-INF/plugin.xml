@@ -15,7 +15,7 @@
   <project-components>
     <component>
       <implementation-class>
-        com.jetbrains.rider.plugins.codecommenter.toolwindows.StatisticsToolWindowModelHost
+        com.jetbrains.rider.plugins.codecommenter.statisticsview.StatisticsToolWindowModelHost
       </implementation-class>
     </component>
   </project-components>
@@ -26,7 +26,7 @@
         secondary="true"
         icon="AllIcons.Toolwindows.Documentation"
         anchor="right"
-        factoryClass="com.jetbrains.rider.plugins.codecommenter.toolwindows.StatisticsToolWindowFactory" />
+        factoryClass="com.jetbrains.rider.plugins.codecommenter.statisticsview.StatisticsToolWindowFactory" />
   </extensions>
 
 </idea-plugin>

@@ -1,8 +1,8 @@
-package com.jetbrains.rider.plugins.codecommenter.toolwindows
+package com.jetbrains.rider.plugins.codecommenter.model
 
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode
 
-data class DataNode(
+data class StatisticsData(
     var name: String,
     var docstring: String,
 ) : DefaultMutableTreeTableNode()

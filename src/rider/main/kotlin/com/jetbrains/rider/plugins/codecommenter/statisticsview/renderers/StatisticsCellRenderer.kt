@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.codecommenter.toolwindows
+package com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers
 
 import com.intellij.ui.ColoredTreeCellRenderer
 import javax.swing.JTree

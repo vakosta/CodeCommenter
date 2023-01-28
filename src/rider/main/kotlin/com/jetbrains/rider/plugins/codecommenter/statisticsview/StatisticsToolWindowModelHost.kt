@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.codecommenter.toolwindows
+package com.jetbrains.rider.plugins.codecommenter.statisticsview
 
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.ide.model.StatisticsToolWindowModel

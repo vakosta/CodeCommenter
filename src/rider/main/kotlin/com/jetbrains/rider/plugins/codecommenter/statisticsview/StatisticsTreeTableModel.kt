@@ -1,8 +1,8 @@
-package com.jetbrains.rider.plugins.codecommenter.toolwindows
+package com.jetbrains.rider.plugins.codecommenter.statisticsview
 
 import com.intellij.ui.treeStructure.treetable.ListTreeTableModelOnColumns
-import com.jetbrains.rider.plugins.codecommenter.toolwindows.columninfos.DescriptionColumnInfo
-import com.jetbrains.rider.plugins.codecommenter.toolwindows.columninfos.NameColumnInfo
+import com.jetbrains.rider.plugins.codecommenter.statisticsview.columninfos.DescriptionColumnInfo
+import com.jetbrains.rider.plugins.codecommenter.statisticsview.columninfos.NameColumnInfo
 import org.jdesktop.swingx.treetable.TreeTableNode
 
 class StatisticsTreeTableModel(

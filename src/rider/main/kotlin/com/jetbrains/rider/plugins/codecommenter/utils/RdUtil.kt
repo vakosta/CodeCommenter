@@ -1,11 +1,11 @@
 package com.jetbrains.rider.plugins.codecommenter.utils
 
 import com.jetbrains.rd.ide.model.RdRow
-import com.jetbrains.rider.plugins.codecommenter.toolwindows.DataNode
+import com.jetbrains.rider.plugins.codecommenter.model.StatisticsData
 import org.jdesktop.swingx.treetable.MutableTreeTableNode
 
 fun RdRow.toTreeNode(): MutableTreeTableNode {
-    val root = DataNode(
+    val root = StatisticsData(
         name = this.name,
         docstring = this.docstring ?: "",
     )
