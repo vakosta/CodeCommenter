@@ -1,6 +1,7 @@
 package model.rider
 
 import com.jetbrains.rd.generator.nova.Ext
+import com.jetbrains.rd.generator.nova.PredefinedType.float
 import com.jetbrains.rd.generator.nova.PredefinedType.string
 import com.jetbrains.rd.generator.nova.PredefinedType.void
 import com.jetbrains.rd.generator.nova.call
@@ -15,6 +16,8 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
     private val RdRow = structdef {
         field("name", string)
         field("docstring", string.nullable)
+        field("coverage", float)
+        field("quality", float)
         field("children", immutableList(this))
     }
 

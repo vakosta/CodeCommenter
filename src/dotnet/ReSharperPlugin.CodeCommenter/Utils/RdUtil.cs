@@ -11,7 +11,7 @@ public static class RdUtil
     public static RdRow ToRdRow(this IMethodDeclaration declaration)
     {
         var docstring = SharedImplUtil.GetDocCommentBlockNode(declaration)?.GetText();
-        return new RdRow(declaration.DeclaredName, docstring, new List<RdRow>());
+        return new RdRow(declaration.DeclaredName, docstring, (float)0.1, (float)0.1, new List<RdRow>());
     }
 
     public static List<RdRow> ToRdRows(this IEnumerable<IMethodDeclaration> declarations)

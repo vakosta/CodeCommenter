@@ -8,6 +8,8 @@ fun RdRow.toTreeNode(): MutableTreeTableNode {
     val root = StatisticsData(
         name = this.name,
         docstring = this.docstring ?: "",
+        coverage = this.coverage,
+        quality = this.quality,
     )
     for (child in this.children)
         root.add(child.toTreeNode())

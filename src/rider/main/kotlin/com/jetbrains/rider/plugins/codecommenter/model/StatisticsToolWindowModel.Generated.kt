@@ -16,7 +16,7 @@ import kotlin.jvm.JvmStatic
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:14]
+ * #### Generated from [StatisticsToolWindowModel.kt:15]
  */
 class StatisticsToolWindowModel private constructor(
     private val _getContent: RdCall<Unit, Unit>,
@@ -49,7 +49,7 @@ class StatisticsToolWindowModel private constructor(
         }
         
         
-        const val serializationHash = 4791266343333179109L
+        const val serializationHash = 3062530557444078538L
         
     }
     override val serializersOwner: ISerializersOwner get() = StatisticsToolWindowModel
@@ -97,11 +97,13 @@ val IProtocol.statisticsToolWindowModel get() = getOrCreateExtension(StatisticsT
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:15]
+ * #### Generated from [StatisticsToolWindowModel.kt:16]
  */
 data class RdRow (
     val name: String,
     val docstring: String?,
+    val coverage: Float,
+    val quality: Float,
     val children: List<RdRow>
 ) : IPrintable {
     //companion
@@ -113,13 +115,17 @@ data class RdRow (
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdRow  {
             val name = buffer.readString()
             val docstring = buffer.readNullable { buffer.readString() }
+            val coverage = buffer.readFloat()
+            val quality = buffer.readFloat()
             val children = buffer.readList { RdRow.read(ctx, buffer) }
-            return RdRow(name, docstring, children)
+            return RdRow(name, docstring, coverage, quality, children)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdRow)  {
             buffer.writeString(value.name)
             buffer.writeNullable(value.docstring) { buffer.writeString(it) }
+            buffer.writeFloat(value.coverage)
+            buffer.writeFloat(value.quality)
             buffer.writeList(value.children) { v -> RdRow.write(ctx, buffer, v) }
         }
         
@@ -138,6 +144,8 @@ data class RdRow (
         
         if (name != other.name) return false
         if (docstring != other.docstring) return false
+        if (coverage != other.coverage) return false
+        if (quality != other.quality) return false
         if (children != other.children) return false
         
         return true
@@ -147,6 +155,8 @@ data class RdRow (
         var __r = 0
         __r = __r*31 + name.hashCode()
         __r = __r*31 + if (docstring != null) docstring.hashCode() else 0
+        __r = __r*31 + coverage.hashCode()
+        __r = __r*31 + quality.hashCode()
         __r = __r*31 + children.hashCode()
         return __r
     }
@@ -156,6 +166,8 @@ data class RdRow (
         printer.indent {
             print("name = "); name.print(printer); println()
             print("docstring = "); docstring.print(printer); println()
+            print("coverage = "); coverage.print(printer); println()
+            print("quality = "); quality.print(printer); println()
             print("children = "); children.print(printer); println()
         }
         printer.print(")")
@@ -166,7 +178,7 @@ data class RdRow (
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:21]
+ * #### Generated from [StatisticsToolWindowModel.kt:24]
  */
 data class RdToolWindowContent (
     val rows: List<RdRow>

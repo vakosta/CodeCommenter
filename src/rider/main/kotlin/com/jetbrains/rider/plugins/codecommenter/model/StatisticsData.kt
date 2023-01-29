@@ -5,4 +5,11 @@ import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode
 data class StatisticsData(
     var name: String,
     var docstring: String,
-) : DefaultMutableTreeTableNode()
+    var coverage: Float,
+    var quality: Float,
+) : DefaultMutableTreeTableNode() {
+
+    override fun toString(): String {
+        return name
+    }
+}
