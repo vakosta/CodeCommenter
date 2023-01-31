@@ -12,4 +12,8 @@ data class StatisticsData(
     override fun toString(): String {
         return name
     }
+
+    companion object {
+        fun getRoot(): StatisticsData = StatisticsData("", "", 0F, 0F)
+    }
 }

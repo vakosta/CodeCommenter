@@ -12,12 +12,7 @@ import com.jetbrains.rider.plugins.codecommenter.statisticsview.views.Statistics
 import com.jetbrains.rider.plugins.codecommenter.utils.toTreeNode
 
 class StatisticsToolWindowFactory : ToolWindowFactory {
-    private val treeTableModel: StatisticsTreeTableModel = StatisticsTreeTableModel(
-        StatisticsData("123", "1234", 0.5F, 0.6F)
-            .apply {
-                add(StatisticsData("333", "4444", 0.1F, 1F))
-            }
-    )
+    private val treeTableModel: StatisticsTreeTableModel = StatisticsTreeTableModel()
     private val treeTableView: StatisticsTreeTableView = StatisticsTreeTableView(treeTableModel)
     private lateinit var interactionModel: StatisticsToolWindowModel
 
@@ -36,7 +31,7 @@ class StatisticsToolWindowFactory : ToolWindowFactory {
     private fun initListeners(project: Project) {
         interactionModel = StatisticsToolWindowModelHost.getInstance(project).interactionModel
         interactionModel.onContentUpdated.set { _, toolWindowContent ->
-            val root = StatisticsData("", "", 0F, 0F)
+            val root = StatisticsData.getRoot()
             for (row in toolWindowContent.rows)
                 root.add(row.toTreeNode())
             treeTableModel.setRoot(root)
