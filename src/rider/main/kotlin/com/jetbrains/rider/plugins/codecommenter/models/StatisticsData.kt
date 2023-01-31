@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.codecommenter.model
+package com.jetbrains.rider.plugins.codecommenter.models
 
 import org.jdesktop.swingx.treetable.DefaultMutableTreeTableNode
 

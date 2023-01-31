@@ -1,13 +1,16 @@
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.Files;
+using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.PsiGen.Util;
 using JetBrains.ReSharper.Resources.Shell;
+using JetBrains.Rider.Model;
 
 namespace ReSharperPlugin.CodeCommenter.Common;
 
@@ -21,24 +24,39 @@ public class DocstringPlacesFinder
         mySolution = solution;
     }
 
-    public List<IMethodDeclaration> GetAllMethodsInProject()
+    public List<ModuleDescriptor> GetAllMethodsInProject()
     {
-        var methods = new List<IMethodDeclaration>();
+        var modules = new List<ModuleDescriptor>();
 
         using (ReadLockCookie.Create())
         {
-            foreach (var module in mySolution.GetPsiServices().Modules.GetModules())
-            foreach (var sourceFile in module.SourceFiles)
-            foreach (var file in sourceFile.GetPsiFiles<CSharpLanguage>())
-            {
-                methods.AddAll(GetAllMethodsInFile(file));
-            }
+            modules.AddRange(mySolution
+                .GetPsiServices()
+                .Modules
+                .GetModules()
+                .Select(GetModuleDescriptor));
         }
 
-        return methods;
+        return modules;
     }
 
-    private static List<IMethodDeclaration> GetAllMethodsInFile(ITreeNode treeNode)
+    private ModuleDescriptor GetModuleDescriptor(IPsiModule module)
+    {
+        var moduleDescriptor = new ModuleDescriptor { Name = module.Name };
+        foreach (var sourceFile in module.SourceFiles)
+            moduleDescriptor.Files.Add(GetFileDescriptor(sourceFile));
+        return moduleDescriptor;
+    }
+
+    private FileDescriptor GetFileDescriptor(IPsiSourceFile sourceFile)
+    {
+        var fileDescriptor = new FileDescriptor { Name = sourceFile.Name };
+        foreach (var file in sourceFile.GetPsiFiles<CSharpLanguage>())
+            fileDescriptor.Methods.AddAll(GetAllMethodsInFile(file));
+        return fileDescriptor;
+    }
+
+    private IEnumerable<IMethodDeclaration> GetAllMethodsInFile(ITreeNode treeNode)
     {
         var methods = new List<IMethodDeclaration>();
 

@@ -1,7 +1,7 @@
 package com.jetbrains.rider.plugins.codecommenter.utils
 
 import com.jetbrains.rd.ide.model.RdRow
-import com.jetbrains.rider.plugins.codecommenter.model.StatisticsData
+import com.jetbrains.rider.plugins.codecommenter.models.StatisticsData
 import org.jdesktop.swingx.treetable.MutableTreeTableNode
 
 fun RdRow.toTreeNode(): MutableTreeTableNode {

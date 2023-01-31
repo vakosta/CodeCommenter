@@ -7,7 +7,7 @@ import com.intellij.ui.content.ContentFactory
 import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.ide.model.StatisticsToolWindowModel
 import com.jetbrains.rd.platform.util.lifetime
-import com.jetbrains.rider.plugins.codecommenter.model.StatisticsData
+import com.jetbrains.rider.plugins.codecommenter.models.StatisticsData
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.views.StatisticsTreeTableView
 import com.jetbrains.rider.plugins.codecommenter.utils.toTreeNode
 
@@ -39,7 +39,7 @@ class StatisticsToolWindowFactory : ToolWindowFactory {
             val root = StatisticsData("", "", 0F, 0F)
             for (row in toolWindowContent.rows)
                 root.add(row.toTreeNode())
-            treeTableModel.actualRoot = root
+            treeTableModel.setRoot(root)
             RdTask.fromResult(toolWindowContent)
         }
     }

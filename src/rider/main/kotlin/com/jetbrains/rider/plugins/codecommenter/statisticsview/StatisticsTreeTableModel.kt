@@ -6,9 +6,9 @@ import com.jetbrains.rider.plugins.codecommenter.statisticsview.columninfos.Cove
 import org.jdesktop.swingx.treetable.TreeTableNode
 
 class StatisticsTreeTableModel(
-    var actualRoot: TreeTableNode,
+    root: TreeTableNode,
 ) : ListTreeTableModelOnColumns(
-    actualRoot,
+    root,
     columns.toTypedArray(),
 ) {
 

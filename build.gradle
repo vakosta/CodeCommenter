@@ -137,8 +137,8 @@ runIde {
 
 rdgen {
     def modelDir = new File(rootDir, "protocol/src/main/kotlin/model")
-    def csOutput = new File(rootDir, "src/dotnet/${DotnetPluginId}/Model")
-    def ktOutput = new File(rootDir, "src/rider/main/kotlin/${RiderPluginId.replace('.', '/').toLowerCase()}/model")
+    def csOutput = new File(rootDir, "src/dotnet/${DotnetPluginId}/Models")
+    def ktOutput = new File(rootDir, "src/rider/main/kotlin/${RiderPluginId.replace('.', '/').toLowerCase()}/models")
 
     verbose = true
     classpath {

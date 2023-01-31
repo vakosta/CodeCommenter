@@ -9,6 +9,5 @@ class StatisticsTreeTableView(
 
     init {
         columnProportion = 0.55F
-        tree.isRootVisible = true
     }
 }
