@@ -13,16 +13,17 @@ import com.jetbrains.rider.plugins.codecommenter.utils.toTreeNode
 
 class StatisticsToolWindowFactory : ToolWindowFactory {
     private val treeTableModel: StatisticsTreeTableModel = StatisticsTreeTableModel()
-    private val treeTableView: StatisticsTreeTableView = StatisticsTreeTableView(treeTableModel)
+    private lateinit var treeTableView: StatisticsTreeTableView
     private lateinit var interactionModel: StatisticsToolWindowModel
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         initListeners(project)
-        initContent(toolWindow)
+        initContent(project, toolWindow)
         interactionModel.getContent.start(project.lifetime, Unit)
     }
 
-    private fun initContent(toolWindow: ToolWindow) {
+    private fun initContent(project: Project, toolWindow: ToolWindow) {
+        treeTableView = StatisticsTreeTableView(treeTableModel, project, interactionModel.getContent)
         val contentFactory = ContentFactory.getInstance()
         val content = contentFactory.createContent(treeTableView, null, false)
         toolWindow.contentManager.addContent(content)
