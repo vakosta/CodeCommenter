@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
@@ -18,15 +19,20 @@ namespace ReSharperPlugin.CodeCommenter.Common;
 public class DocstringPlacesFinder
 {
     [NotNull] private readonly ISolution mySolution;
+    private readonly Lifetime myLifetime;
 
-    public DocstringPlacesFinder(ISolution solution)
+    public DocstringPlacesFinder(
+        ISolution solution,
+        Lifetime lifetime)
     {
         mySolution = solution;
+        myLifetime = lifetime;
     }
 
-    public List<ModuleDescriptor> GetAllMethodsInProject()
+    public IEnumerable<ModuleDescriptor> GetAllMethodsInProject()
     {
         var modules = new List<ModuleDescriptor>();
+        if (!myLifetime.IsAlive) return modules;
 
         using (ReadLockCookie.Create())
         {
@@ -43,6 +49,8 @@ public class DocstringPlacesFinder
     private ModuleDescriptor GetModuleDescriptor(IPsiModule module)
     {
         var moduleDescriptor = new ModuleDescriptor { Name = module.Name };
+        if (!myLifetime.IsAlive) return moduleDescriptor;
+
         foreach (var sourceFile in module.SourceFiles)
             moduleDescriptor.Files.Add(GetFileDescriptor(sourceFile));
         return moduleDescriptor;
@@ -51,6 +59,8 @@ public class DocstringPlacesFinder
     private FileDescriptor GetFileDescriptor(IPsiSourceFile sourceFile)
     {
         var fileDescriptor = new FileDescriptor { Name = sourceFile.Name };
+        if (!myLifetime.IsAlive) return fileDescriptor;
+
         foreach (var file in sourceFile.GetPsiFiles<CSharpLanguage>())
             fileDescriptor.Methods.AddAll(GetAllMethodsInFile(file));
         return fileDescriptor;
@@ -59,6 +69,7 @@ public class DocstringPlacesFinder
     private IEnumerable<IMethodDeclaration> GetAllMethodsInFile(ITreeNode treeNode)
     {
         var methods = new List<IMethodDeclaration>();
+        if (!myLifetime.IsAlive) return methods;
 
         foreach (var child in treeNode.Children())
         {

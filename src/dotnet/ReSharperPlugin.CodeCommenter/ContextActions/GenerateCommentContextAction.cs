@@ -17,14 +17,15 @@ namespace ReSharperPlugin.CodeCommenter;
 
 [ContextAction(
     Name = "GenerateComment",
-    Description = "Convert the text to lowercase",
+    Description = "Generate comment by method code",
     Group = "C#",
     Disabled = false,
-    Priority = 1
+    Priority = 1,
+    AllowedInNonUserFiles = false
 )]
 public class GenerateCommentContextAction : ContextActionBase
 {
-    [NotNull] private readonly IMethodDeclaration myDeclaration;
+    private readonly IMethodDeclaration myDeclaration;
     [NotNull] private readonly HuggingFaceCommentGenerationStrategy myCommentGenerationStrategy;
 
     public GenerateCommentContextAction(LanguageIndependentContextActionDataProvider dataProvider)
@@ -48,7 +49,9 @@ public class GenerateCommentContextAction : ContextActionBase
             var methodCode = oldCommentBlock != null
                 ? myDeclaration.GetText().Replace(oldCommentBlock.GetText(), "")
                 : myDeclaration.GetText();
-            var comment = myCommentGenerationStrategy.Generate(methodCode);
+
+            // TODO: Probably need to use ContextAction's lifetime.
+            var comment = myCommentGenerationStrategy.Generate(methodCode, solution.GetLifetime());
 
             var newCommentBlock = CSharpElementFactory
                 .GetInstance(myDeclaration)

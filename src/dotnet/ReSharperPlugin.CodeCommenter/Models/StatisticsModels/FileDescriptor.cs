@@ -5,6 +5,6 @@ namespace JetBrains.Rider.Model;
 
 public class FileDescriptor
 {
-    public string Name { get; set; }
+    public string Name { get; init; }
     public List<IMethodDeclaration> Methods { get; } = new();
 }

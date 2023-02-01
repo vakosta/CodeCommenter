@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Text;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rider.Model;
 using Newtonsoft.Json;
@@ -10,30 +11,32 @@ namespace ReSharperPlugin.CodeCommenter.Common;
 [SolutionComponent]
 public class HuggingFaceCommentGenerationStrategy : ICommentGenerationStrategy
 {
-    private const string URL = "https://vakosta-code2comment.hf.space/run/predict";
+    private const string Url = "https://vakosta-code2comment.hf.space/run/predict";
+    private const string MediaType = "application/json";
 
-    private static readonly HttpClient client = new()
+    public string Generate(string code, Lifetime lifetime)
     {
-        Timeout = new TimeSpan(1, 0, 0)
-    };
-
-    public string Generate(string code)
-    {
-        return Post(code);
+        return Post(code, lifetime);
     }
 
-    private static string Post(string code)
+    /// <summary>
+    /// Executes post request synchronously to convert a code text into a docstring text.
+    /// </summary>
+    /// <param name="code">A code text to convert.</param>
+    /// <param name="lifetime">A lifetime to receive info about cancellation.</param>
+    /// <returns>A docstring text after convert.</returns>
+    private static string Post(string code, Lifetime lifetime)
     {
-        var payload = new HuggingFacePayload
-        {
-            data = new[] { code }
-        };
+        if (!lifetime.IsAlive) return string.Empty;
+        using var client = new HttpClient { Timeout = new TimeSpan(1, 0, 0) };
 
-        // TODO: Rewrite this painful code.
+        var payload = new HuggingFacePayload { data = new[] { code } };
         var stringPayload = JsonConvert.SerializeObject(payload);
-        var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
-        var httpResponse = client.PostAsync(URL, httpContent).Result.Content;
-        var stringResult = httpResponse?.ReadAsStringAsync().Result;
+
+        var httpContent = new StringContent(stringPayload, Encoding.UTF8, MediaType);
+        var httpResponse = client.PostAsync(Url, httpContent, lifetime).Result;
+
+        var stringResult = httpResponse.Content.ReadAsStringAsync().Result;
         return JsonConvert.DeserializeObject<HuggingFaceResponse>(stringResult).data[0];
     }
 }
