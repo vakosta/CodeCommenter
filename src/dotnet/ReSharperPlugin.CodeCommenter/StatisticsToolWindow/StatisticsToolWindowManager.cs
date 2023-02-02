@@ -32,7 +32,9 @@ public class StatisticsToolWindowManager
         myStatisticsToolWindowModel.GetContent.Set((_, _) =>
         {
             var methods = myDocstringPlacesFinder.GetAllMethodsInProject();
-            myStatisticsToolWindowModel.OnContentUpdated.Start(myLifetime, new RdToolWindowContent(methods.ToRdRows()));
+            var rdRows = methods.ToRdRows();
+
+            myStatisticsToolWindowModel.OnContentUpdated.Start(myLifetime, new RdToolWindowContent(rdRows));
             return RdTask<Unit>.Successful(Unit.Instance);
         });
     }

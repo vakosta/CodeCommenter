@@ -6,6 +6,7 @@ using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
@@ -20,13 +21,16 @@ public class DocstringPlacesFinder
 {
     [NotNull] private readonly ISolution mySolution;
     private readonly Lifetime myLifetime;
+    [NotNull] private readonly ICommentGenerationStrategy myCommentGenerationStrategy;
 
     public DocstringPlacesFinder(
         ISolution solution,
-        Lifetime lifetime)
+        Lifetime lifetime,
+        HuggingFaceCommentGenerationStrategy commentGenerationStrategy)
     {
         mySolution = solution;
         myLifetime = lifetime;
+        myCommentGenerationStrategy = commentGenerationStrategy;
     }
 
     public IEnumerable<ModuleDescriptor> GetAllMethodsInProject()
@@ -66,15 +70,27 @@ public class DocstringPlacesFinder
         return fileDescriptor;
     }
 
-    private IEnumerable<IMethodDeclaration> GetAllMethodsInFile(ITreeNode treeNode)
+    private IEnumerable<MethodDescriptor> GetAllMethodsInFile(ITreeNode treeNode)
     {
-        var methods = new List<IMethodDeclaration>();
+        var methods = new List<MethodDescriptor>();
         if (!myLifetime.IsAlive) return methods;
 
         foreach (var child in treeNode.Children())
         {
             if (child is IMethodDeclaration declaration)
-                methods.Add(declaration);
+            {
+                var commentBlock = SharedImplUtil.GetDocCommentBlockNode(declaration)?.GetText() ?? "";
+                var methodCode = declaration.GetText().Replace(commentBlock, "");
+                methods.Add(new MethodDescriptor
+                {
+                    Declaration = declaration,
+                    Name = declaration.DeclaredName,
+                    Docstring = commentBlock,
+                    Quality = (float)commentBlock.CalculateSimilarity(
+                        myCommentGenerationStrategy.Generate(methodCode, myLifetime))
+                });
+            }
+
             methods.AddAll(GetAllMethodsInFile(child));
         }
 
