@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using JetBrains.ReSharper.Psi.CSharp.Tree;
 
 namespace JetBrains.Rider.Model;
 

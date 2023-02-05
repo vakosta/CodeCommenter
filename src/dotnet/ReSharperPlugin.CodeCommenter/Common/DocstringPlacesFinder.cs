@@ -21,16 +21,13 @@ public class DocstringPlacesFinder
 {
     [NotNull] private readonly ISolution mySolution;
     private readonly Lifetime myLifetime;
-    [NotNull] private readonly ICommentGenerationStrategy myCommentGenerationStrategy;
 
     public DocstringPlacesFinder(
         ISolution solution,
-        Lifetime lifetime,
-        HuggingFaceCommentGenerationStrategy commentGenerationStrategy)
+        Lifetime lifetime)
     {
         mySolution = solution;
         myLifetime = lifetime;
-        myCommentGenerationStrategy = commentGenerationStrategy;
     }
 
     public IEnumerable<ModuleDescriptor> GetAllMethodsInProject()
@@ -80,14 +77,12 @@ public class DocstringPlacesFinder
             if (child is IMethodDeclaration declaration)
             {
                 var commentBlock = SharedImplUtil.GetDocCommentBlockNode(declaration)?.GetText() ?? "";
-                var methodCode = declaration.GetText().Replace(commentBlock, "");
                 methods.Add(new MethodDescriptor
                 {
                     Declaration = declaration,
                     Name = declaration.DeclaredName,
                     Docstring = commentBlock,
-                    Quality = (float)commentBlock.CalculateSimilarity(
-                        myCommentGenerationStrategy.Generate(methodCode, myLifetime))
+                    Quality = 0F
                 });
             }
 

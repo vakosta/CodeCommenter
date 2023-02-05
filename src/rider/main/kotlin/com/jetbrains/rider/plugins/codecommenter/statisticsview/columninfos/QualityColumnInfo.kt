@@ -5,9 +5,9 @@ import com.jetbrains.rider.plugins.codecommenter.models.StatisticsData
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers.StatisticsCellRenderer
 import javax.swing.table.TableCellRenderer
 
-class QualityColumnInfo : ColumnInfo<StatisticsData, Float>("Quality") {
-    override fun valueOf(statisticsData: StatisticsData): Float {
-        return statisticsData.quality
+class QualityColumnInfo : ColumnInfo<StatisticsData, String>("Quality") {
+    override fun valueOf(statisticsData: StatisticsData): String {
+        return "${(statisticsData.quality * 100).toInt()}%"
     }
 
     override fun getRenderer(item: StatisticsData?): TableCellRenderer {

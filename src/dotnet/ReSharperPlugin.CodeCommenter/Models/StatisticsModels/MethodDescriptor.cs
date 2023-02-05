@@ -7,5 +7,6 @@ public class MethodDescriptor
     public IMethodDeclaration Declaration { get; init; }
     public string Name { get; init; }
     public string Docstring { get; init; }
+    public float Coverage { get; init; }
     public float Quality { get; set; }
 }

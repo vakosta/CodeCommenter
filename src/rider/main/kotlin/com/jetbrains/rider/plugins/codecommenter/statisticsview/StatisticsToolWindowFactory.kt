@@ -6,7 +6,6 @@ import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.ui.content.ContentFactory
 import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.ide.model.RdChangeNodeContext
-import com.jetbrains.rd.ide.model.RdInsertNodeContext
 import com.jetbrains.rd.ide.model.RdToolWindowContent
 import com.jetbrains.rd.ide.model.StatisticsToolWindowModel
 import com.jetbrains.rd.platform.util.lifetime
@@ -36,7 +35,6 @@ class StatisticsToolWindowFactory : ToolWindowFactory {
 
     private fun initListeners() {
         interactionModel.onContentUpdated.set { _, toolWindowContent -> onContentUpdated(toolWindowContent) }
-        interactionModel.onNodeInserted.set { _, toolWindowContent -> onNodesInserted(toolWindowContent) }
         interactionModel.onNodeChanged.set { _, toolWindowContent -> onNodesChanged(toolWindowContent) }
     }
 
@@ -48,13 +46,10 @@ class StatisticsToolWindowFactory : ToolWindowFactory {
         return RdTask.fromResult(Unit)
     }
 
-    private fun onNodesInserted(context: RdInsertNodeContext): RdTask<Unit> {
-        treeTableModel.insertNodeInto(context.child.toTreeNode(), context.parent.toTreeNode(), context.index)
-        return RdTask.fromResult(Unit)
-    }
-
     private fun onNodesChanged(toolWindowContent: RdChangeNodeContext): RdTask<Unit> {
-        treeTableModel.nodeChanged(toolWindowContent.newNode.toTreeNode())
+        val node = treeTableModel.findNodeByName(toolWindowContent.newNode.name)
+        node?.quality = toolWindowContent.newNode.quality
+        treeTableModel.nodeChanged(node)
         return RdTask.fromResult(Unit)
     }
 }

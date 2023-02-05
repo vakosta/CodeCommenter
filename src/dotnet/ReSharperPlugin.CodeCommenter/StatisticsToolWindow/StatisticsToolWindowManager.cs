@@ -3,6 +3,7 @@ using JetBrains.Core;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
+using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.Rider.Model;
 using ReSharperPlugin.CodeCommenter.Common;
 using ReSharperPlugin.CodeCommenter.Util;
@@ -15,15 +16,18 @@ public class StatisticsToolWindowManager
     private readonly Lifetime myLifetime;
     [NotNull] private readonly StatisticsToolWindowModel myStatisticsToolWindowModel;
     [NotNull] private readonly DocstringPlacesFinder myDocstringPlacesFinder;
+    [NotNull] private readonly ICommentGenerationStrategy myCommentGenerationStrategy;
 
     public StatisticsToolWindowManager(
         Lifetime lifetime,
         StatisticsToolWindowModel statisticsToolWindowModel,
-        DocstringPlacesFinder docstringPlacesFinder)
+        DocstringPlacesFinder docstringPlacesFinder,
+        HuggingFaceCommentGenerationStrategy commentGenerationStrategy)
     {
         myLifetime = lifetime;
         myStatisticsToolWindowModel = statisticsToolWindowModel;
         myDocstringPlacesFinder = docstringPlacesFinder;
+        myCommentGenerationStrategy = commentGenerationStrategy;
         InitHandlers();
     }
 
@@ -31,11 +35,29 @@ public class StatisticsToolWindowManager
     {
         myStatisticsToolWindowModel.GetContent.Set((_, _) =>
         {
-            var methods = myDocstringPlacesFinder.GetAllMethodsInProject();
-            var rdRows = methods.ToRdRows();
-
+            var modules = myDocstringPlacesFinder.GetAllMethodsInProject();
+            var rdRows = modules.ToRdRows();
             myStatisticsToolWindowModel.OnContentUpdated.Start(myLifetime, new RdToolWindowContent(rdRows));
+
+            foreach (var module in modules)
+            foreach (var file in module.Files)
+            foreach (var method in file.Methods)
+            {
+                var commentBlock = SharedImplUtil.GetDocCommentBlockNode(method.Declaration)?.GetText() ?? "";
+                var methodCode = method.Declaration.GetText().Replace(commentBlock, "");
+                method.Quality = CalculateQuality(commentBlock, methodCode);
+                var rdMethod = method.ToRdRow();
+                myStatisticsToolWindowModel.OnNodeChanged.Start(
+                    myLifetime,
+                    new RdChangeNodeContext(rdMethod));
+            }
+
             return RdTask<Unit>.Successful(Unit.Instance);
         });
+    }
+
+    private float CalculateQuality([NotNull] string commentBlock, [NotNull] string methodCode)
+    {
+        return (float)commentBlock.CalculateSimilarity(myCommentGenerationStrategy.Generate(methodCode, myLifetime));
     }
 }

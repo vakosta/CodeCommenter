@@ -8,29 +8,12 @@ namespace ReSharperPlugin.CodeCommenter.Util;
 
 public static class RdUtil
 {
-    public static RdRow ToRdRow(this MethodDescriptor descriptor)
+    public static List<RdRow> ToRdRows(this IEnumerable<ModuleDescriptor> descriptors)
     {
-        return new RdRow(
-            descriptor.Name,
-            descriptor.Docstring,
-            descriptor.Docstring.IsNotEmpty() ? 1 : 0,
-            descriptor.Quality,
-            true,
-            new List<RdRow>());
-    }
-
-    public static RdRow ToRdRow(this FileDescriptor fileDescriptor)
-    {
-        var methods = fileDescriptor.Methods
-            .Select(method => method.ToRdRow())
+        return descriptors
+            .Where(descriptor => !EnumerableExtensions.IsEmpty(descriptor.Files))
+            .Select(descriptor => descriptor.ToRdRow())
             .ToList();
-        return new RdRow(
-            fileDescriptor.Name,
-            null,
-            methods.Average(method => method.Coverage),
-            methods.Average(method => method.Quality),
-            true,
-            methods);
     }
 
     public static RdRow ToRdRow(this ModuleDescriptor moduleDescriptor)
@@ -48,11 +31,29 @@ public static class RdUtil
             files);
     }
 
-    public static List<RdRow> ToRdRows(this IEnumerable<ModuleDescriptor> descriptors)
+    public static RdRow ToRdRow(this FileDescriptor fileDescriptor)
     {
-        return descriptors
-            .Where(descriptor => !EnumerableExtensions.IsEmpty(descriptor.Files))
-            .Select(descriptor => descriptor.ToRdRow())
+        var methods = fileDescriptor.Methods
+            .Select(method => method.ToRdRow())
             .ToList();
+        return new RdRow(
+            fileDescriptor.Name,
+            null,
+            fileDescriptor.Methods.Average(method => method.Coverage),
+            fileDescriptor.Methods.Average(method => method.Quality),
+            true,
+            methods);
+        ;
+    }
+
+    public static RdRow ToRdRow(this MethodDescriptor descriptor)
+    {
+        return new RdRow(
+            descriptor.Name,
+            descriptor.Docstring,
+            descriptor.Docstring.IsNotEmpty() ? 1 : 0,
+            descriptor.Quality,
+            true,
+            new List<RdRow>());
     }
 }
