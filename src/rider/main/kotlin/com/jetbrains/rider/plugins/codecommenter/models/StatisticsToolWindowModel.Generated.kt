@@ -16,11 +16,13 @@ import kotlin.jvm.JvmStatic
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:15]
+ * #### Generated from [StatisticsToolWindowModel.kt:17]
  */
 class StatisticsToolWindowModel private constructor(
     private val _getContent: RdCall<Unit, Unit>,
-    private val _onContentUpdated: RdCall<RdToolWindowContent, RdToolWindowContent>
+    private val _onContentUpdated: RdCall<RdToolWindowContent, Unit>,
+    private val _onNodeInserted: RdCall<RdInsertNodeContext, Unit>,
+    private val _onNodeChanged: RdCall<RdChangeNodeContext, Unit>
 ) : RdExtBase() {
     //companion
     
@@ -29,6 +31,8 @@ class StatisticsToolWindowModel private constructor(
         override fun registerSerializersCore(serializers: ISerializers)  {
             serializers.register(RdRow)
             serializers.register(RdToolWindowContent)
+            serializers.register(RdInsertNodeContext)
+            serializers.register(RdChangeNodeContext)
         }
         
         
@@ -49,7 +53,7 @@ class StatisticsToolWindowModel private constructor(
         }
         
         
-        const val serializationHash = 3062530557444078538L
+        const val serializationHash = 7407838519711410134L
         
     }
     override val serializersOwner: ISerializersOwner get() = StatisticsToolWindowModel
@@ -57,19 +61,25 @@ class StatisticsToolWindowModel private constructor(
     
     //fields
     val getContent: IRdCall<Unit, Unit> get() = _getContent
-    val onContentUpdated: IRdEndpoint<RdToolWindowContent, RdToolWindowContent> get() = _onContentUpdated
+    val onContentUpdated: IRdEndpoint<RdToolWindowContent, Unit> get() = _onContentUpdated
+    val onNodeInserted: IRdEndpoint<RdInsertNodeContext, Unit> get() = _onNodeInserted
+    val onNodeChanged: IRdEndpoint<RdChangeNodeContext, Unit> get() = _onNodeChanged
     //methods
     //initializer
     init {
         bindableChildren.add("getContent" to _getContent)
         bindableChildren.add("onContentUpdated" to _onContentUpdated)
+        bindableChildren.add("onNodeInserted" to _onNodeInserted)
+        bindableChildren.add("onNodeChanged" to _onNodeChanged)
     }
     
     //secondary constructor
     private constructor(
     ) : this(
         RdCall<Unit, Unit>(FrameworkMarshallers.Void, FrameworkMarshallers.Void),
-        RdCall<RdToolWindowContent, RdToolWindowContent>(RdToolWindowContent, RdToolWindowContent)
+        RdCall<RdToolWindowContent, Unit>(RdToolWindowContent, FrameworkMarshallers.Void),
+        RdCall<RdInsertNodeContext, Unit>(RdInsertNodeContext, FrameworkMarshallers.Void),
+        RdCall<RdChangeNodeContext, Unit>(RdChangeNodeContext, FrameworkMarshallers.Void)
     )
     
     //equals trait
@@ -80,6 +90,8 @@ class StatisticsToolWindowModel private constructor(
         printer.indent {
             print("getContent = "); _getContent.print(printer); println()
             print("onContentUpdated = "); _onContentUpdated.print(printer); println()
+            print("onNodeInserted = "); _onNodeInserted.print(printer); println()
+            print("onNodeChanged = "); _onNodeChanged.print(printer); println()
         }
         printer.print(")")
     }
@@ -87,7 +99,9 @@ class StatisticsToolWindowModel private constructor(
     override fun deepClone(): StatisticsToolWindowModel   {
         return StatisticsToolWindowModel(
             _getContent.deepClonePolymorphic(),
-            _onContentUpdated.deepClonePolymorphic()
+            _onContentUpdated.deepClonePolymorphic(),
+            _onNodeInserted.deepClonePolymorphic(),
+            _onNodeChanged.deepClonePolymorphic()
         )
     }
     //contexts
@@ -97,13 +111,146 @@ val IProtocol.statisticsToolWindowModel get() = getOrCreateExtension(StatisticsT
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:16]
+ * #### Generated from [StatisticsToolWindowModel.kt:37]
+ */
+data class RdChangeNodeContext (
+    val oldNode: RdRow,
+    val newNode: RdRow
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<RdChangeNodeContext> {
+        override val _type: KClass<RdChangeNodeContext> = RdChangeNodeContext::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdChangeNodeContext  {
+            val oldNode = RdRow.read(ctx, buffer)
+            val newNode = RdRow.read(ctx, buffer)
+            return RdChangeNodeContext(oldNode, newNode)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdChangeNodeContext)  {
+            RdRow.write(ctx, buffer, value.oldNode)
+            RdRow.write(ctx, buffer, value.newNode)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as RdChangeNodeContext
+        
+        if (oldNode != other.oldNode) return false
+        if (newNode != other.newNode) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + oldNode.hashCode()
+        __r = __r*31 + newNode.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("RdChangeNodeContext (")
+        printer.indent {
+            print("oldNode = "); oldNode.print(printer); println()
+            print("newNode = "); newNode.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [StatisticsToolWindowModel.kt:31]
+ */
+data class RdInsertNodeContext (
+    val child: RdRow,
+    val parent: RdRow,
+    val index: Int
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<RdInsertNodeContext> {
+        override val _type: KClass<RdInsertNodeContext> = RdInsertNodeContext::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdInsertNodeContext  {
+            val child = RdRow.read(ctx, buffer)
+            val parent = RdRow.read(ctx, buffer)
+            val index = buffer.readInt()
+            return RdInsertNodeContext(child, parent, index)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdInsertNodeContext)  {
+            RdRow.write(ctx, buffer, value.child)
+            RdRow.write(ctx, buffer, value.parent)
+            buffer.writeInt(value.index)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as RdInsertNodeContext
+        
+        if (child != other.child) return false
+        if (parent != other.parent) return false
+        if (index != other.index) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + child.hashCode()
+        __r = __r*31 + parent.hashCode()
+        __r = __r*31 + index.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("RdInsertNodeContext (")
+        printer.indent {
+            print("child = "); child.print(printer); println()
+            print("parent = "); parent.print(printer); println()
+            print("index = "); index.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [StatisticsToolWindowModel.kt:18]
  */
 data class RdRow (
     val name: String,
     val docstring: String?,
     val coverage: Float,
     val quality: Float,
+    val isLoading: Boolean,
     val children: List<RdRow>
 ) : IPrintable {
     //companion
@@ -117,8 +264,9 @@ data class RdRow (
             val docstring = buffer.readNullable { buffer.readString() }
             val coverage = buffer.readFloat()
             val quality = buffer.readFloat()
+            val isLoading = buffer.readBool()
             val children = buffer.readList { RdRow.read(ctx, buffer) }
-            return RdRow(name, docstring, coverage, quality, children)
+            return RdRow(name, docstring, coverage, quality, isLoading, children)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdRow)  {
@@ -126,6 +274,7 @@ data class RdRow (
             buffer.writeNullable(value.docstring) { buffer.writeString(it) }
             buffer.writeFloat(value.coverage)
             buffer.writeFloat(value.quality)
+            buffer.writeBool(value.isLoading)
             buffer.writeList(value.children) { v -> RdRow.write(ctx, buffer, v) }
         }
         
@@ -146,6 +295,7 @@ data class RdRow (
         if (docstring != other.docstring) return false
         if (coverage != other.coverage) return false
         if (quality != other.quality) return false
+        if (isLoading != other.isLoading) return false
         if (children != other.children) return false
         
         return true
@@ -157,6 +307,7 @@ data class RdRow (
         __r = __r*31 + if (docstring != null) docstring.hashCode() else 0
         __r = __r*31 + coverage.hashCode()
         __r = __r*31 + quality.hashCode()
+        __r = __r*31 + isLoading.hashCode()
         __r = __r*31 + children.hashCode()
         return __r
     }
@@ -168,6 +319,7 @@ data class RdRow (
             print("docstring = "); docstring.print(printer); println()
             print("coverage = "); coverage.print(printer); println()
             print("quality = "); quality.print(printer); println()
+            print("isLoading = "); isLoading.print(printer); println()
             print("children = "); children.print(printer); println()
         }
         printer.print(")")
@@ -178,7 +330,7 @@ data class RdRow (
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:24]
+ * #### Generated from [StatisticsToolWindowModel.kt:27]
  */
 data class RdToolWindowContent (
     val rows: List<RdRow>

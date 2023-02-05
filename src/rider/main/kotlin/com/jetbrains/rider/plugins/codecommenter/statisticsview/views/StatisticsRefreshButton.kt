@@ -12,7 +12,7 @@ class StatisticsRefreshButton(
     private val getContentCall: IRdCall<Unit, Unit>,
 ) : AnAction(
     "Refresh Tree View",
-    null,
+    "Refreshes the tree view",
     AllIcons.Actions.Refresh,
 ) {
     override fun actionPerformed(actionEvent: AnActionEvent) {

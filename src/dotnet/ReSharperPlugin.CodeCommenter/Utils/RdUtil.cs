@@ -15,6 +15,7 @@ public static class RdUtil
             descriptor.Docstring,
             descriptor.Docstring.IsNotEmpty() ? 1 : 0,
             descriptor.Quality,
+            true,
             new List<RdRow>());
     }
 
@@ -28,6 +29,7 @@ public static class RdUtil
             null,
             methods.Average(method => method.Coverage),
             methods.Average(method => method.Quality),
+            true,
             methods);
     }
 
@@ -42,6 +44,7 @@ public static class RdUtil
             null,
             files.Average(file => file.Coverage),
             files.Average(file => file.Quality),
+            true,
             files);
     }
 

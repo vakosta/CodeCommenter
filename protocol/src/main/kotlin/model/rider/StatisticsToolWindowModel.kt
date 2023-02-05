@@ -1,7 +1,9 @@
 package model.rider
 
 import com.jetbrains.rd.generator.nova.Ext
+import com.jetbrains.rd.generator.nova.PredefinedType.bool
 import com.jetbrains.rd.generator.nova.PredefinedType.float
+import com.jetbrains.rd.generator.nova.PredefinedType.int
 import com.jetbrains.rd.generator.nova.PredefinedType.string
 import com.jetbrains.rd.generator.nova.PredefinedType.void
 import com.jetbrains.rd.generator.nova.call
@@ -18,6 +20,7 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
         field("docstring", string.nullable)
         field("coverage", float)
         field("quality", float)
+        field("isLoading", bool)
         field("children", immutableList(this))
     }
 
@@ -25,8 +28,22 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
         field("rows", immutableList(RdRow))
     }
 
+    private val RdInsertNodeContext = structdef {
+        field("child", RdRow)
+        field("parent", RdRow)
+        field("index", int)
+    }
+
+    private val RdChangeNodeContext = structdef {
+        field("oldNode", RdRow)
+        field("newNode", RdRow)
+    }
+
     init {
         call("getContent", void, void)
-        callback("onContentUpdated", RdToolWindowContent, RdToolWindowContent)
+
+        callback("onContentUpdated", RdToolWindowContent, void)
+        callback("onNodeInserted", RdInsertNodeContext, void)
+        callback("onNodeChanged", RdChangeNodeContext, void)
     }
 }

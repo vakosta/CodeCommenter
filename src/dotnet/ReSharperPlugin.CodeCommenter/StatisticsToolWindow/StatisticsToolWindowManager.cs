@@ -24,10 +24,10 @@ public class StatisticsToolWindowManager
         myLifetime = lifetime;
         myStatisticsToolWindowModel = statisticsToolWindowModel;
         myDocstringPlacesFinder = docstringPlacesFinder;
-        initHandlers();
+        InitHandlers();
     }
 
-    private void initHandlers()
+    private void InitHandlers()
     {
         myStatisticsToolWindowModel.GetContent.Set((_, _) =>
         {

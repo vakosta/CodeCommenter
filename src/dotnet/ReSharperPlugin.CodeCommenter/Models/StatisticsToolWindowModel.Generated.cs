@@ -36,7 +36,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:15</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:17</p>
   /// </summary>
   [JetBrains.Application.ShellComponent]
   public class StatisticsToolWindowModel : RdExtBase
@@ -44,38 +44,52 @@ namespace JetBrains.Rider.Model
     //fields
     //public fields
     [NotNull] public IRdEndpoint<Unit, Unit> GetContent => _GetContent;
-    [NotNull] public IRdCall<RdToolWindowContent, RdToolWindowContent> OnContentUpdated => _OnContentUpdated;
+    [NotNull] public IRdCall<RdToolWindowContent, Unit> OnContentUpdated => _OnContentUpdated;
+    [NotNull] public IRdCall<RdInsertNodeContext, Unit> OnNodeInserted => _OnNodeInserted;
+    [NotNull] public IRdCall<RdChangeNodeContext, Unit> OnNodeChanged => _OnNodeChanged;
     
     //private fields
     [NotNull] private readonly RdCall<Unit, Unit> _GetContent;
-    [NotNull] private readonly RdCall<RdToolWindowContent, RdToolWindowContent> _OnContentUpdated;
+    [NotNull] private readonly RdCall<RdToolWindowContent, Unit> _OnContentUpdated;
+    [NotNull] private readonly RdCall<RdInsertNodeContext, Unit> _OnNodeInserted;
+    [NotNull] private readonly RdCall<RdChangeNodeContext, Unit> _OnNodeChanged;
     
     //primary constructor
     private StatisticsToolWindowModel(
       [NotNull] RdCall<Unit, Unit> getContent,
-      [NotNull] RdCall<RdToolWindowContent, RdToolWindowContent> onContentUpdated
+      [NotNull] RdCall<RdToolWindowContent, Unit> onContentUpdated,
+      [NotNull] RdCall<RdInsertNodeContext, Unit> onNodeInserted,
+      [NotNull] RdCall<RdChangeNodeContext, Unit> onNodeChanged
     )
     {
       if (getContent == null) throw new ArgumentNullException("getContent");
       if (onContentUpdated == null) throw new ArgumentNullException("onContentUpdated");
+      if (onNodeInserted == null) throw new ArgumentNullException("onNodeInserted");
+      if (onNodeChanged == null) throw new ArgumentNullException("onNodeChanged");
       
       _GetContent = getContent;
       _OnContentUpdated = onContentUpdated;
+      _OnNodeInserted = onNodeInserted;
+      _OnNodeChanged = onNodeChanged;
       BindableChildren.Add(new KeyValuePair<string, object>("getContent", _GetContent));
       BindableChildren.Add(new KeyValuePair<string, object>("onContentUpdated", _OnContentUpdated));
+      BindableChildren.Add(new KeyValuePair<string, object>("onNodeInserted", _OnNodeInserted));
+      BindableChildren.Add(new KeyValuePair<string, object>("onNodeChanged", _OnNodeChanged));
     }
     //secondary constructor
     private StatisticsToolWindowModel (
     ) : this (
       new RdCall<Unit, Unit>(JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
-      new RdCall<RdToolWindowContent, RdToolWindowContent>(RdToolWindowContent.Read, RdToolWindowContent.Write, RdToolWindowContent.Read, RdToolWindowContent.Write)
+      new RdCall<RdToolWindowContent, Unit>(RdToolWindowContent.Read, RdToolWindowContent.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
+      new RdCall<RdInsertNodeContext, Unit>(RdInsertNodeContext.Read, RdInsertNodeContext.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid),
+      new RdCall<RdChangeNodeContext, Unit>(RdChangeNodeContext.Read, RdChangeNodeContext.Write, JetBrains.Rd.Impl.Serializers.ReadVoid, JetBrains.Rd.Impl.Serializers.WriteVoid)
     ) {}
     //deconstruct trait
     //statics
     
     
     
-    protected override long SerializationHash => 3062530557444078538L;
+    protected override long SerializationHash => 7407838519711410134L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -103,6 +117,8 @@ namespace JetBrains.Rider.Model
       using (printer.IndentCookie()) {
         printer.Print("getContent = "); _GetContent.PrintEx(printer); printer.Println();
         printer.Print("onContentUpdated = "); _OnContentUpdated.PrintEx(printer); printer.Println();
+        printer.Print("onNodeInserted = "); _OnNodeInserted.PrintEx(printer); printer.Println();
+        printer.Print("onNodeChanged = "); _OnNodeChanged.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
     }
@@ -117,7 +133,203 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:16</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:37</p>
+  /// </summary>
+  public sealed class RdChangeNodeContext : IPrintable, IEquatable<RdChangeNodeContext>
+  {
+    //fields
+    //public fields
+    [NotNull] public RdRow OldNode {get; private set;}
+    [NotNull] public RdRow NewNode {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdChangeNodeContext(
+      [NotNull] RdRow oldNode,
+      [NotNull] RdRow newNode
+    )
+    {
+      if (oldNode == null) throw new ArgumentNullException("oldNode");
+      if (newNode == null) throw new ArgumentNullException("newNode");
+      
+      OldNode = oldNode;
+      NewNode = newNode;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct([NotNull] out RdRow oldNode, [NotNull] out RdRow newNode)
+    {
+      oldNode = OldNode;
+      newNode = NewNode;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdChangeNodeContext> Read = (ctx, reader) => 
+    {
+      var oldNode = RdRow.Read(ctx, reader);
+      var newNode = RdRow.Read(ctx, reader);
+      var _result = new RdChangeNodeContext(oldNode, newNode);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<RdChangeNodeContext> Write = (ctx, writer, value) => 
+    {
+      RdRow.Write(ctx, writer, value.OldNode);
+      RdRow.Write(ctx, writer, value.NewNode);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdChangeNodeContext) obj);
+    }
+    public bool Equals(RdChangeNodeContext other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Equals(OldNode, other.OldNode) && Equals(NewNode, other.NewNode);
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + OldNode.GetHashCode();
+        hash = hash * 31 + NewNode.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdChangeNodeContext (");
+      using (printer.IndentCookie()) {
+        printer.Print("oldNode = "); OldNode.PrintEx(printer); printer.Println();
+        printer.Print("newNode = "); NewNode.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:31</p>
+  /// </summary>
+  public sealed class RdInsertNodeContext : IPrintable, IEquatable<RdInsertNodeContext>
+  {
+    //fields
+    //public fields
+    [NotNull] public RdRow Child {get; private set;}
+    [NotNull] public RdRow Parent {get; private set;}
+    public int Index {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdInsertNodeContext(
+      [NotNull] RdRow child,
+      [NotNull] RdRow parent,
+      int index
+    )
+    {
+      if (child == null) throw new ArgumentNullException("child");
+      if (parent == null) throw new ArgumentNullException("parent");
+      
+      Child = child;
+      Parent = parent;
+      Index = index;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct([NotNull] out RdRow child, [NotNull] out RdRow parent, out int index)
+    {
+      child = Child;
+      parent = Parent;
+      index = Index;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdInsertNodeContext> Read = (ctx, reader) => 
+    {
+      var child = RdRow.Read(ctx, reader);
+      var parent = RdRow.Read(ctx, reader);
+      var index = reader.ReadInt();
+      var _result = new RdInsertNodeContext(child, parent, index);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<RdInsertNodeContext> Write = (ctx, writer, value) => 
+    {
+      RdRow.Write(ctx, writer, value.Child);
+      RdRow.Write(ctx, writer, value.Parent);
+      writer.Write(value.Index);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdInsertNodeContext) obj);
+    }
+    public bool Equals(RdInsertNodeContext other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Equals(Child, other.Child) && Equals(Parent, other.Parent) && Index == other.Index;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Child.GetHashCode();
+        hash = hash * 31 + Parent.GetHashCode();
+        hash = hash * 31 + Index.GetHashCode();
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdInsertNodeContext (");
+      using (printer.IndentCookie()) {
+        printer.Print("child = "); Child.PrintEx(printer); printer.Println();
+        printer.Print("parent = "); Parent.PrintEx(printer); printer.Println();
+        printer.Print("index = "); Index.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:18</p>
   /// </summary>
   public sealed class RdRow : IPrintable, IEquatable<RdRow>
   {
@@ -127,6 +339,7 @@ namespace JetBrains.Rider.Model
     [CanBeNull] public string Docstring {get; private set;}
     public float Coverage {get; private set;}
     public float Quality {get; private set;}
+    public bool IsLoading {get; private set;}
     [NotNull] public List<RdRow> Children {get; private set;}
     
     //private fields
@@ -136,6 +349,7 @@ namespace JetBrains.Rider.Model
       [CanBeNull] string docstring,
       float coverage,
       float quality,
+      bool isLoading,
       [NotNull] List<RdRow> children
     )
     {
@@ -146,16 +360,18 @@ namespace JetBrains.Rider.Model
       Docstring = docstring;
       Coverage = coverage;
       Quality = quality;
+      IsLoading = isLoading;
       Children = children;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct([NotNull] out string name, [CanBeNull] out string docstring, out float coverage, out float quality, [NotNull] out List<RdRow> children)
+    public void Deconstruct([NotNull] out string name, [CanBeNull] out string docstring, out float coverage, out float quality, out bool isLoading, [NotNull] out List<RdRow> children)
     {
       name = Name;
       docstring = Docstring;
       coverage = Coverage;
       quality = Quality;
+      isLoading = IsLoading;
       children = Children;
     }
     //statics
@@ -166,8 +382,9 @@ namespace JetBrains.Rider.Model
       var docstring = ReadStringNullable(ctx, reader);
       var coverage = reader.ReadFloat();
       var quality = reader.ReadFloat();
+      var isLoading = reader.ReadBool();
       var children = ReadRdRowList(ctx, reader);
-      var _result = new RdRow(name, docstring, coverage, quality, children);
+      var _result = new RdRow(name, docstring, coverage, quality, isLoading, children);
       return _result;
     };
     public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
@@ -179,6 +396,7 @@ namespace JetBrains.Rider.Model
       WriteStringNullable(ctx, writer, value.Docstring);
       writer.Write(value.Coverage);
       writer.Write(value.Quality);
+      writer.Write(value.IsLoading);
       WriteRdRowList(ctx, writer, value.Children);
     };
     public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
@@ -200,7 +418,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Name == other.Name && Equals(Docstring, other.Docstring) && Coverage == other.Coverage && Quality == other.Quality && Children.SequenceEqual(other.Children);
+      return Name == other.Name && Equals(Docstring, other.Docstring) && Coverage == other.Coverage && Quality == other.Quality && IsLoading == other.IsLoading && Children.SequenceEqual(other.Children);
     }
     //hash code trait
     public override int GetHashCode()
@@ -211,6 +429,7 @@ namespace JetBrains.Rider.Model
         hash = hash * 31 + (Docstring != null ? Docstring.GetHashCode() : 0);
         hash = hash * 31 + Coverage.GetHashCode();
         hash = hash * 31 + Quality.GetHashCode();
+        hash = hash * 31 + IsLoading.GetHashCode();
         hash = hash * 31 + Children.ContentHashCode();
         return hash;
       }
@@ -224,6 +443,7 @@ namespace JetBrains.Rider.Model
         printer.Print("docstring = "); Docstring.PrintEx(printer); printer.Println();
         printer.Print("coverage = "); Coverage.PrintEx(printer); printer.Println();
         printer.Print("quality = "); Quality.PrintEx(printer); printer.Println();
+        printer.Print("isLoading = "); IsLoading.PrintEx(printer); printer.Println();
         printer.Print("children = "); Children.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
@@ -239,7 +459,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:24</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:27</p>
   /// </summary>
   public sealed class RdToolWindowContent : IPrintable, IEquatable<RdToolWindowContent>
   {
