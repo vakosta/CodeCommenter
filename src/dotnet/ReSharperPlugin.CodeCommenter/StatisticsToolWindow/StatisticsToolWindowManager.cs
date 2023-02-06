@@ -43,9 +43,14 @@ public class StatisticsToolWindowManager
             foreach (var file in module.Files)
             foreach (var method in file.Methods)
             {
-                var commentBlock = SharedImplUtil.GetDocCommentBlockNode(method.Declaration)?.GetText() ?? "";
-                var methodCode = method.Declaration.GetText().Replace(commentBlock, "");
+                var commentBlock = SharedImplUtil.GetDocCommentBlockNode(method.Declaration)?.GetText();
+                var methodCode = method.Declaration.GetText();
+                if (commentBlock != null)
+                    methodCode = methodCode.Replace(commentBlock, "");
+
                 method.Quality = CalculateQuality(commentBlock, methodCode);
+                method.IsLoading = false;
+
                 var rdMethod = method.ToRdRow();
                 myStatisticsToolWindowModel.OnNodeChanged.Start(
                     myLifetime,

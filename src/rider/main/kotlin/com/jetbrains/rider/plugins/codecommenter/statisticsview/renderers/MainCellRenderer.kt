@@ -8,11 +8,7 @@ import javax.swing.JTree
 import javax.swing.SwingConstants
 import javax.swing.tree.TreeCellRenderer
 
-class MainCellRenderer : JBLabel(
-    "Loading...",
-    AnimatedIcon.Default(),
-    SwingConstants.LEFT,
-), TreeCellRenderer {
+class MainCellRenderer : JBLabel("Loading..."), TreeCellRenderer {
 
     override fun getTreeCellRendererComponent(
         tree: JTree,
@@ -24,10 +20,21 @@ class MainCellRenderer : JBLabel(
         hasFocus: Boolean,
     ): Component {
         assert(value is StatisticsData)
+
+        horizontalAlignment = SwingConstants.LEFT
         if ((value as StatisticsData).name.isNotBlank())
             text = value.name
-        if (!value.isLoading)
-            icon = null
+
+        icon = if (value.isLoading && value.isLeaf) {
+            AnimatedIcon.Default()
+        } else if (value.isLoading && !value.isLeaf && value.children().asSequence().any { value.isLoading }) {
+            AnimatedIcon.Default()
+        } else {
+            null
+        }
+
+        revalidate()
+
         return this
     }
 }

@@ -48,7 +48,10 @@ class StatisticsToolWindowFactory : ToolWindowFactory {
 
     private fun onNodesChanged(toolWindowContent: RdChangeNodeContext): RdTask<Unit> {
         val node = treeTableModel.findNodeByName(toolWindowContent.newNode.name)
+
         node?.quality = toolWindowContent.newNode.quality
+        node?.isLoading = toolWindowContent.newNode.isLoading
+
         treeTableModel.nodeChanged(node)
         return RdTask.fromResult(Unit)
     }

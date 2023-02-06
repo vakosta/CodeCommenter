@@ -53,7 +53,7 @@ public static class RdUtil
             descriptor.Docstring,
             descriptor.Docstring.IsNotEmpty() ? 1 : 0,
             descriptor.Quality,
-            true,
+            descriptor.IsLoading,
             new List<RdRow>());
     }
 }
