@@ -35,3 +35,9 @@ private data class EssentialData(
         name = person.name,
     )
 }
+
+fun StatisticsData.isLoadingRecursive(): Boolean {
+    return (isLeaf && isLoading) || children().asSequence()
+        .filter { it is StatisticsData }
+        .any { (it as StatisticsData).isLoadingRecursive() }
+}

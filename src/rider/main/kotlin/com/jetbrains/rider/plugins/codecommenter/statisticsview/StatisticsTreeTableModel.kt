@@ -13,18 +13,20 @@ class StatisticsTreeTableModel(
     columns.toTypedArray(),
 ) {
     override fun nodeChanged(node: TreeNode?) {
+        // TODO: Add synchronization to make thread-safe.
+        // TODO: Optimize recursion.
         super.nodeChanged(node)
         if (node?.parent != null && node.parent is StatisticsData) {
-            // TODO: Add synchronization to make thread-safe.
-            // TODO: Optimize recursion.
             (node.parent as StatisticsData).coverage = node.parent.children().asSequence()
                 .filter { it is StatisticsData }
                 .map { (it as StatisticsData).coverage }
                 .toList().average().toFloat()
+
             (node.parent as StatisticsData).quality = node.parent.children().asSequence()
                 .filter { it is StatisticsData }
                 .map { (it as StatisticsData).quality }
                 .toList().average().toFloat()
+
             nodeChanged(node.parent)
         }
     }
