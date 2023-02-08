@@ -1,5 +1,6 @@
 package com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers
 
+import com.intellij.icons.AllIcons
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.components.JBLabel
 import com.jetbrains.rider.plugins.codecommenter.models.StatisticsData
@@ -9,7 +10,12 @@ import javax.swing.JTree
 import javax.swing.SwingConstants
 import javax.swing.tree.TreeCellRenderer
 
-class MainCellRenderer : TreeCellRenderer {
+class MainCellRenderer : JBLabel(
+    "",
+    AnimatedIcon.Default(),
+    SwingConstants.LEFT
+), TreeCellRenderer {
+
     override fun getTreeCellRendererComponent(
         tree: JTree,
         value: Any,
@@ -20,15 +26,20 @@ class MainCellRenderer : TreeCellRenderer {
         hasFocus: Boolean,
     ): Component {
         assert(value is StatisticsData)
-        val label = JBLabel("Loading...", AnimatedIcon.Default(), SwingConstants.LEFT)
+        horizontalAlignment = SwingConstants.LEFT
 
-        label.horizontalAlignment = SwingConstants.LEFT
         if ((value as StatisticsData).name.isNotBlank())
-            label.text = value.name
+            text = value.name
+        if (value.isLoadingRecursive())
+            text = "$text (loading...)"
 
-        if (!value.isLoadingRecursive())
-            label.icon = null
+        icon = when (value.type) {
+            StatisticsData.Type.Module -> AllIcons.Actions.ModuleDirectory
+            StatisticsData.Type.File -> AllIcons.Actions.InlayRenameInNoCodeFiles
+            StatisticsData.Type.Method -> AllIcons.Nodes.Method
+            StatisticsData.Type.Root -> AllIcons.Actions.InlayRenameInNoCodeFiles
+        }
 
-        return label
+        return this
     }
 }

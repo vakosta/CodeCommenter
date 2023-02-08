@@ -23,6 +23,7 @@ public static class RdUtil
             .Select(file => file.ToRdRow())
             .ToList();
         return new RdRow(
+            RdRowType.Module,
             moduleDescriptor.Name,
             null,
             files.Average(file => file.Coverage),
@@ -37,6 +38,7 @@ public static class RdUtil
             .Select(method => method.ToRdRow())
             .ToList();
         return new RdRow(
+            RdRowType.File,
             fileDescriptor.Name,
             null,
             fileDescriptor.Methods.Average(method => method.Coverage),
@@ -49,6 +51,7 @@ public static class RdUtil
     public static RdRow ToRdRow(this MethodDescriptor descriptor)
     {
         return new RdRow(
+            RdRowType.Method,
             descriptor.Name,
             descriptor.Docstring,
             descriptor.Docstring.IsNotEmpty() ? 1 : 0,

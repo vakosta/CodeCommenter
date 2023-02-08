@@ -3,6 +3,7 @@ package com.jetbrains.rider.plugins.codecommenter.models
 import javax.swing.tree.DefaultMutableTreeNode
 
 data class StatisticsData(
+    var type: Type,
     var name: String,
     var docstring: String,
     var coverage: Float,
@@ -15,8 +16,16 @@ data class StatisticsData(
 
     override fun hashCode(): Int = EssentialData(this).hashCode()
 
+    enum class Type {
+        Module,
+        File,
+        Method,
+        Root,
+    }
+
     companion object {
         fun getRoot(): StatisticsData = StatisticsData(
+            type = Type.Root,
             name = "",
             docstring = "",
             coverage = 0F,

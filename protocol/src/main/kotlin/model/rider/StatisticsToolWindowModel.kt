@@ -15,12 +15,20 @@ import com.jetbrains.rider.model.nova.ide.IdeRoot
 @Suppress("unused")
 object StatisticsToolWindowModel : Ext(IdeRoot) {
     private val RdRow = structdef {
+        field("type", RdRowType)
         field("name", string)
         field("docstring", string.nullable)
         field("coverage", float)
         field("quality", float)
         field("isLoading", bool)
         field("children", immutableList(this))
+    }
+
+    private val RdRowType = enum {
+        +"Module"
+        +"File"
+        +"Method"
+        +"Root"
     }
 
     private val RdToolWindowContent = structdef {
