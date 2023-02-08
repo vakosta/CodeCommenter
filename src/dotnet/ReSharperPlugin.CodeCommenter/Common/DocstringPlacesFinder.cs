@@ -49,7 +49,7 @@ public class DocstringPlacesFinder
 
     private ModuleDescriptor GetModuleDescriptor(IPsiModule module)
     {
-        var moduleDescriptor = new ModuleDescriptor { Name = module.Name };
+        var moduleDescriptor = new ModuleDescriptor { Name = module.DisplayName };
         if (!myLifetime.IsAlive) return moduleDescriptor;
 
         foreach (var sourceFile in module.SourceFiles)

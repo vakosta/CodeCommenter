@@ -5,7 +5,11 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.components.JBTreeTable
 import com.jetbrains.rd.framework.IRdCall
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.StatisticsTreeTableModel
+import com.jetbrains.rider.plugins.codecommenter.statisticsview.columninfos.CoverageColumnInfo
+import com.jetbrains.rider.plugins.codecommenter.statisticsview.columninfos.QualityColumnInfo
+import com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers.CoverageCellRenderer
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers.MainCellRenderer
+import com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers.QualityCellRenderer
 
 class StatisticsTreeTableView(
     model: StatisticsTreeTableModel,
@@ -17,8 +21,19 @@ class StatisticsTreeTableView(
     init {
         treeTable.columnProportion = 0.55F
 
-        treeTable.tree.cellRenderer = MainCellRenderer()
+        initCellRenderers()
         toolbar = StatisticsToolbar(project, getContentCall)
         setContent(treeTable)
+    }
+
+    private fun initCellRenderers() {
+        treeTable.tree
+            .cellRenderer = MainCellRenderer()
+
+        treeTable.table.getColumn(CoverageColumnInfo.IDENTIFIER)
+            .cellRenderer = CoverageCellRenderer()
+
+        treeTable.table.getColumn(QualityColumnInfo.IDENTIFIER)
+            .cellRenderer = QualityCellRenderer()
     }
 }

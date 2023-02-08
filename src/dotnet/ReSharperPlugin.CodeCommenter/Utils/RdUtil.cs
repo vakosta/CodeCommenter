@@ -26,8 +26,8 @@ public static class RdUtil
             RdRowType.Module,
             moduleDescriptor.Name,
             null,
-            files.Average(file => file.Coverage),
-            files.Average(file => file.Quality),
+            !files.IsEmpty() ? files.Average(file => file.Coverage) : 0,
+            !files.IsEmpty() ? files.Average(file => file.Quality) : 0,
             true,
             files);
     }
@@ -41,8 +41,8 @@ public static class RdUtil
             RdRowType.File,
             fileDescriptor.Name,
             null,
-            fileDescriptor.Methods.Average(method => method.Coverage),
-            fileDescriptor.Methods.Average(method => method.Quality),
+            !methods.IsEmpty() ? fileDescriptor.Methods.Average(method => method.Coverage) : 0,
+            !methods.IsEmpty() ? fileDescriptor.Methods.Average(method => method.Quality) : 0,
             true,
             methods);
         ;
