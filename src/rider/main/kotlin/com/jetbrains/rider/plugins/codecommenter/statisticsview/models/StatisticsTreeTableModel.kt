@@ -1,7 +1,7 @@
-package com.jetbrains.rider.plugins.codecommenter.statisticsview
+package com.jetbrains.rider.plugins.codecommenter.statisticsview.models
 
 import com.intellij.ui.treeStructure.treetable.ListTreeTableModelOnColumns
-import com.jetbrains.rider.plugins.codecommenter.models.StatisticsData
+import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsData
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.columninfos.CoverageColumnInfo
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.columninfos.QualityColumnInfo
 import javax.swing.tree.TreeNode

@@ -2,8 +2,8 @@ package com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers
 
 import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.components.JBLabel
-import com.jetbrains.rider.plugins.codecommenter.models.StatisticsData
-import com.jetbrains.rider.plugins.codecommenter.models.isLoadingRecursive
+import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsData
+import com.jetbrains.rider.plugins.codecommenter.entities.statistics.isLoadingRecursive
 import java.awt.Component
 import javax.swing.JTable
 import javax.swing.SwingConstants

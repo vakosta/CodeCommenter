@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.components.JBTreeTable
 import com.jetbrains.rd.framework.IRdCall
-import com.jetbrains.rider.plugins.codecommenter.statisticsview.StatisticsTreeTableModel
+import com.jetbrains.rider.plugins.codecommenter.statisticsview.models.StatisticsTreeTableModel
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.columninfos.CoverageColumnInfo
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.columninfos.QualityColumnInfo
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers.CoverageCellRenderer

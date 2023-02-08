@@ -9,7 +9,8 @@ import com.jetbrains.rd.ide.model.RdChangeNodeContext
 import com.jetbrains.rd.ide.model.RdToolWindowContent
 import com.jetbrains.rd.ide.model.StatisticsToolWindowModel
 import com.jetbrains.rd.platform.util.lifetime
-import com.jetbrains.rider.plugins.codecommenter.models.StatisticsData
+import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsData
+import com.jetbrains.rider.plugins.codecommenter.statisticsview.models.StatisticsTreeTableModel
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.views.StatisticsTreeTableView
 import com.jetbrains.rider.plugins.codecommenter.utils.toTreeNode
 

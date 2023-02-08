@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.codecommenter.models
+package com.jetbrains.rider.plugins.codecommenter.entities.statistics
 
 import javax.swing.tree.DefaultMutableTreeNode
 
