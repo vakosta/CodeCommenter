@@ -29,7 +29,7 @@ public class HuggingFaceCommentGenerationStrategy : ICommentGenerationStrategy
     private static async Task<string> Post(string code, Lifetime lifetime)
     {
         if (!lifetime.IsAlive) return string.Empty;
-        using var client = new HttpClient { Timeout = new TimeSpan(1, 0, 0) };
+        using var client = new HttpClient { Timeout = new TimeSpan(0, 0, 30) };
 
         var payload = new HuggingFacePayload { data = new[] { code } };
         var stringPayload = JsonConvert.SerializeObject(payload);

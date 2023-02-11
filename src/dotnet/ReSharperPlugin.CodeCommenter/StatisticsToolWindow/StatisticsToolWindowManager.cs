@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
@@ -5,6 +6,7 @@ using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.ReSharper.Psi.Tree;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Rider.Model;
 using ReSharperPlugin.CodeCommenter.Common;
 using ReSharperPlugin.CodeCommenter.Util;
@@ -43,15 +45,15 @@ public class StatisticsToolWindowManager
             foreach (var module in modules)
             foreach (var file in module.Files)
             foreach (var method in file.Methods)
-                UpdateRowQuality(method);
+                myLifetime.StartMainReadAsync(() => UpdateRowQuality(method));
 
             return RdTask<Unit>.Successful(Unit.Instance);
         });
     }
 
-    private void UpdateRowQuality(MethodDescriptor method)
+    private async Task UpdateRowQuality(MethodDescriptor method)
     {
-        method.Quality = CalculateQuality(method.Declaration);
+        method.Quality = await CalculateQuality(method.Declaration);
         method.IsLoading = false;
         var rdMethod = method.ToRdRow();
         myStatisticsToolWindowModel.OnNodeChanged.Start(
@@ -59,18 +61,18 @@ public class StatisticsToolWindowManager
             new RdChangeNodeContext(rdMethod));
     }
 
-    private float CalculateQuality([NotNull] ITreeNode method)
+    private async Task<float> CalculateQuality([NotNull] ITreeNode method)
     {
         var commentBlock = SharedImplUtil.GetDocCommentBlockNode(method)?.GetText();
         var methodCode = method.GetText();
         if (commentBlock != null)
             methodCode = methodCode.Replace(commentBlock, "");
-        return CalculateQuality(commentBlock, methodCode);
+        return await CalculateQuality(commentBlock, methodCode);
     }
 
-    private float CalculateQuality([NotNull] string commentBlock, [NotNull] string methodCode)
+    private async Task<float> CalculateQuality([NotNull] string commentBlock, [NotNull] string methodCode)
     {
-        return (float)commentBlock
-            .CalculateSimilarity(myCommentGenerationStrategy.Generate(methodCode, myLifetime).Result);
+        var generate = await myCommentGenerationStrategy.Generate(methodCode, myLifetime);
+        return (float)commentBlock.CalculateSimilarity(generate);
     }
 }
