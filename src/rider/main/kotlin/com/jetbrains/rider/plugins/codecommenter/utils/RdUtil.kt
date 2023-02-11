@@ -1,5 +1,6 @@
 package com.jetbrains.rider.plugins.codecommenter.utils
 
+import com.jetbrains.rd.ide.model.RdLoadingState
 import com.jetbrains.rd.ide.model.RdRow
 import com.jetbrains.rd.ide.model.RdRowType
 import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsData
@@ -12,7 +13,7 @@ fun RdRow.toTreeNode(): MutableTreeNode {
         docstring = this.docstring ?: "",
         coverage = this.coverage,
         quality = this.quality,
-        isLoading = this.isLoading,
+        loadingState = this.loadingState.toStatisticsLoadingState(),
     )
 
     for (child in this.children)
@@ -20,11 +21,29 @@ fun RdRow.toTreeNode(): MutableTreeNode {
     return root
 }
 
-fun RdRowType.toStatisticsDataType(): StatisticsData.Type {
-    return when (this) {
-        RdRowType.Module -> StatisticsData.Type.Module
-        RdRowType.File -> StatisticsData.Type.File
-        RdRowType.Method -> StatisticsData.Type.Method
-        RdRowType.Root -> StatisticsData.Type.Root
-    }
-}
+fun RdRowType.toStatisticsDataType(): StatisticsData.Type =
+        when (this) {
+            RdRowType.Module ->
+                StatisticsData.Type.Module
+
+            RdRowType.File ->
+                StatisticsData.Type.File
+
+            RdRowType.Method ->
+                StatisticsData.Type.Method
+
+            RdRowType.Root ->
+                StatisticsData.Type.Root
+        }
+
+fun RdLoadingState.toStatisticsLoadingState(): StatisticsData.LoadingState =
+        when (this) {
+            RdLoadingState.Loading ->
+                StatisticsData.LoadingState.Loading
+
+            RdLoadingState.Loaded ->
+                StatisticsData.LoadingState.Loaded
+
+            RdLoadingState.RelativeToChildren ->
+                StatisticsData.LoadingState.RelativeToChildren
+        }

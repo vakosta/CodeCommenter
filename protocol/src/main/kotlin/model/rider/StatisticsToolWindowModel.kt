@@ -1,7 +1,6 @@
 package model.rider
 
 import com.jetbrains.rd.generator.nova.Ext
-import com.jetbrains.rd.generator.nova.PredefinedType.bool
 import com.jetbrains.rd.generator.nova.PredefinedType.float
 import com.jetbrains.rd.generator.nova.PredefinedType.string
 import com.jetbrains.rd.generator.nova.PredefinedType.void
@@ -20,7 +19,7 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
         field("docstring", string.nullable)
         field("coverage", float)
         field("quality", float)
-        field("isLoading", bool)
+        field("loadingState", RdLoadingState)
         field("children", immutableList(this))
     }
 
@@ -29,6 +28,12 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
         +"File"
         +"Method"
         +"Root"
+    }
+
+    private val RdLoadingState = enum {
+        +"Loading"
+        +"Loaded"
+        +"RelativeToChildren"
     }
 
     private val RdToolWindowContent = structdef {

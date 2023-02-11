@@ -9,5 +9,5 @@ public class MethodDescriptor
     public string Docstring { get; init; }
     public float Coverage { get; init; }
     public float Quality { get; set; }
-    public bool IsLoading { get; set; } = true;
+    public LoadingState LoadingState { get; set; } = LoadingState.Loading;
 }

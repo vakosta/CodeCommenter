@@ -25,7 +25,7 @@ public static class RdUtil
             null,
             !files.IsEmpty() ? files.Average(file => file.Coverage) : 0,
             !files.IsEmpty() ? files.Average(file => file.Quality) : 0,
-            true,
+            RdLoadingState.RelativeToChildren,
             files);
     }
 
@@ -40,7 +40,7 @@ public static class RdUtil
             null,
             !methods.IsEmpty() ? fileDescriptor.Methods.Average(method => method.Coverage) : 0,
             !methods.IsEmpty() ? fileDescriptor.Methods.Average(method => method.Quality) : 0,
-            true,
+            RdLoadingState.RelativeToChildren,
             methods);
         ;
     }
@@ -53,7 +53,22 @@ public static class RdUtil
             descriptor.Docstring,
             descriptor.Docstring.IsNotEmpty() ? 1 : 0,
             descriptor.Quality,
-            descriptor.IsLoading,
+            descriptor.LoadingState.ToRdLoadingState(),
             new List<RdRow>());
+    }
+
+    public static RdLoadingState ToRdLoadingState(this LoadingState loadingState)
+    {
+        return loadingState switch
+        {
+            LoadingState.Loading =>
+                RdLoadingState.Loading,
+            LoadingState.Loaded =>
+                RdLoadingState.Loaded,
+            LoadingState.RelativeToChildren =>
+                RdLoadingState.RelativeToChildren,
+            _ =>
+                RdLoadingState.Loaded
+        };
     }
 }

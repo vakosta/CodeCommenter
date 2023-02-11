@@ -54,7 +54,7 @@ public class StatisticsToolWindowManager
     private async Task UpdateRowQuality(MethodDescriptor method)
     {
         method.Quality = await CalculateQuality(method.Declaration);
-        method.IsLoading = false;
+        method.LoadingState = LoadingState.Loaded;
         var rdMethod = method.ToRdRow();
         myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdMethod));
     }

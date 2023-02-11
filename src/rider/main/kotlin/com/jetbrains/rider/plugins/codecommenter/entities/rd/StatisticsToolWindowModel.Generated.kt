@@ -16,7 +16,7 @@ import kotlin.jvm.JvmStatic
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:16]
+ * #### Generated from [StatisticsToolWindowModel.kt:15]
  */
 class StatisticsToolWindowModel private constructor(
     private val _getContent: RdCall<Unit, Unit>,
@@ -30,6 +30,7 @@ class StatisticsToolWindowModel private constructor(
         override fun registerSerializersCore(serializers: ISerializers)  {
             serializers.register(RdRow)
             serializers.register(RdRowType.marshaller)
+            serializers.register(RdLoadingState.marshaller)
             serializers.register(RdToolWindowContent)
             serializers.register(RdChangeNodeContext)
         }
@@ -52,7 +53,7 @@ class StatisticsToolWindowModel private constructor(
         }
         
         
-        const val serializationHash = -9076123247796669028L
+        const val serializationHash = 2012028119564653557L
         
     }
     override val serializersOwner: ISerializersOwner get() = StatisticsToolWindowModel
@@ -105,7 +106,7 @@ val IProtocol.statisticsToolWindowModel get() = getOrCreateExtension(StatisticsT
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:38]
+ * #### Generated from [StatisticsToolWindowModel.kt:43]
  */
 data class RdChangeNodeContext (
     val newNode: RdRow
@@ -162,7 +163,22 @@ data class RdChangeNodeContext (
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:17]
+ * #### Generated from [StatisticsToolWindowModel.kt:33]
+ */
+enum class RdLoadingState {
+    Loading, 
+    Loaded, 
+    RelativeToChildren;
+    
+    companion object {
+        val marshaller = FrameworkMarshallers.enum<RdLoadingState>()
+        
+    }
+}
+
+
+/**
+ * #### Generated from [StatisticsToolWindowModel.kt:16]
  */
 data class RdRow (
     val type: RdRowType,
@@ -170,7 +186,7 @@ data class RdRow (
     val docstring: String?,
     val coverage: Float,
     val quality: Float,
-    val isLoading: Boolean,
+    val loadingState: RdLoadingState,
     val children: List<RdRow>
 ) : IPrintable {
     //companion
@@ -185,9 +201,9 @@ data class RdRow (
             val docstring = buffer.readNullable { buffer.readString() }
             val coverage = buffer.readFloat()
             val quality = buffer.readFloat()
-            val isLoading = buffer.readBool()
+            val loadingState = buffer.readEnum<RdLoadingState>()
             val children = buffer.readList { RdRow.read(ctx, buffer) }
-            return RdRow(type, name, docstring, coverage, quality, isLoading, children)
+            return RdRow(type, name, docstring, coverage, quality, loadingState, children)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdRow)  {
@@ -196,7 +212,7 @@ data class RdRow (
             buffer.writeNullable(value.docstring) { buffer.writeString(it) }
             buffer.writeFloat(value.coverage)
             buffer.writeFloat(value.quality)
-            buffer.writeBool(value.isLoading)
+            buffer.writeEnum(value.loadingState)
             buffer.writeList(value.children) { v -> RdRow.write(ctx, buffer, v) }
         }
         
@@ -218,7 +234,7 @@ data class RdRow (
         if (docstring != other.docstring) return false
         if (coverage != other.coverage) return false
         if (quality != other.quality) return false
-        if (isLoading != other.isLoading) return false
+        if (loadingState != other.loadingState) return false
         if (children != other.children) return false
         
         return true
@@ -231,7 +247,7 @@ data class RdRow (
         __r = __r*31 + if (docstring != null) docstring.hashCode() else 0
         __r = __r*31 + coverage.hashCode()
         __r = __r*31 + quality.hashCode()
-        __r = __r*31 + isLoading.hashCode()
+        __r = __r*31 + loadingState.hashCode()
         __r = __r*31 + children.hashCode()
         return __r
     }
@@ -244,7 +260,7 @@ data class RdRow (
             print("docstring = "); docstring.print(printer); println()
             print("coverage = "); coverage.print(printer); println()
             print("quality = "); quality.print(printer); println()
-            print("isLoading = "); isLoading.print(printer); println()
+            print("loadingState = "); loadingState.print(printer); println()
             print("children = "); children.print(printer); println()
         }
         printer.print(")")
@@ -255,7 +271,7 @@ data class RdRow (
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:27]
+ * #### Generated from [StatisticsToolWindowModel.kt:26]
  */
 enum class RdRowType {
     Module, 
@@ -271,7 +287,7 @@ enum class RdRowType {
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:34]
+ * #### Generated from [StatisticsToolWindowModel.kt:39]
  */
 data class RdToolWindowContent (
     val rows: List<RdRow>
