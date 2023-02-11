@@ -13,7 +13,6 @@ class StatisticsTreeTableModel(
     columns.toTypedArray(),
 ) {
     override fun nodeChanged(node: TreeNode?) {
-        // TODO: Add synchronization to make thread-safe.
         // TODO: Optimize recursion.
         super.nodeChanged(node)
         if (node?.parent != null && node.parent is StatisticsData) {

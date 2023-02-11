@@ -37,10 +37,9 @@ public class DocstringPlacesFinder
 
         using (ReadLockCookie.Create())
         {
-            modules.AddRange(mySolution
-                .GetPsiServices()
-                .Modules
-                .GetModules()
+            modules.AddRange(mySolution.GetAllProjects()
+                .Where(p => p.ProjectFile != null)
+                .SelectMany(project => project.GetPsiModules())
                 .Select(GetModuleDescriptor));
         }
 
@@ -53,7 +52,8 @@ public class DocstringPlacesFinder
         if (!myLifetime.IsAlive) return moduleDescriptor;
 
         foreach (var sourceFile in module.SourceFiles)
-            moduleDescriptor.Files.Add(GetFileDescriptor(sourceFile));
+            if (sourceFile.LanguageType is CSharpProjectFileType && !sourceFile.ToProjectFile()!.Properties.IsHidden)
+                moduleDescriptor.Files.Add(GetFileDescriptor(sourceFile));
         return moduleDescriptor;
     }
 
@@ -80,7 +80,11 @@ public class DocstringPlacesFinder
                 methods.Add(new MethodDescriptor
                 {
                     Declaration = declaration,
-                    Name = declaration.DeclaredName,
+                    Name = declaration.GetContainingNamespaceDeclaration() == null
+                        ? declaration.DeclaredName
+                        : declaration.ToString().Replace( // TODO: Rewrite this.
+                            $"IMethodDeclaration: {declaration.GetContainingNamespaceDeclaration()!.DeclaredName}.",
+                            ""),
                     Docstring = commentBlock,
                     Quality = 0F
                 });

@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
-using NuGet;
 
 namespace ReSharperPlugin.CodeCommenter.Util;
 
@@ -11,7 +10,6 @@ public static class RdUtil
     public static List<RdRow> ToRdRows(this IEnumerable<ModuleDescriptor> descriptors)
     {
         return descriptors
-            .Where(descriptor => !EnumerableExtensions.IsEmpty(descriptor.Files))
             .Select(descriptor => descriptor.ToRdRow())
             .ToList();
     }
@@ -19,7 +17,6 @@ public static class RdUtil
     public static RdRow ToRdRow(this ModuleDescriptor moduleDescriptor)
     {
         var files = moduleDescriptor.Files
-            .Where(file => !EnumerableExtensions.IsEmpty(file.Methods))
             .Select(file => file.ToRdRow())
             .ToList();
         return new RdRow(

@@ -56,9 +56,7 @@ public class StatisticsToolWindowManager
         method.Quality = await CalculateQuality(method.Declaration);
         method.IsLoading = false;
         var rdMethod = method.ToRdRow();
-        myStatisticsToolWindowModel.OnNodeChanged.Start(
-            myLifetime,
-            new RdChangeNodeContext(rdMethod));
+        myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdMethod));
     }
 
     private async Task<float> CalculateQuality([NotNull] ITreeNode method)
