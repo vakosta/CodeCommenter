@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
@@ -12,12 +13,23 @@ namespace ReSharperPlugin.CodeCommenter.Common;
 [SolutionComponent]
 public class HuggingFaceCommentGenerationStrategy : ICommentGenerationStrategy
 {
+    // TODO: Rewrite to JetBrains.Util.Threading.Tasks.TaskSemaphore
+    private static SemaphoreSlim mySemaphore = new(4, 4);
+
     private const string Url = "https://vakosta-code2comment.hf.space/run/predict";
     private const string MediaType = "application/json";
 
     public async Task<string> Generate(string code, Lifetime lifetime)
     {
-        return await Post(code, lifetime);
+        await mySemaphore.WaitAsync(lifetime);
+        try
+        {
+            return await Post(code, lifetime);
+        }
+        finally
+        {
+            mySemaphore.Release();
+        }
     }
 
     /// <summary>
@@ -29,7 +41,7 @@ public class HuggingFaceCommentGenerationStrategy : ICommentGenerationStrategy
     private static async Task<string> Post(string code, Lifetime lifetime)
     {
         if (!lifetime.IsAlive) return string.Empty;
-        using var client = new HttpClient { Timeout = new TimeSpan(0, 0, 30) };
+        using var client = new HttpClient { Timeout = new TimeSpan(0, 0, 20) };
 
         var payload = new HuggingFacePayload { data = new[] { code } };
         var stringPayload = JsonConvert.SerializeObject(payload);
@@ -38,6 +50,8 @@ public class HuggingFaceCommentGenerationStrategy : ICommentGenerationStrategy
         var httpResponse = await client.PostAsync(Url, httpContent, lifetime);
 
         var stringResult = await httpResponse.Content.ReadAsStringAsync();
-        return JsonConvert.DeserializeObject<HuggingFaceResponse>(stringResult).data[0];
+        return stringResult != null
+            ? JsonConvert.DeserializeObject<HuggingFaceResponse>(stringResult).data[0]
+            : null;
     }
 }

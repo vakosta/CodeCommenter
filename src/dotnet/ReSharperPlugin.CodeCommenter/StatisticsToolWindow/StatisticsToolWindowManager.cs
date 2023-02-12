@@ -71,6 +71,8 @@ public class StatisticsToolWindowManager
     private async Task<float> CalculateQuality([NotNull] string commentBlock, [NotNull] string methodCode)
     {
         var generate = await myCommentGenerationStrategy.Generate(methodCode, myLifetime);
-        return (float)commentBlock.CalculateSimilarity(generate);
+        return generate != null
+            ? (float)commentBlock.CalculateSimilarity(generate)
+            : -1;
     }
 }
