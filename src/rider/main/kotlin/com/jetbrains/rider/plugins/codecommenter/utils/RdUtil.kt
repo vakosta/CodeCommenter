@@ -9,10 +9,11 @@ import javax.swing.tree.MutableTreeNode
 fun RdRow.toTreeNode(): MutableTreeNode {
     val root = StatisticsData(
         type = this.type.toStatisticsDataType(),
+        identifier = this.identifier,
         name = this.name,
         docstring = this.docstring ?: "",
         coverage = this.coverage,
-        quality = this.quality,
+        quality = this.quality.value,
         loadingState = this.loadingState.toStatisticsLoadingState(),
     )
 

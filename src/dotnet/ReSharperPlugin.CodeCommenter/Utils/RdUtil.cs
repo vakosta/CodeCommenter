@@ -22,9 +22,12 @@ public static class RdUtil
         return new RdRow(
             RdRowType.Module,
             moduleDescriptor.Name,
+            moduleDescriptor.Name,
             null,
             !files.IsEmpty() ? files.Average(file => file.Coverage) : 0,
-            !files.IsEmpty() ? files.Average(file => file.Quality) : 0,
+            !files.IsEmpty()
+                ? new RdQuality(files.Average(file => file.Quality.Value), RdQualityStatus.Ok)
+                : new RdQuality(0, RdQualityStatus.Ok),
             RdLoadingState.RelativeToChildren,
             files);
     }
@@ -37,23 +40,27 @@ public static class RdUtil
         return new RdRow(
             RdRowType.File,
             fileDescriptor.Name,
+            fileDescriptor.Name,
             null,
             !methods.IsEmpty() ? fileDescriptor.Methods.Average(method => method.Coverage) : 0,
-            !methods.IsEmpty() ? fileDescriptor.Methods.Average(method => method.Quality) : 0,
+            !methods.IsEmpty()
+                ? new RdQuality(fileDescriptor.Methods.Average(method => method.Quality), RdQualityStatus.Ok)
+                : new RdQuality(0, RdQualityStatus.Ok),
             RdLoadingState.RelativeToChildren,
             methods);
         ;
     }
 
-    public static RdRow ToRdRow(this MethodDescriptor descriptor)
+    public static RdRow ToRdRow(this MethodDescriptor methodDescriptor)
     {
         return new RdRow(
             RdRowType.Method,
-            descriptor.Name,
-            descriptor.Docstring,
-            descriptor.Docstring.IsNotEmpty() ? 1 : 0,
-            descriptor.Quality,
-            descriptor.LoadingState.ToRdLoadingState(),
+            methodDescriptor.Identifier,
+            methodDescriptor.Name,
+            methodDescriptor.Docstring,
+            methodDescriptor.Docstring.IsNotEmpty() ? 1 : 0,
+            new RdQuality(methodDescriptor.Quality, RdQualityStatus.Ok),
+            methodDescriptor.LoadingState.ToRdLoadingState(),
             new List<RdRow>());
     }
 

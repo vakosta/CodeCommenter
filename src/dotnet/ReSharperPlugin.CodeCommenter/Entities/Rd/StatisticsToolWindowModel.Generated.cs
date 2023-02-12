@@ -82,7 +82,7 @@ namespace JetBrains.Rider.Model
     
     
     
-    protected override long SerializationHash => 2012028119564653557L;
+    protected override long SerializationHash => 6895092019639409725L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -125,7 +125,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:43</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:54</p>
   /// </summary>
   public sealed class RdChangeNodeContext : IPrintable, IEquatable<RdChangeNodeContext>
   {
@@ -210,12 +210,112 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:33</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:44</p>
   /// </summary>
   public enum RdLoadingState {
     Loading,
     Loaded,
     RelativeToChildren
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:34</p>
+  /// </summary>
+  public sealed class RdQuality : IPrintable, IEquatable<RdQuality>
+  {
+    //fields
+    //public fields
+    public float Value {get; private set;}
+    public RdQualityStatus Status {get; private set;}
+    
+    //private fields
+    //primary constructor
+    public RdQuality(
+      float value,
+      RdQualityStatus status
+    )
+    {
+      Value = value;
+      Status = status;
+    }
+    //secondary constructor
+    //deconstruct trait
+    public void Deconstruct(out float value, out RdQualityStatus status)
+    {
+      value = Value;
+      status = Status;
+    }
+    //statics
+    
+    public static CtxReadDelegate<RdQuality> Read = (ctx, reader) => 
+    {
+      var value = reader.ReadFloat();
+      var status = (RdQualityStatus)reader.ReadInt();
+      var _result = new RdQuality(value, status);
+      return _result;
+    };
+    
+    public static CtxWriteDelegate<RdQuality> Write = (ctx, writer, value) => 
+    {
+      writer.Write(value.Value);
+      writer.Write((int)value.Status);
+    };
+    
+    //constants
+    
+    //custom body
+    //methods
+    //equals trait
+    public override bool Equals(object obj)
+    {
+      if (ReferenceEquals(null, obj)) return false;
+      if (ReferenceEquals(this, obj)) return true;
+      if (obj.GetType() != GetType()) return false;
+      return Equals((RdQuality) obj);
+    }
+    public bool Equals(RdQuality other)
+    {
+      if (ReferenceEquals(null, other)) return false;
+      if (ReferenceEquals(this, other)) return true;
+      return Value == other.Value && Status == other.Status;
+    }
+    //hash code trait
+    public override int GetHashCode()
+    {
+      unchecked {
+        var hash = 0;
+        hash = hash * 31 + Value.GetHashCode();
+        hash = hash * 31 + (int) Status;
+        return hash;
+      }
+    }
+    //pretty print
+    public void Print(PrettyPrinter printer)
+    {
+      printer.Println("RdQuality (");
+      using (printer.IndentCookie()) {
+        printer.Print("value = "); Value.PrintEx(printer); printer.Println();
+        printer.Print("status = "); Status.PrintEx(printer); printer.Println();
+      }
+      printer.Print(")");
+    }
+    //toString
+    public override string ToString()
+    {
+      var printer = new SingleLinePrettyPrinter();
+      Print(printer);
+      return printer.ToString();
+    }
+  }
+  
+  
+  /// <summary>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:39</p>
+  /// </summary>
+  public enum RdQualityStatus {
+    Ok,
+    Failed
   }
   
   
@@ -227,10 +327,11 @@ namespace JetBrains.Rider.Model
     //fields
     //public fields
     public RdRowType Type {get; private set;}
+    [NotNull] public string Identifier {get; private set;}
     [NotNull] public string Name {get; private set;}
     [CanBeNull] public string Docstring {get; private set;}
     public float Coverage {get; private set;}
-    public float Quality {get; private set;}
+    [NotNull] public RdQuality Quality {get; private set;}
     public RdLoadingState LoadingState {get; private set;}
     [NotNull] public List<RdRow> Children {get; private set;}
     
@@ -238,18 +339,22 @@ namespace JetBrains.Rider.Model
     //primary constructor
     public RdRow(
       RdRowType type,
+      [NotNull] string identifier,
       [NotNull] string name,
       [CanBeNull] string docstring,
       float coverage,
-      float quality,
+      [NotNull] RdQuality quality,
       RdLoadingState loadingState,
       [NotNull] List<RdRow> children
     )
     {
+      if (identifier == null) throw new ArgumentNullException("identifier");
       if (name == null) throw new ArgumentNullException("name");
+      if (quality == null) throw new ArgumentNullException("quality");
       if (children == null) throw new ArgumentNullException("children");
       
       Type = type;
+      Identifier = identifier;
       Name = name;
       Docstring = docstring;
       Coverage = coverage;
@@ -259,9 +364,10 @@ namespace JetBrains.Rider.Model
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out RdRowType type, [NotNull] out string name, [CanBeNull] out string docstring, out float coverage, out float quality, out RdLoadingState loadingState, [NotNull] out List<RdRow> children)
+    public void Deconstruct(out RdRowType type, [NotNull] out string identifier, [NotNull] out string name, [CanBeNull] out string docstring, out float coverage, [NotNull] out RdQuality quality, out RdLoadingState loadingState, [NotNull] out List<RdRow> children)
     {
       type = Type;
+      identifier = Identifier;
       name = Name;
       docstring = Docstring;
       coverage = Coverage;
@@ -274,13 +380,14 @@ namespace JetBrains.Rider.Model
     public static CtxReadDelegate<RdRow> Read = (ctx, reader) => 
     {
       var type = (RdRowType)reader.ReadInt();
+      var identifier = reader.ReadString();
       var name = reader.ReadString();
       var docstring = ReadStringNullable(ctx, reader);
       var coverage = reader.ReadFloat();
-      var quality = reader.ReadFloat();
+      var quality = RdQuality.Read(ctx, reader);
       var loadingState = (RdLoadingState)reader.ReadInt();
       var children = ReadRdRowList(ctx, reader);
-      var _result = new RdRow(type, name, docstring, coverage, quality, loadingState, children);
+      var _result = new RdRow(type, identifier, name, docstring, coverage, quality, loadingState, children);
       return _result;
     };
     public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
@@ -289,10 +396,11 @@ namespace JetBrains.Rider.Model
     public static CtxWriteDelegate<RdRow> Write = (ctx, writer, value) => 
     {
       writer.Write((int)value.Type);
+      writer.Write(value.Identifier);
       writer.Write(value.Name);
       WriteStringNullable(ctx, writer, value.Docstring);
       writer.Write(value.Coverage);
-      writer.Write(value.Quality);
+      RdQuality.Write(ctx, writer, value.Quality);
       writer.Write((int)value.LoadingState);
       WriteRdRowList(ctx, writer, value.Children);
     };
@@ -315,7 +423,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Type == other.Type && Name == other.Name && Equals(Docstring, other.Docstring) && Coverage == other.Coverage && Quality == other.Quality && LoadingState == other.LoadingState && Children.SequenceEqual(other.Children);
+      return Type == other.Type && Identifier == other.Identifier && Name == other.Name && Equals(Docstring, other.Docstring) && Coverage == other.Coverage && Equals(Quality, other.Quality) && LoadingState == other.LoadingState && Children.SequenceEqual(other.Children);
     }
     //hash code trait
     public override int GetHashCode()
@@ -323,6 +431,7 @@ namespace JetBrains.Rider.Model
       unchecked {
         var hash = 0;
         hash = hash * 31 + (int) Type;
+        hash = hash * 31 + Identifier.GetHashCode();
         hash = hash * 31 + Name.GetHashCode();
         hash = hash * 31 + (Docstring != null ? Docstring.GetHashCode() : 0);
         hash = hash * 31 + Coverage.GetHashCode();
@@ -338,6 +447,7 @@ namespace JetBrains.Rider.Model
       printer.Println("RdRow (");
       using (printer.IndentCookie()) {
         printer.Print("type = "); Type.PrintEx(printer); printer.Println();
+        printer.Print("identifier = "); Identifier.PrintEx(printer); printer.Println();
         printer.Print("name = "); Name.PrintEx(printer); printer.Println();
         printer.Print("docstring = "); Docstring.PrintEx(printer); printer.Println();
         printer.Print("coverage = "); Coverage.PrintEx(printer); printer.Println();
@@ -358,7 +468,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:26</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:27</p>
   /// </summary>
   public enum RdRowType {
     Module,
@@ -369,7 +479,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:39</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:50</p>
   /// </summary>
   public sealed class RdToolWindowContent : IPrintable, IEquatable<RdToolWindowContent>
   {

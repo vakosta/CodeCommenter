@@ -30,6 +30,8 @@ class StatisticsToolWindowModel private constructor(
         override fun registerSerializersCore(serializers: ISerializers)  {
             serializers.register(RdRow)
             serializers.register(RdRowType.marshaller)
+            serializers.register(RdQuality)
+            serializers.register(RdQualityStatus.marshaller)
             serializers.register(RdLoadingState.marshaller)
             serializers.register(RdToolWindowContent)
             serializers.register(RdChangeNodeContext)
@@ -53,7 +55,7 @@ class StatisticsToolWindowModel private constructor(
         }
         
         
-        const val serializationHash = 2012028119564653557L
+        const val serializationHash = 6895092019639409725L
         
     }
     override val serializersOwner: ISerializersOwner get() = StatisticsToolWindowModel
@@ -106,7 +108,7 @@ val IProtocol.statisticsToolWindowModel get() = getOrCreateExtension(StatisticsT
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:43]
+ * #### Generated from [StatisticsToolWindowModel.kt:54]
  */
 data class RdChangeNodeContext (
     val newNode: RdRow
@@ -163,7 +165,7 @@ data class RdChangeNodeContext (
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:33]
+ * #### Generated from [StatisticsToolWindowModel.kt:44]
  */
 enum class RdLoadingState {
     Loading, 
@@ -178,14 +180,92 @@ enum class RdLoadingState {
 
 
 /**
+ * #### Generated from [StatisticsToolWindowModel.kt:34]
+ */
+data class RdQuality (
+    val value: Float,
+    val status: RdQualityStatus
+) : IPrintable {
+    //companion
+    
+    companion object : IMarshaller<RdQuality> {
+        override val _type: KClass<RdQuality> = RdQuality::class
+        
+        @Suppress("UNCHECKED_CAST")
+        override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdQuality  {
+            val value = buffer.readFloat()
+            val status = buffer.readEnum<RdQualityStatus>()
+            return RdQuality(value, status)
+        }
+        
+        override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdQuality)  {
+            buffer.writeFloat(value.value)
+            buffer.writeEnum(value.status)
+        }
+        
+        
+    }
+    //fields
+    //methods
+    //initializer
+    //secondary constructor
+    //equals trait
+    override fun equals(other: Any?): Boolean  {
+        if (this === other) return true
+        if (other == null || other::class != this::class) return false
+        
+        other as RdQuality
+        
+        if (value != other.value) return false
+        if (status != other.status) return false
+        
+        return true
+    }
+    //hash code trait
+    override fun hashCode(): Int  {
+        var __r = 0
+        __r = __r*31 + value.hashCode()
+        __r = __r*31 + status.hashCode()
+        return __r
+    }
+    //pretty print
+    override fun print(printer: PrettyPrinter)  {
+        printer.println("RdQuality (")
+        printer.indent {
+            print("value = "); value.print(printer); println()
+            print("status = "); status.print(printer); println()
+        }
+        printer.print(")")
+    }
+    //deepClone
+    //contexts
+}
+
+
+/**
+ * #### Generated from [StatisticsToolWindowModel.kt:39]
+ */
+enum class RdQualityStatus {
+    Ok, 
+    Failed;
+    
+    companion object {
+        val marshaller = FrameworkMarshallers.enum<RdQualityStatus>()
+        
+    }
+}
+
+
+/**
  * #### Generated from [StatisticsToolWindowModel.kt:16]
  */
 data class RdRow (
     val type: RdRowType,
+    val identifier: String,
     val name: String,
     val docstring: String?,
     val coverage: Float,
-    val quality: Float,
+    val quality: RdQuality,
     val loadingState: RdLoadingState,
     val children: List<RdRow>
 ) : IPrintable {
@@ -197,21 +277,23 @@ data class RdRow (
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdRow  {
             val type = buffer.readEnum<RdRowType>()
+            val identifier = buffer.readString()
             val name = buffer.readString()
             val docstring = buffer.readNullable { buffer.readString() }
             val coverage = buffer.readFloat()
-            val quality = buffer.readFloat()
+            val quality = RdQuality.read(ctx, buffer)
             val loadingState = buffer.readEnum<RdLoadingState>()
             val children = buffer.readList { RdRow.read(ctx, buffer) }
-            return RdRow(type, name, docstring, coverage, quality, loadingState, children)
+            return RdRow(type, identifier, name, docstring, coverage, quality, loadingState, children)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdRow)  {
             buffer.writeEnum(value.type)
+            buffer.writeString(value.identifier)
             buffer.writeString(value.name)
             buffer.writeNullable(value.docstring) { buffer.writeString(it) }
             buffer.writeFloat(value.coverage)
-            buffer.writeFloat(value.quality)
+            RdQuality.write(ctx, buffer, value.quality)
             buffer.writeEnum(value.loadingState)
             buffer.writeList(value.children) { v -> RdRow.write(ctx, buffer, v) }
         }
@@ -230,6 +312,7 @@ data class RdRow (
         other as RdRow
         
         if (type != other.type) return false
+        if (identifier != other.identifier) return false
         if (name != other.name) return false
         if (docstring != other.docstring) return false
         if (coverage != other.coverage) return false
@@ -243,6 +326,7 @@ data class RdRow (
     override fun hashCode(): Int  {
         var __r = 0
         __r = __r*31 + type.hashCode()
+        __r = __r*31 + identifier.hashCode()
         __r = __r*31 + name.hashCode()
         __r = __r*31 + if (docstring != null) docstring.hashCode() else 0
         __r = __r*31 + coverage.hashCode()
@@ -256,6 +340,7 @@ data class RdRow (
         printer.println("RdRow (")
         printer.indent {
             print("type = "); type.print(printer); println()
+            print("identifier = "); identifier.print(printer); println()
             print("name = "); name.print(printer); println()
             print("docstring = "); docstring.print(printer); println()
             print("coverage = "); coverage.print(printer); println()
@@ -271,7 +356,7 @@ data class RdRow (
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:26]
+ * #### Generated from [StatisticsToolWindowModel.kt:27]
  */
 enum class RdRowType {
     Module, 
@@ -287,7 +372,7 @@ enum class RdRowType {
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:39]
+ * #### Generated from [StatisticsToolWindowModel.kt:50]
  */
 data class RdToolWindowContent (
     val rows: List<RdRow>

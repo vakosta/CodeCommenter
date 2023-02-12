@@ -19,15 +19,15 @@ namespace ReSharperPlugin.CodeCommenter.Common;
 [SolutionComponent]
 public class DocstringPlacesFinder
 {
-    [NotNull] private readonly ISolution mySolution;
     private readonly Lifetime myLifetime;
+    [NotNull] private readonly ISolution mySolution;
 
     public DocstringPlacesFinder(
-        ISolution solution,
-        Lifetime lifetime)
+        Lifetime lifetime,
+        [NotNull] ISolution solution)
     {
-        mySolution = solution;
         myLifetime = lifetime;
+        mySolution = solution;
     }
 
     public IEnumerable<ModuleDescriptor> GetAllMethodsInProject()
@@ -37,10 +37,11 @@ public class DocstringPlacesFinder
 
         using (ReadLockCookie.Create())
         {
-            modules.AddRange(mySolution.GetAllProjects()
+            var moduleDescriptors = mySolution.GetAllProjects()
                 .Where(p => p.ProjectFile != null)
                 .SelectMany(project => project.GetPsiModules())
-                .Select(GetModuleDescriptor));
+                .Select(GetModuleDescriptor);
+            modules.AddRange(moduleDescriptors);
         }
 
         return modules;
@@ -76,23 +77,33 @@ public class DocstringPlacesFinder
         {
             if (child is IMethodDeclaration declaration)
             {
-                var commentBlock = SharedImplUtil.GetDocCommentBlockNode(declaration)?.GetText() ?? "";
-                methods.Add(new MethodDescriptor
-                {
-                    Declaration = declaration,
-                    Name = declaration.GetContainingNamespaceDeclaration() == null
-                        ? declaration.DeclaredName
-                        : declaration.ToString().Replace( // TODO: Rewrite this.
-                            $"IMethodDeclaration: {declaration.GetContainingNamespaceDeclaration()!.DeclaredName}.",
-                            ""),
-                    Docstring = commentBlock,
-                    Quality = 0F
-                });
+                var commentBlock = SharedImplUtil.GetDocCommentBlockNode(child)?.GetText() ?? "";
+                methods.Add(CreateMethodDescriptor(declaration, commentBlock));
             }
 
             methods.AddAll(GetAllMethodsInFile(child));
         }
 
         return methods;
+    }
+
+    private static MethodDescriptor CreateMethodDescriptor(IMethodDeclaration declaration, string commentBlock)
+    {
+        return new MethodDescriptor
+        {
+            Declaration = declaration,
+
+            Identifier = declaration.ToString().Replace("IMethodDeclaration", declaration.GetPsiModule().Name),
+
+            Name = declaration.GetContainingNamespaceDeclaration() == null
+                ? declaration.DeclaredName
+                : declaration.ToString().Replace( // TODO: Rewrite this.
+                    $"IMethodDeclaration: {declaration.GetContainingNamespaceDeclaration()!.DeclaredName}.",
+                    ""),
+
+            Docstring = commentBlock,
+
+            Quality = 0F
+        };
     }
 }

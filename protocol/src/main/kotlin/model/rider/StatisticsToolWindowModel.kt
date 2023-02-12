@@ -15,10 +15,11 @@ import com.jetbrains.rider.model.nova.ide.IdeRoot
 object StatisticsToolWindowModel : Ext(IdeRoot) {
     private val RdRow = structdef {
         field("type", RdRowType)
+        field("identifier", string)
         field("name", string)
         field("docstring", string.nullable)
         field("coverage", float)
-        field("quality", float)
+        field("quality", RdQuality)
         field("loadingState", RdLoadingState)
         field("children", immutableList(this))
     }
@@ -28,6 +29,16 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
         +"File"
         +"Method"
         +"Root"
+    }
+
+    private val RdQuality = structdef {
+        field("value", float)
+        field("status", RdQualityStatus)
+    }
+
+    private val RdQualityStatus = enum {
+        +"Ok"
+        +"Failed"
     }
 
     private val RdLoadingState = enum {
