@@ -1,6 +1,5 @@
 package com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers
 
-import com.intellij.ui.AnimatedIcon
 import com.intellij.ui.components.JBLabel
 import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsData
 import com.jetbrains.rider.plugins.codecommenter.entities.statistics.isLoadingRecursive
@@ -24,11 +23,10 @@ class QualityCellRenderer : JBLabel(
     ): Component {
         assert(value is Pair<*, *>)
 
-        text = (value as Pair<StatisticsData, String>).second
-        if (value.first.isLoadingRecursive() && icon == null)
-            icon = AnimatedIcon.Default()
-        else if (!value.first.isLoadingRecursive() && icon != null)
-            icon = null
+        text = if ((value as Pair<StatisticsData, String>).first.isLoadingRecursive())
+            "${value.second}*"
+        else
+            value.second
 
         return this
     }

@@ -4,9 +4,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.ui.components.JBTreeTable
 import com.jetbrains.rd.framework.IRdCall
-import com.jetbrains.rider.plugins.codecommenter.statisticsview.models.StatisticsTreeTableModel
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.columninfos.CoverageColumnInfo
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.columninfos.QualityColumnInfo
+import com.jetbrains.rider.plugins.codecommenter.statisticsview.models.StatisticsTreeTableModel
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers.CoverageCellRenderer
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers.MainCellRenderer
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers.QualityCellRenderer
@@ -19,7 +19,7 @@ class StatisticsTreeTableView(
     private val treeTable = JBTreeTable(model)
 
     init {
-        treeTable.columnProportion = 0.55F
+        treeTable.columnProportion = 0.45F
 
         initCellRenderers()
         toolbar = StatisticsToolbar(project, getContentCall)
