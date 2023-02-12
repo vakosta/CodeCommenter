@@ -4,6 +4,7 @@ import javax.swing.tree.DefaultMutableTreeNode
 
 data class StatisticsData(
     var type: Type,
+    var identifier: String,
     var name: String,
     var docstring: String,
     var coverage: Float,
@@ -32,6 +33,7 @@ data class StatisticsData(
     companion object {
         fun getRoot(): StatisticsData = StatisticsData(
             type = Type.Root,
+            identifier = "",
             name = "",
             docstring = "",
             coverage = 0F,

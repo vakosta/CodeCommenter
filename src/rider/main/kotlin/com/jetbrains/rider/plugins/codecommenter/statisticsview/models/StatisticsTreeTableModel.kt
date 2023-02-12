@@ -30,12 +30,12 @@ class StatisticsTreeTableModel(
         }
     }
 
-    fun findNodeByName(name: String, node: TreeNode = root): StatisticsData? {
-        return if (node is StatisticsData && node.name == name)
+    fun findNodeByIdentifier(identifier: String, node: TreeNode = root): StatisticsData? {
+        return if (node is StatisticsData && node.identifier == identifier)
             return node
         else {
             for (child in node.children()) {
-                val calculatedChild = findNodeByName(name, child)
+                val calculatedChild = findNodeByIdentifier(identifier, child)
                 if (calculatedChild != null)
                     return calculatedChild
             }
