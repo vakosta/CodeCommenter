@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using JetBrains.Application.Notifications;
 using JetBrains.Application.Progress;
 using JetBrains.Application.UI.Controls;
 using JetBrains.Lifetimes;
@@ -9,6 +10,7 @@ using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Resources.Shell;
+using ReSharperPlugin.CodeCommenter.Entities.Network;
 using ReSharperPlugin.CodeCommenter.Util;
 
 namespace ReSharperPlugin.CodeCommenter.Common;
@@ -19,12 +21,14 @@ public class CommentHandler
     private readonly Lifetime myLifetime;
     [NotNull] private readonly ISolution mySolution;
     [NotNull] private readonly IBackgroundProgressIndicatorManager myBackgroundProgressIndicatorManager;
+    [NotNull] private readonly UserNotifications myUserNotifications;
     [NotNull] private readonly ICommentGenerationStrategy myCommentGenerationStrategy;
 
     public CommentHandler(
         Lifetime lifetime,
         [NotNull] ISolution solution,
         [NotNull] IBackgroundProgressIndicatorManager backgroundProgressIndicatorManager,
+        [NotNull] UserNotifications userNotifications,
         [NotNull] HuggingFaceCommentGenerationStrategy commentGenerationStrategy)
     {
         myLifetime = lifetime;
@@ -41,23 +45,42 @@ public class CommentHandler
             var progress = myBackgroundProgressIndicatorManager.CreateBackgroundProgress(indicatorLifetime,
                 $"Docstring for {declaration.DeclaredName}");
 
-            await GenerateCommentAsync(declaration, progress);
+            await TryGenerateAndCreateCommentAsync(declaration, progress);
 
             indicatorLifetime.Terminate();
         });
     }
 
-    private async Task GenerateCommentAsync(ITreeNode declaration, IProgressIndicator progress)
+    private async Task TryGenerateAndCreateCommentAsync(ITreeNode declaration, IProgressIndicator progress)
     {
         var oldCommentBlock = SharedImplUtil.GetDocCommentBlockNode(declaration);
         var methodCode = PsiUtil.GetMethodCode(declaration, oldCommentBlock);
         var comment = await myCommentGenerationStrategy.Generate(methodCode, myLifetime);
-        var newCommentBlock = PsiUtil.CreateDocCommentBlock(declaration, comment);
 
+        if (comment.Status != GenerationStatus.Ok)
+            CreateCommentBlock(declaration, progress, comment, oldCommentBlock);
+        else
+            ErrorNotification();
+    }
+
+    private void CreateCommentBlock(ITreeNode declaration, IProgressIndicator progress, GenerationResult comment,
+        IDocCommentBlock oldCommentBlock)
+    {
         if (progress.IsCanceled)
             return;
 
+        var newCommentBlock = PsiUtil.CreateDocCommentBlock(declaration, comment.Docstring);
         mySolution.GetPsiServices().Transactions.Execute("Add docstring",
             () => PsiUtil.ModifyCommentBlockInPsi(declaration, oldCommentBlock, newCommentBlock));
+    }
+
+    private void ErrorNotification()
+    {
+        myUserNotifications.CreateNotification(
+            myLifetime,
+            NotificationSeverity.WARNING,
+            title: "Cannot create docstring",
+            body: "Cannot create docstring for this method.",
+            closeAfterExecution: true);
     }
 }

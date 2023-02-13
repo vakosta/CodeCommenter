@@ -1,6 +1,8 @@
 package com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers
 
+import com.intellij.icons.AllIcons
 import com.intellij.ui.components.JBLabel
+import com.jetbrains.rider.plugins.codecommenter.commons.Quality
 import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsData
 import com.jetbrains.rider.plugins.codecommenter.entities.statistics.isLoadingRecursive
 import java.awt.Component
@@ -27,6 +29,11 @@ class QualityCellRenderer : JBLabel(
             "${value.second}*"
         else
             value.second
+
+        icon = if (value.first.quality.status == Quality.Status.Ok)
+            null
+        else
+            AllIcons.General.BalloonError
 
         return this
     }

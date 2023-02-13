@@ -5,7 +5,7 @@ import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsD
 
 class QualityColumnInfo : ColumnInfo<StatisticsData, Pair<StatisticsData, String>>(IDENTIFIER) {
     override fun valueOf(statisticsData: StatisticsData): Pair<StatisticsData, String> {
-        return statisticsData to "${(statisticsData.quality * 100).toInt()}%"
+        return statisticsData to "${(statisticsData.quality.value * 100).toInt()}%"
     }
 
     companion object {

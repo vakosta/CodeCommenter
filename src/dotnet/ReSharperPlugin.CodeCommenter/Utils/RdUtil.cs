@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
+using ReSharperPlugin.CodeCommenter.Entities.Network;
 
 namespace ReSharperPlugin.CodeCommenter.Util;
 
@@ -44,7 +45,7 @@ public static class RdUtil
             null,
             !methods.IsEmpty() ? fileDescriptor.Methods.Average(method => method.Coverage) : 0,
             !methods.IsEmpty()
-                ? new RdQuality(fileDescriptor.Methods.Average(method => method.Quality), RdQualityStatus.Ok)
+                ? new RdQuality(fileDescriptor.Methods.Average(method => method.Quality.Value), RdQualityStatus.Ok)
                 : new RdQuality(0, RdQualityStatus.Ok),
             RdLoadingState.RelativeToChildren,
             methods);
@@ -59,7 +60,7 @@ public static class RdUtil
             methodDescriptor.Name,
             methodDescriptor.Docstring,
             methodDescriptor.Docstring.IsNotEmpty() ? 1 : 0,
-            new RdQuality(methodDescriptor.Quality, RdQualityStatus.Ok),
+            methodDescriptor.Quality.ToRdQuality(),
             methodDescriptor.LoadingState.ToRdLoadingState(),
             new List<RdRow>());
     }
@@ -76,6 +77,26 @@ public static class RdUtil
                 RdLoadingState.RelativeToChildren,
             _ =>
                 RdLoadingState.Loaded
+        };
+    }
+
+    public static RdQuality ToRdQuality(this Quality quality)
+    {
+        return new RdQuality(quality.Value, quality.Status.ToRdQualityStatus());
+    }
+
+    public static RdQualityStatus ToRdQualityStatus(this GenerationStatus generationStatus)
+    {
+        return generationStatus switch
+        {
+            GenerationStatus.Ok =>
+                RdQualityStatus.Ok,
+            GenerationStatus.Failed =>
+                RdQualityStatus.Failed,
+            GenerationStatus.Canceled =>
+                RdQualityStatus.Canceled,
+            _ =>
+                RdQualityStatus.Failed
         };
     }
 }

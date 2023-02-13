@@ -9,6 +9,7 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Rider.Model;
 using ReSharperPlugin.CodeCommenter.Common;
+using ReSharperPlugin.CodeCommenter.Entities.Network;
 using ReSharperPlugin.CodeCommenter.Util;
 
 namespace ReSharperPlugin.CodeCommenter.StatisticsToolWindow;
@@ -59,7 +60,7 @@ public class StatisticsToolWindowManager
         myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdMethod));
     }
 
-    private async Task<float> CalculateQuality([NotNull] ITreeNode method)
+    private async Task<Quality> CalculateQuality([NotNull] ITreeNode method)
     {
         var commentBlock = SharedImplUtil.GetDocCommentBlockNode(method)?.GetText();
         var methodCode = method.GetText();
@@ -68,11 +69,15 @@ public class StatisticsToolWindowManager
         return await CalculateQuality(commentBlock, methodCode);
     }
 
-    private async Task<float> CalculateQuality([NotNull] string commentBlock, [NotNull] string methodCode)
+    private async Task<Quality> CalculateQuality([NotNull] string commentBlock, [NotNull] string methodCode)
     {
         var generate = await myCommentGenerationStrategy.Generate(methodCode, myLifetime);
-        return generate != null
-            ? (float)commentBlock.CalculateSimilarity(generate)
-            : -1;
+        return new Quality
+        {
+            Value = generate.Status == GenerationStatus.Ok
+                ? commentBlock.CalculateSimilarity(generate.Docstring)
+                : 0,
+            Status = generate.Status
+        };
     }
 }

@@ -82,7 +82,7 @@ namespace JetBrains.Rider.Model
     
     
     
-    protected override long SerializationHash => 6895092019639409725L;
+    protected override long SerializationHash => 322293849994360554L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -125,7 +125,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:54</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:55</p>
   /// </summary>
   public sealed class RdChangeNodeContext : IPrintable, IEquatable<RdChangeNodeContext>
   {
@@ -210,7 +210,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:44</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:45</p>
   /// </summary>
   public enum RdLoadingState {
     Loading,
@@ -226,13 +226,13 @@ namespace JetBrains.Rider.Model
   {
     //fields
     //public fields
-    public float Value {get; private set;}
+    public double Value {get; private set;}
     public RdQualityStatus Status {get; private set;}
     
     //private fields
     //primary constructor
     public RdQuality(
-      float value,
+      double value,
       RdQualityStatus status
     )
     {
@@ -241,7 +241,7 @@ namespace JetBrains.Rider.Model
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out float value, out RdQualityStatus status)
+    public void Deconstruct(out double value, out RdQualityStatus status)
     {
       value = Value;
       status = Status;
@@ -250,7 +250,7 @@ namespace JetBrains.Rider.Model
     
     public static CtxReadDelegate<RdQuality> Read = (ctx, reader) => 
     {
-      var value = reader.ReadFloat();
+      var value = reader.ReadDouble();
       var status = (RdQualityStatus)reader.ReadInt();
       var _result = new RdQuality(value, status);
       return _result;
@@ -315,7 +315,8 @@ namespace JetBrains.Rider.Model
   /// </summary>
   public enum RdQualityStatus {
     Ok,
-    Failed
+    Failed,
+    Canceled
   }
   
   
@@ -330,7 +331,7 @@ namespace JetBrains.Rider.Model
     [NotNull] public string Identifier {get; private set;}
     [NotNull] public string Name {get; private set;}
     [CanBeNull] public string Docstring {get; private set;}
-    public float Coverage {get; private set;}
+    public double Coverage {get; private set;}
     [NotNull] public RdQuality Quality {get; private set;}
     public RdLoadingState LoadingState {get; private set;}
     [NotNull] public List<RdRow> Children {get; private set;}
@@ -342,7 +343,7 @@ namespace JetBrains.Rider.Model
       [NotNull] string identifier,
       [NotNull] string name,
       [CanBeNull] string docstring,
-      float coverage,
+      double coverage,
       [NotNull] RdQuality quality,
       RdLoadingState loadingState,
       [NotNull] List<RdRow> children
@@ -364,7 +365,7 @@ namespace JetBrains.Rider.Model
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out RdRowType type, [NotNull] out string identifier, [NotNull] out string name, [CanBeNull] out string docstring, out float coverage, [NotNull] out RdQuality quality, out RdLoadingState loadingState, [NotNull] out List<RdRow> children)
+    public void Deconstruct(out RdRowType type, [NotNull] out string identifier, [NotNull] out string name, [CanBeNull] out string docstring, out double coverage, [NotNull] out RdQuality quality, out RdLoadingState loadingState, [NotNull] out List<RdRow> children)
     {
       type = Type;
       identifier = Identifier;
@@ -383,7 +384,7 @@ namespace JetBrains.Rider.Model
       var identifier = reader.ReadString();
       var name = reader.ReadString();
       var docstring = ReadStringNullable(ctx, reader);
-      var coverage = reader.ReadFloat();
+      var coverage = reader.ReadDouble();
       var quality = RdQuality.Read(ctx, reader);
       var loadingState = (RdLoadingState)reader.ReadInt();
       var children = ReadRdRowList(ctx, reader);
@@ -479,7 +480,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:50</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:51</p>
   /// </summary>
   public sealed class RdToolWindowContent : IPrintable, IEquatable<RdToolWindowContent>
   {

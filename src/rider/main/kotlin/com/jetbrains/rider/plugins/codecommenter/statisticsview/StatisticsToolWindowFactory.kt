@@ -12,6 +12,7 @@ import com.jetbrains.rd.platform.util.lifetime
 import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsData
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.models.StatisticsTreeTableModel
 import com.jetbrains.rider.plugins.codecommenter.statisticsview.views.StatisticsTreeTableView
+import com.jetbrains.rider.plugins.codecommenter.utils.toQuality
 import com.jetbrains.rider.plugins.codecommenter.utils.toStatisticsLoadingState
 import com.jetbrains.rider.plugins.codecommenter.utils.toTreeNode
 
@@ -51,7 +52,7 @@ class StatisticsToolWindowFactory : ToolWindowFactory {
     private fun onNodesChanged(toolWindowContent: RdChangeNodeContext): RdTask<Unit> {
         val node = treeTableModel.findNodeByIdentifier(toolWindowContent.newNode.identifier)
 
-        node?.quality = toolWindowContent.newNode.quality.value
+        node?.quality = toolWindowContent.newNode.quality.toQuality()
         node?.loadingState = toolWindowContent.newNode.loadingState.toStatisticsLoadingState()
 
         treeTableModel.nodeChanged(node)

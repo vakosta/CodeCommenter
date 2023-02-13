@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using JetBrains.Lifetimes;
+using ReSharperPlugin.CodeCommenter.Entities.Network;
 
 namespace ReSharperPlugin.CodeCommenter.Common;
 
 public interface ICommentGenerationStrategy
 {
-    Task<string> Generate(string code, Lifetime lifetime);
+    Task<GenerationResult> Generate(string code, Lifetime lifetime);
 }

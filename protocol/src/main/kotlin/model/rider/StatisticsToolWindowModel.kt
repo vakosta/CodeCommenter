@@ -1,7 +1,7 @@
 package model.rider
 
 import com.jetbrains.rd.generator.nova.Ext
-import com.jetbrains.rd.generator.nova.PredefinedType.float
+import com.jetbrains.rd.generator.nova.PredefinedType.double
 import com.jetbrains.rd.generator.nova.PredefinedType.string
 import com.jetbrains.rd.generator.nova.PredefinedType.void
 import com.jetbrains.rd.generator.nova.call
@@ -18,7 +18,7 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
         field("identifier", string)
         field("name", string)
         field("docstring", string.nullable)
-        field("coverage", float)
+        field("coverage", double)
         field("quality", RdQuality)
         field("loadingState", RdLoadingState)
         field("children", immutableList(this))
@@ -32,13 +32,14 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
     }
 
     private val RdQuality = structdef {
-        field("value", float)
+        field("value", double)
         field("status", RdQualityStatus)
     }
 
     private val RdQualityStatus = enum {
         +"Ok"
         +"Failed"
+        +"Canceled"
     }
 
     private val RdLoadingState = enum {

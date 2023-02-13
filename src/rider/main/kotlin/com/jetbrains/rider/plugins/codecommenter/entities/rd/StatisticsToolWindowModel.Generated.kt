@@ -55,7 +55,7 @@ class StatisticsToolWindowModel private constructor(
         }
         
         
-        const val serializationHash = 6895092019639409725L
+        const val serializationHash = 322293849994360554L
         
     }
     override val serializersOwner: ISerializersOwner get() = StatisticsToolWindowModel
@@ -108,7 +108,7 @@ val IProtocol.statisticsToolWindowModel get() = getOrCreateExtension(StatisticsT
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:54]
+ * #### Generated from [StatisticsToolWindowModel.kt:55]
  */
 data class RdChangeNodeContext (
     val newNode: RdRow
@@ -165,7 +165,7 @@ data class RdChangeNodeContext (
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:44]
+ * #### Generated from [StatisticsToolWindowModel.kt:45]
  */
 enum class RdLoadingState {
     Loading, 
@@ -183,7 +183,7 @@ enum class RdLoadingState {
  * #### Generated from [StatisticsToolWindowModel.kt:34]
  */
 data class RdQuality (
-    val value: Float,
+    val value: Double,
     val status: RdQualityStatus
 ) : IPrintable {
     //companion
@@ -193,13 +193,13 @@ data class RdQuality (
         
         @Suppress("UNCHECKED_CAST")
         override fun read(ctx: SerializationCtx, buffer: AbstractBuffer): RdQuality  {
-            val value = buffer.readFloat()
+            val value = buffer.readDouble()
             val status = buffer.readEnum<RdQualityStatus>()
             return RdQuality(value, status)
         }
         
         override fun write(ctx: SerializationCtx, buffer: AbstractBuffer, value: RdQuality)  {
-            buffer.writeFloat(value.value)
+            buffer.writeDouble(value.value)
             buffer.writeEnum(value.status)
         }
         
@@ -247,7 +247,8 @@ data class RdQuality (
  */
 enum class RdQualityStatus {
     Ok, 
-    Failed;
+    Failed, 
+    Canceled;
     
     companion object {
         val marshaller = FrameworkMarshallers.enum<RdQualityStatus>()
@@ -264,7 +265,7 @@ data class RdRow (
     val identifier: String,
     val name: String,
     val docstring: String?,
-    val coverage: Float,
+    val coverage: Double,
     val quality: RdQuality,
     val loadingState: RdLoadingState,
     val children: List<RdRow>
@@ -280,7 +281,7 @@ data class RdRow (
             val identifier = buffer.readString()
             val name = buffer.readString()
             val docstring = buffer.readNullable { buffer.readString() }
-            val coverage = buffer.readFloat()
+            val coverage = buffer.readDouble()
             val quality = RdQuality.read(ctx, buffer)
             val loadingState = buffer.readEnum<RdLoadingState>()
             val children = buffer.readList { RdRow.read(ctx, buffer) }
@@ -292,7 +293,7 @@ data class RdRow (
             buffer.writeString(value.identifier)
             buffer.writeString(value.name)
             buffer.writeNullable(value.docstring) { buffer.writeString(it) }
-            buffer.writeFloat(value.coverage)
+            buffer.writeDouble(value.coverage)
             RdQuality.write(ctx, buffer, value.quality)
             buffer.writeEnum(value.loadingState)
             buffer.writeList(value.children) { v -> RdRow.write(ctx, buffer, v) }
@@ -372,7 +373,7 @@ enum class RdRowType {
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:50]
+ * #### Generated from [StatisticsToolWindowModel.kt:51]
  */
 data class RdToolWindowContent (
     val rows: List<RdRow>

@@ -1,4 +1,5 @@
 using JetBrains.ReSharper.Psi.CSharp.Tree;
+using ReSharperPlugin.CodeCommenter.Entities.Network;
 
 namespace JetBrains.Rider.Model;
 
@@ -8,7 +9,7 @@ public class MethodDescriptor
     public string Identifier { get; init; }
     public string Name { get; init; }
     public string Docstring { get; init; }
-    public float Coverage { get; init; }
-    public float Quality { get; set; }
+    public double Coverage { get; init; }
+    public Quality Quality { get; set; }
     public LoadingState LoadingState { get; set; } = LoadingState.Loading;
 }

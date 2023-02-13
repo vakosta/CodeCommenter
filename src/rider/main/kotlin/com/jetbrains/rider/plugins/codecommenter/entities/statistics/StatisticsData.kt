@@ -1,5 +1,6 @@
 package com.jetbrains.rider.plugins.codecommenter.entities.statistics
 
+import com.jetbrains.rider.plugins.codecommenter.commons.Quality
 import javax.swing.tree.DefaultMutableTreeNode
 
 data class StatisticsData(
@@ -7,8 +8,8 @@ data class StatisticsData(
     var identifier: String,
     var name: String,
     var docstring: String,
-    var coverage: Float,
-    var quality: Float,
+    var coverage: Double,
+    var quality: Quality,
     var loadingState: LoadingState,
     var id: String = "",
 ) : DefaultMutableTreeNode() {
@@ -36,8 +37,8 @@ data class StatisticsData(
             identifier = "",
             name = "",
             docstring = "",
-            coverage = 0F,
-            quality = 0F,
+            coverage = 0.0,
+            quality = Quality(0.0, Quality.Status.Ok),
             loadingState = LoadingState.Loaded,
         )
     }

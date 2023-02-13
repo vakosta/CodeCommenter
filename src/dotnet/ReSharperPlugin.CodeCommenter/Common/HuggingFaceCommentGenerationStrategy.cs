@@ -7,6 +7,7 @@ using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rider.Model;
 using Newtonsoft.Json;
+using ReSharperPlugin.CodeCommenter.Entities.Network;
 
 namespace ReSharperPlugin.CodeCommenter.Common;
 
@@ -14,21 +15,36 @@ namespace ReSharperPlugin.CodeCommenter.Common;
 public class HuggingFaceCommentGenerationStrategy : ICommentGenerationStrategy
 {
     // TODO: Rewrite to JetBrains.Util.Threading.Tasks.TaskSemaphore
-    private static SemaphoreSlim mySemaphore = new(4, 4);
+    private static SemaphoreSlim Semaphore = new(4, 4);
 
     private const string Url = "https://vakosta-code2comment.hf.space/run/predict";
     private const string MediaType = "application/json";
 
-    public async Task<string> Generate(string code, Lifetime lifetime)
+    public async Task<GenerationResult> Generate(string code, Lifetime lifetime)
     {
-        await mySemaphore.WaitAsync(lifetime);
+        await Semaphore.WaitAsync(lifetime);
         try
         {
-            return await Post(code, lifetime);
+            return new GenerationResult
+            {
+                Docstring = await Post(code, lifetime),
+                Status = GenerationStatus.Ok
+            };
         }
+
+        catch (HttpRequestException)
+        {
+            return new GenerationResult { Status = GenerationStatus.Failed };
+        }
+
+        catch (TaskCanceledException)
+        {
+            return new GenerationResult { Status = GenerationStatus.Canceled };
+        }
+
         finally
         {
-            mySemaphore.Release();
+            Semaphore.Release();
         }
     }
 
@@ -48,6 +64,7 @@ public class HuggingFaceCommentGenerationStrategy : ICommentGenerationStrategy
 
         var httpContent = new StringContent(stringPayload, Encoding.UTF8, MediaType);
         var httpResponse = await client.PostAsync(Url, httpContent, lifetime);
+        httpResponse.EnsureSuccessStatusCode();
 
         var stringResult = await httpResponse.Content.ReadAsStringAsync();
         return stringResult != null

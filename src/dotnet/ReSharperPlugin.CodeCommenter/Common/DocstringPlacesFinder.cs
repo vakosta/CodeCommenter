@@ -13,6 +13,7 @@ using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.PsiGen.Util;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Rider.Model;
+using ReSharperPlugin.CodeCommenter.Entities.Network;
 
 namespace ReSharperPlugin.CodeCommenter.Common;
 
@@ -103,7 +104,7 @@ public class DocstringPlacesFinder
 
             Docstring = commentBlock,
 
-            Quality = 0F
+            Quality = new Quality { Value = 0, Status = GenerationStatus.Ok }
         };
     }
 }

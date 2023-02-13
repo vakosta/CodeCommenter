@@ -19,12 +19,12 @@ class StatisticsTreeTableModel(
             (node.parent as StatisticsData).coverage = node.parent.children().asSequence()
                 .filter { it is StatisticsData }
                 .map { (it as StatisticsData).coverage }
-                .toList().average().toFloat()
+                .toList().average()
 
-            (node.parent as StatisticsData).quality = node.parent.children().asSequence()
+            (node.parent as StatisticsData).quality.value = node.parent.children().asSequence()
                 .filter { it is StatisticsData }
-                .map { (it as StatisticsData).quality }
-                .toList().average().toFloat()
+                .map { (it as StatisticsData).quality.value }
+                .toList().average()
 
             nodeChanged(node.parent)
         }
