@@ -28,7 +28,7 @@ public class HuggingFaceCommentGenerationStrategy : ICommentGenerationStrategy
             return new GenerationResult
             {
                 Docstring = await Post(code, lifetime),
-                Status = GenerationStatus.Ok
+                Status = GenerationStatus.Success
             };
         }
 

@@ -10,7 +10,6 @@ data class StatisticsData(
     var docstring: String,
     var coverage: Double,
     var quality: Quality,
-    var loadingState: LoadingState,
     var id: String = "",
 ) : DefaultMutableTreeNode() {
     override fun equals(other: Any?): Boolean = other is StatisticsData
@@ -25,12 +24,6 @@ data class StatisticsData(
         Root,
     }
 
-    enum class LoadingState {
-        Loading,
-        Loaded,
-        RelativeToChildren,
-    }
-
     companion object {
         fun getRoot(): StatisticsData = StatisticsData(
             type = Type.Root,
@@ -38,8 +31,7 @@ data class StatisticsData(
             name = "",
             docstring = "",
             coverage = 0.0,
-            quality = Quality(0.0, Quality.Status.Ok),
-            loadingState = LoadingState.Loaded,
+            quality = Quality(0.0, Quality.Status.RelativeToChildren),
         )
     }
 }
@@ -55,8 +47,15 @@ private data class EssentialData(
 }
 
 fun StatisticsData.isLoadingRecursive(): Boolean {
-    return loadingState == StatisticsData.LoadingState.Loading
-            || !isLeaf && loadingState == StatisticsData.LoadingState.RelativeToChildren && children().asSequence()
+    return quality.status == Quality.Status.Loading
+            || !isLeaf && quality.status == Quality.Status.RelativeToChildren && children().asSequence()
         .filter { it is StatisticsData }
         .any { (it as StatisticsData).isLoadingRecursive() }
+}
+
+fun StatisticsData.isErrorRecursive(): Boolean {
+    return quality.status == Quality.Status.Failed || quality.status == Quality.Status.Canceled
+            || !isLeaf && quality.status == Quality.Status.RelativeToChildren && children().asSequence()
+        .filter { it is StatisticsData }
+        .any { (it as StatisticsData).isErrorRecursive() }
 }

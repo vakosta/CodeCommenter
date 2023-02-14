@@ -5,8 +5,10 @@ data class Quality(
     var status: Status,
 ) {
     enum class Status {
-        Ok,
+        Loading,
+        Success,
         Failed,
         Canceled,
+        RelativeToChildren,
     }
 }

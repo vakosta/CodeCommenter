@@ -55,7 +55,6 @@ public class StatisticsToolWindowManager
     private async Task UpdateRowQuality(MethodDescriptor method)
     {
         method.Quality = await CalculateQuality(method.Declaration);
-        method.LoadingState = LoadingState.Loaded;
         var rdMethod = method.ToRdRow();
         myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdMethod));
     }
@@ -74,7 +73,7 @@ public class StatisticsToolWindowManager
         var generate = await myCommentGenerationStrategy.Generate(methodCode, myLifetime);
         return new Quality
         {
-            Value = generate.Status == GenerationStatus.Ok
+            Value = generate.Status == GenerationStatus.Success
                 ? commentBlock.CalculateSimilarity(generate.Docstring)
                 : 0,
             Status = generate.Status

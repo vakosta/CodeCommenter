@@ -82,7 +82,7 @@ namespace JetBrains.Rider.Model
     
     
     
-    protected override long SerializationHash => 322293849994360554L;
+    protected override long SerializationHash => 8081157413960454048L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -125,7 +125,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:55</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:50</p>
   /// </summary>
   public sealed class RdChangeNodeContext : IPrintable, IEquatable<RdChangeNodeContext>
   {
@@ -210,17 +210,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:45</p>
-  /// </summary>
-  public enum RdLoadingState {
-    Loading,
-    Loaded,
-    RelativeToChildren
-  }
-  
-  
-  /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:34</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:33</p>
   /// </summary>
   public sealed class RdQuality : IPrintable, IEquatable<RdQuality>
   {
@@ -311,12 +301,14 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:39</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:38</p>
   /// </summary>
   public enum RdQualityStatus {
-    Ok,
+    Loading,
+    Success,
     Failed,
-    Canceled
+    Canceled,
+    RelativeToChildren
   }
   
   
@@ -333,7 +325,6 @@ namespace JetBrains.Rider.Model
     [CanBeNull] public string Docstring {get; private set;}
     public double Coverage {get; private set;}
     [NotNull] public RdQuality Quality {get; private set;}
-    public RdLoadingState LoadingState {get; private set;}
     [NotNull] public List<RdRow> Children {get; private set;}
     
     //private fields
@@ -345,7 +336,6 @@ namespace JetBrains.Rider.Model
       [CanBeNull] string docstring,
       double coverage,
       [NotNull] RdQuality quality,
-      RdLoadingState loadingState,
       [NotNull] List<RdRow> children
     )
     {
@@ -360,12 +350,11 @@ namespace JetBrains.Rider.Model
       Docstring = docstring;
       Coverage = coverage;
       Quality = quality;
-      LoadingState = loadingState;
       Children = children;
     }
     //secondary constructor
     //deconstruct trait
-    public void Deconstruct(out RdRowType type, [NotNull] out string identifier, [NotNull] out string name, [CanBeNull] out string docstring, out double coverage, [NotNull] out RdQuality quality, out RdLoadingState loadingState, [NotNull] out List<RdRow> children)
+    public void Deconstruct(out RdRowType type, [NotNull] out string identifier, [NotNull] out string name, [CanBeNull] out string docstring, out double coverage, [NotNull] out RdQuality quality, [NotNull] out List<RdRow> children)
     {
       type = Type;
       identifier = Identifier;
@@ -373,7 +362,6 @@ namespace JetBrains.Rider.Model
       docstring = Docstring;
       coverage = Coverage;
       quality = Quality;
-      loadingState = LoadingState;
       children = Children;
     }
     //statics
@@ -386,9 +374,8 @@ namespace JetBrains.Rider.Model
       var docstring = ReadStringNullable(ctx, reader);
       var coverage = reader.ReadDouble();
       var quality = RdQuality.Read(ctx, reader);
-      var loadingState = (RdLoadingState)reader.ReadInt();
       var children = ReadRdRowList(ctx, reader);
-      var _result = new RdRow(type, identifier, name, docstring, coverage, quality, loadingState, children);
+      var _result = new RdRow(type, identifier, name, docstring, coverage, quality, children);
       return _result;
     };
     public static CtxReadDelegate<string> ReadStringNullable = JetBrains.Rd.Impl.Serializers.ReadString.NullableClass();
@@ -402,7 +389,6 @@ namespace JetBrains.Rider.Model
       WriteStringNullable(ctx, writer, value.Docstring);
       writer.Write(value.Coverage);
       RdQuality.Write(ctx, writer, value.Quality);
-      writer.Write((int)value.LoadingState);
       WriteRdRowList(ctx, writer, value.Children);
     };
     public static  CtxWriteDelegate<string> WriteStringNullable = JetBrains.Rd.Impl.Serializers.WriteString.NullableClass();
@@ -424,7 +410,7 @@ namespace JetBrains.Rider.Model
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
-      return Type == other.Type && Identifier == other.Identifier && Name == other.Name && Equals(Docstring, other.Docstring) && Coverage == other.Coverage && Equals(Quality, other.Quality) && LoadingState == other.LoadingState && Children.SequenceEqual(other.Children);
+      return Type == other.Type && Identifier == other.Identifier && Name == other.Name && Equals(Docstring, other.Docstring) && Coverage == other.Coverage && Equals(Quality, other.Quality) && Children.SequenceEqual(other.Children);
     }
     //hash code trait
     public override int GetHashCode()
@@ -437,7 +423,6 @@ namespace JetBrains.Rider.Model
         hash = hash * 31 + (Docstring != null ? Docstring.GetHashCode() : 0);
         hash = hash * 31 + Coverage.GetHashCode();
         hash = hash * 31 + Quality.GetHashCode();
-        hash = hash * 31 + (int) LoadingState;
         hash = hash * 31 + Children.ContentHashCode();
         return hash;
       }
@@ -453,7 +438,6 @@ namespace JetBrains.Rider.Model
         printer.Print("docstring = "); Docstring.PrintEx(printer); printer.Println();
         printer.Print("coverage = "); Coverage.PrintEx(printer); printer.Println();
         printer.Print("quality = "); Quality.PrintEx(printer); printer.Println();
-        printer.Print("loadingState = "); LoadingState.PrintEx(printer); printer.Println();
         printer.Print("children = "); Children.PrintEx(printer); printer.Println();
       }
       printer.Print(")");
@@ -469,7 +453,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:27</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:26</p>
   /// </summary>
   public enum RdRowType {
     Module,
@@ -480,7 +464,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:51</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:46</p>
   /// </summary>
   public sealed class RdToolWindowContent : IPrintable, IEquatable<RdToolWindowContent>
   {

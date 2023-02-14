@@ -27,9 +27,9 @@ public static class RdUtil
             null,
             !files.IsEmpty() ? files.Average(file => file.Coverage) : 0,
             !files.IsEmpty()
-                ? new RdQuality(files.Average(file => file.Quality.Value), RdQualityStatus.Ok)
-                : new RdQuality(0, RdQualityStatus.Ok),
-            RdLoadingState.RelativeToChildren,
+                ? new RdQuality(files.Average(file => file.Quality.Value),
+                    RdQualityStatus.RelativeToChildren)
+                : new RdQuality(0, RdQualityStatus.Success),
             files);
     }
 
@@ -45,9 +45,9 @@ public static class RdUtil
             null,
             !methods.IsEmpty() ? fileDescriptor.Methods.Average(method => method.Coverage) : 0,
             !methods.IsEmpty()
-                ? new RdQuality(fileDescriptor.Methods.Average(method => method.Quality.Value), RdQualityStatus.Ok)
-                : new RdQuality(0, RdQualityStatus.Ok),
-            RdLoadingState.RelativeToChildren,
+                ? new RdQuality(fileDescriptor.Methods.Average(method => method.Quality.Value),
+                    RdQualityStatus.RelativeToChildren)
+                : new RdQuality(0, RdQualityStatus.Success),
             methods);
         ;
     }
@@ -61,23 +61,7 @@ public static class RdUtil
             methodDescriptor.Docstring,
             methodDescriptor.Docstring.IsNotEmpty() ? 1 : 0,
             methodDescriptor.Quality.ToRdQuality(),
-            methodDescriptor.LoadingState.ToRdLoadingState(),
             new List<RdRow>());
-    }
-
-    public static RdLoadingState ToRdLoadingState(this LoadingState loadingState)
-    {
-        return loadingState switch
-        {
-            LoadingState.Loading =>
-                RdLoadingState.Loading,
-            LoadingState.Loaded =>
-                RdLoadingState.Loaded,
-            LoadingState.RelativeToChildren =>
-                RdLoadingState.RelativeToChildren,
-            _ =>
-                RdLoadingState.Loaded
-        };
     }
 
     public static RdQuality ToRdQuality(this Quality quality)
@@ -89,14 +73,16 @@ public static class RdUtil
     {
         return generationStatus switch
         {
-            GenerationStatus.Ok =>
-                RdQualityStatus.Ok,
+            GenerationStatus.Loading =>
+                RdQualityStatus.Loading,
+            GenerationStatus.Success =>
+                RdQualityStatus.Success,
             GenerationStatus.Failed =>
                 RdQualityStatus.Failed,
             GenerationStatus.Canceled =>
                 RdQualityStatus.Canceled,
             _ =>
-                RdQualityStatus.Failed
+                RdQualityStatus.RelativeToChildren
         };
     }
 }

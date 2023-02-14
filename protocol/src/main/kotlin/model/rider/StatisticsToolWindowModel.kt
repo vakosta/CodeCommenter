@@ -20,7 +20,6 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
         field("docstring", string.nullable)
         field("coverage", double)
         field("quality", RdQuality)
-        field("loadingState", RdLoadingState)
         field("children", immutableList(this))
     }
 
@@ -37,14 +36,10 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
     }
 
     private val RdQualityStatus = enum {
-        +"Ok"
+        +"Loading"
+        +"Success"
         +"Failed"
         +"Canceled"
-    }
-
-    private val RdLoadingState = enum {
-        +"Loading"
-        +"Loaded"
         +"RelativeToChildren"
     }
 

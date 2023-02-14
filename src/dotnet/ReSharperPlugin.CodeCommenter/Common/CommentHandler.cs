@@ -34,6 +34,7 @@ public class CommentHandler
         myLifetime = lifetime;
         mySolution = solution;
         myBackgroundProgressIndicatorManager = backgroundProgressIndicatorManager;
+        myUserNotifications = userNotifications;
         myCommentGenerationStrategy = commentGenerationStrategy;
     }
 
@@ -57,7 +58,7 @@ public class CommentHandler
         var methodCode = PsiUtil.GetMethodCode(declaration, oldCommentBlock);
         var comment = await myCommentGenerationStrategy.Generate(methodCode, myLifetime);
 
-        if (comment.Status != GenerationStatus.Ok)
+        if (comment.Status == GenerationStatus.Success)
             CreateCommentBlock(declaration, progress, comment, oldCommentBlock);
         else
             ErrorNotification();

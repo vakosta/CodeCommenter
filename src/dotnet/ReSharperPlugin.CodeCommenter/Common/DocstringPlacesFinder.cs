@@ -104,7 +104,7 @@ public class DocstringPlacesFinder
 
             Docstring = commentBlock,
 
-            Quality = new Quality { Value = 0, Status = GenerationStatus.Ok }
+            Quality = new Quality { Value = 0, Status = GenerationStatus.Loading }
         };
     }
 }

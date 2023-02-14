@@ -11,5 +11,4 @@ public class MethodDescriptor
     public string Docstring { get; init; }
     public double Coverage { get; init; }
     public Quality Quality { get; set; }
-    public LoadingState LoadingState { get; set; } = LoadingState.Loading;
 }

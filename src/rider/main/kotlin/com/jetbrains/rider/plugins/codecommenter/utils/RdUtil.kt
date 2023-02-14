@@ -1,6 +1,5 @@
 package com.jetbrains.rider.plugins.codecommenter.utils
 
-import com.jetbrains.rd.ide.model.RdLoadingState
 import com.jetbrains.rd.ide.model.RdQuality
 import com.jetbrains.rd.ide.model.RdQualityStatus
 import com.jetbrains.rd.ide.model.RdRow
@@ -17,7 +16,6 @@ fun RdRow.toTreeNode(): MutableTreeNode {
         docstring = this.docstring ?: "",
         coverage = this.coverage,
         quality = this.quality.toQuality(),
-        loadingState = this.loadingState.toStatisticsLoadingState(),
     )
 
     for (child in this.children)
@@ -47,26 +45,20 @@ fun RdRowType.toStatisticsDataType(): StatisticsData.Type =
                 StatisticsData.Type.Root
         }
 
-fun RdLoadingState.toStatisticsLoadingState(): StatisticsData.LoadingState =
-        when (this) {
-            RdLoadingState.Loading ->
-                StatisticsData.LoadingState.Loading
-
-            RdLoadingState.Loaded ->
-                StatisticsData.LoadingState.Loaded
-
-            RdLoadingState.RelativeToChildren ->
-                StatisticsData.LoadingState.RelativeToChildren
-        }
-
 fun RdQualityStatus.toQualityStatus(): Quality.Status =
         when (this) {
-            RdQualityStatus.Ok ->
-                Quality.Status.Ok
+            RdQualityStatus.Loading ->
+                Quality.Status.Loading
+
+            RdQualityStatus.Success ->
+                Quality.Status.Success
 
             RdQualityStatus.Failed ->
                 Quality.Status.Failed
 
             RdQualityStatus.Canceled ->
                 Quality.Status.Canceled
+
+            RdQualityStatus.RelativeToChildren ->
+                Quality.Status.RelativeToChildren
         }
