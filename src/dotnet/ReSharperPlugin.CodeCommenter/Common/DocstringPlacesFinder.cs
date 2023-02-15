@@ -39,7 +39,7 @@ public class DocstringPlacesFinder
         using (ReadLockCookie.Create())
         {
             var moduleDescriptors = mySolution.GetAllProjects()
-                .Where(p => p.ProjectFile != null)
+                .Where(project => project.ProjectFile != null)
                 .SelectMany(project => project.GetPsiModules())
                 .Select(GetModuleDescriptor);
             modules.AddRange(moduleDescriptors);
