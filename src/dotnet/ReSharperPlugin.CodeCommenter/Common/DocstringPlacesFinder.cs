@@ -4,16 +4,15 @@ using JetBrains.Annotations;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
-using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.PsiGen.Util;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Rider.Model;
 using ReSharperPlugin.CodeCommenter.Entities.Network;
+using ReSharperPlugin.CodeCommenter.Util;
 
 namespace ReSharperPlugin.CodeCommenter.Common;
 
@@ -22,13 +21,22 @@ public class DocstringPlacesFinder
 {
     private readonly Lifetime myLifetime;
     [NotNull] private readonly ISolution mySolution;
+    [NotNull] private readonly ProjectHelper myProjectHelper;
+    [NotNull] private readonly PsiSourceFileHelper myPsiSourceFileHelper;
+    [NotNull] private readonly TreeNodeHelper myTreeNodeHelper;
 
     public DocstringPlacesFinder(
         Lifetime lifetime,
-        [NotNull] ISolution solution)
+        [NotNull] ISolution solution,
+        [NotNull] ProjectHelper projectHelper,
+        [NotNull] PsiSourceFileHelper psiSourceFileHelper,
+        [NotNull] TreeNodeHelper treeNodeHelper)
     {
         myLifetime = lifetime;
         mySolution = solution;
+        myProjectHelper = projectHelper;
+        myPsiSourceFileHelper = psiSourceFileHelper;
+        myTreeNodeHelper = treeNodeHelper;
     }
 
     public IEnumerable<ModuleDescriptor> GetAllMethodsInProject()
@@ -40,7 +48,7 @@ public class DocstringPlacesFinder
         {
             var moduleDescriptors = mySolution.GetAllProjects()
                 .Where(project => project.ProjectFile != null)
-                .SelectMany(project => project.GetPsiModules())
+                .SelectMany(project => myProjectHelper.GetPsiModules(project))
                 .Select(GetModuleDescriptor);
             modules.AddRange(moduleDescriptors);
         }
@@ -53,8 +61,8 @@ public class DocstringPlacesFinder
         var moduleDescriptor = new ModuleDescriptor { Name = module.DisplayName };
         if (!myLifetime.IsAlive) return moduleDescriptor;
 
-        foreach (var sourceFile in module.SourceFiles)
-            if (sourceFile.LanguageType is CSharpProjectFileType && !sourceFile.ToProjectFile()!.Properties.IsHidden)
+        foreach (var sourceFile in module.SourceFiles.Where(sourceFile => sourceFile is IPsiProjectFile))
+            if (sourceFile.LanguageType is CSharpProjectFileType && !myPsiSourceFileHelper.IsHidden(sourceFile))
                 moduleDescriptor.Files.Add(GetFileDescriptor(sourceFile));
         return moduleDescriptor;
     }
@@ -64,7 +72,7 @@ public class DocstringPlacesFinder
         var fileDescriptor = new FileDescriptor { Name = sourceFile.Name };
         if (!myLifetime.IsAlive) return fileDescriptor;
 
-        foreach (var file in sourceFile.GetPsiFiles<CSharpLanguage>())
+        foreach (var file in myPsiSourceFileHelper.GetPsiFiles(sourceFile))
             fileDescriptor.Methods.AddAll(GetAllMethodsInFile(file));
         return fileDescriptor;
     }
@@ -74,7 +82,7 @@ public class DocstringPlacesFinder
         var methods = new List<MethodDescriptor>();
         if (!myLifetime.IsAlive) return methods;
 
-        foreach (var child in treeNode.Children())
+        foreach (var child in myTreeNodeHelper.Children(treeNode))
         {
             if (child is IMethodDeclaration declaration)
             {
