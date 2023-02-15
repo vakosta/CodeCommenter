@@ -1,27 +1,29 @@
 using JetBrains.Diagnostics;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Tree;
 using JetBrains.ReSharper.Psi.Tree;
 
 namespace ReSharperPlugin.CodeCommenter.Util;
 
-public static class PsiUtil
+[SolutionComponent]
+public class PsiHelper : IPsiHelper
 {
-    public static string GetMethodCode(ITreeNode declaration, IDocCommentBlock oldCommentBlock)
+    public string GetMethodCode(ITreeNode declaration, IDocCommentBlock oldCommentBlock)
     {
         return oldCommentBlock != null
             ? declaration.GetText().Replace(oldCommentBlock.GetText(), "")
             : declaration.GetText();
     }
 
-    public static IDocCommentBlock CreateDocCommentBlock(ITreeNode declaration, string comment)
+    public IDocCommentBlock CreateDocCommentBlock(ITreeNode declaration, string comment)
     {
         return CSharpElementFactory
             .GetInstance(declaration)
             .CreateDocCommentBlock(comment);
     }
 
-    public static void ModifyCommentBlockInPsi(ITreeNode declaration, IDocCommentBlock oldCommentBlock,
+    public void ModifyCommentBlockInPsi(ITreeNode declaration, IDocCommentBlock oldCommentBlock,
         IDocCommentBlock newCommentBlock)
     {
         if (oldCommentBlock != null)

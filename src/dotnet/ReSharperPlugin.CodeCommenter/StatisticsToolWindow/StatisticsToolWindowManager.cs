@@ -4,8 +4,8 @@ using JetBrains.Core;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
+using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
-using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Rider.Model;
 using ReSharperPlugin.CodeCommenter.Common;
@@ -20,18 +20,18 @@ public class StatisticsToolWindowManager
     private readonly Lifetime myLifetime;
     [NotNull] private readonly StatisticsToolWindowModel myStatisticsToolWindowModel;
     [NotNull] private readonly DocstringPlacesFinder myDocstringPlacesFinder;
-    [NotNull] private readonly ICommentGenerationStrategy myCommentGenerationStrategy;
+    [NotNull] private readonly CommentProvider myCommentProvider;
 
     public StatisticsToolWindowManager(
         Lifetime lifetime,
         StatisticsToolWindowModel statisticsToolWindowModel,
         DocstringPlacesFinder docstringPlacesFinder,
-        HuggingFaceCommentGenerationStrategy commentGenerationStrategy)
+        CommentProvider commentProvider)
     {
         myLifetime = lifetime;
         myStatisticsToolWindowModel = statisticsToolWindowModel;
         myDocstringPlacesFinder = docstringPlacesFinder;
-        myCommentGenerationStrategy = commentGenerationStrategy;
+        myCommentProvider = commentProvider;
         InitHandlers();
     }
 
@@ -54,29 +54,23 @@ public class StatisticsToolWindowManager
 
     private async Task UpdateRowQuality(MethodDescriptor method)
     {
-        method.Quality = await CalculateQuality(method.Declaration);
+        var declaration = method.Declaration;
+        method.Quality = await CalculateQuality(declaration,
+            SharedImplUtil.GetDocCommentBlockNode(declaration)?.GetText());
         var rdMethod = method.ToRdRow();
         myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdMethod));
     }
 
-    private async Task<Quality> CalculateQuality([NotNull] ITreeNode method)
+    private async Task<Quality> CalculateQuality([NotNull] IMethodDeclaration declaration,
+        [NotNull] string commentBlock)
     {
-        var commentBlock = SharedImplUtil.GetDocCommentBlockNode(method)?.GetText();
-        var methodCode = method.GetText();
-        if (commentBlock != null)
-            methodCode = methodCode.Replace(commentBlock, "");
-        return await CalculateQuality(commentBlock, methodCode);
-    }
-
-    private async Task<Quality> CalculateQuality([NotNull] string commentBlock, [NotNull] string methodCode)
-    {
-        var generate = await myCommentGenerationStrategy.Generate(methodCode, myLifetime);
+        var generate = await myCommentProvider.TryGenerateAndCreateCommentAsync(declaration);
         return new Quality
         {
-            Value = generate.Status == GenerationStatus.Success
-                ? commentBlock.CalculateSimilarity(generate.Docstring)
+            Value = generate.GenerationStatus == GenerationStatus.Success
+                ? commentBlock.CalculateSimilarity(generate.NewDocCommentBlock.GetText())
                 : 0,
-            Status = generate.Status
+            Status = generate.GenerationStatus
         };
     }
 }

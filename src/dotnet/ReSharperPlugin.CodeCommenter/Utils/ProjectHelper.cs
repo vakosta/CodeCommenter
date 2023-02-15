@@ -4,9 +4,10 @@ using JetBrains.ReSharper.Psi.Modules;
 
 namespace ReSharperPlugin.CodeCommenter.Util;
 
-public class ProjectHelper
+[SolutionComponent]
+public class ProjectHelper : IProjectHelper
 {
-    public virtual IList<IPsiModule> GetPsiModules(IProject project)
+    public IList<IPsiModule> GetPsiModules(IProject project)
     {
         return project.GetPsiModules();
     }

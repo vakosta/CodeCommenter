@@ -49,7 +49,7 @@ public class HuggingFaceCommentGenerationStrategy : ICommentGenerationStrategy
     }
 
     /// <summary>
-    /// Executes post request synchronously to convert a code text into a docstring text.
+    /// Executes post request asynchronously to convert a code text into a docstring text.
     /// </summary>
     /// <param name="code">A code text to convert.</param>
     /// <param name="lifetime">A lifetime to receive info about cancellation.</param>

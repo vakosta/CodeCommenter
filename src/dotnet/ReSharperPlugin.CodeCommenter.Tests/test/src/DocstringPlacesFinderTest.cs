@@ -38,9 +38,9 @@ public class DocstringPlacesFinderTest
     [Test]
     public void OneMethodTest()
     {
-        var projectHelper = new Mock<ProjectHelper>();
-        var psiSourceFileHelper = new Mock<PsiSourceFileHelper>();
-        var treeNodeHelper = new Mock<TreeNodeHelper>();
+        var projectHelper = new Mock<IProjectHelper>();
+        var psiSourceFileHelper = new Mock<IPsiSourceFileHelper>();
+        var treeNodeHelper = new Mock<ITreeNodeHelper>();
         var docstringPlacesFinder = new DocstringPlacesFinder(new Lifetime(), GetSolutionMock(
             new List<IProject>
             {
@@ -88,9 +88,9 @@ public class DocstringPlacesFinderTest
     [Test]
     public void TwoMethodsTest()
     {
-        var projectHelper = new Mock<ProjectHelper>();
-        var psiSourceFileHelper = new Mock<PsiSourceFileHelper>();
-        var treeNodeHelper = new Mock<TreeNodeHelper>();
+        var projectHelper = new Mock<IProjectHelper>();
+        var psiSourceFileHelper = new Mock<IPsiSourceFileHelper>();
+        var treeNodeHelper = new Mock<ITreeNodeHelper>();
         var docstringPlacesFinder = new DocstringPlacesFinder(new Lifetime(), GetSolutionMock(
             new List<IProject>
             {
@@ -144,9 +144,9 @@ public class DocstringPlacesFinderTest
     [Test]
     public void FiveMethodsInTwoFilesInTwoModulesTest()
     {
-        var projectHelper = new Mock<ProjectHelper>();
-        var psiSourceFileHelper = new Mock<PsiSourceFileHelper>();
-        var treeNodeHelper = new Mock<TreeNodeHelper>();
+        var projectHelper = new Mock<IProjectHelper>();
+        var psiSourceFileHelper = new Mock<IPsiSourceFileHelper>();
+        var treeNodeHelper = new Mock<ITreeNodeHelper>();
         var docstringPlacesFinder = new DocstringPlacesFinder(new Lifetime(), GetSolutionMock(
             new List<IProject>
             {
@@ -274,7 +274,7 @@ public class DocstringPlacesFinderTest
         return solution.Object;
     }
 
-    private IProject GetProjectMock(Mock<ProjectHelper> projectHelper, IList<IPsiModule> psiModules)
+    private IProject GetProjectMock(Mock<IProjectHelper> projectHelper, IList<IPsiModule> psiModules)
     {
         var project = new Mock<IProject>();
         project
@@ -302,7 +302,7 @@ public class DocstringPlacesFinderTest
     }
 
     private IPsiProjectFile GetPsiProjectFile(ProjectFileType projectFileType, string name, bool isHidden,
-        Mock<PsiSourceFileHelper> psiSourceFileHelper, IReadOnlyList<IFile> files)
+        Mock<IPsiSourceFileHelper> psiSourceFileHelper, IReadOnlyList<IFile> files)
     {
         var psiSourceFile = new Mock<IPsiProjectFile>();
         psiSourceFile
@@ -323,7 +323,7 @@ public class DocstringPlacesFinderTest
         return psiSourceFileObject;
     }
 
-    private IFile GetFile(Mock<TreeNodeHelper> treeNodeHelper, IList<ITreeNode> treeNodes)
+    private IFile GetFile(Mock<ITreeNodeHelper> treeNodeHelper, IList<ITreeNode> treeNodes)
     {
         var file = new Mock<IFile>();
         var fileObject = file.Object;

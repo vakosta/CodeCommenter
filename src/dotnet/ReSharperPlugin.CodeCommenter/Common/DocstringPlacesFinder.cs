@@ -21,16 +21,16 @@ public class DocstringPlacesFinder
 {
     private readonly Lifetime myLifetime;
     [NotNull] private readonly ISolution mySolution;
-    [NotNull] private readonly ProjectHelper myProjectHelper;
-    [NotNull] private readonly PsiSourceFileHelper myPsiSourceFileHelper;
-    [NotNull] private readonly TreeNodeHelper myTreeNodeHelper;
+    [NotNull] private readonly IProjectHelper myProjectHelper;
+    [NotNull] private readonly IPsiSourceFileHelper myPsiSourceFileHelper;
+    [NotNull] private readonly ITreeNodeHelper myTreeNodeHelper;
 
     public DocstringPlacesFinder(
         Lifetime lifetime,
         [NotNull] ISolution solution,
-        [NotNull] ProjectHelper projectHelper,
-        [NotNull] PsiSourceFileHelper psiSourceFileHelper,
-        [NotNull] TreeNodeHelper treeNodeHelper)
+        [NotNull] IProjectHelper projectHelper,
+        [NotNull] IPsiSourceFileHelper psiSourceFileHelper,
+        [NotNull] ITreeNodeHelper treeNodeHelper)
     {
         myLifetime = lifetime;
         mySolution = solution;

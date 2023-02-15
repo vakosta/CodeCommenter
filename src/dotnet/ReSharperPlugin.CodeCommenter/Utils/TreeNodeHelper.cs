@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi.Tree;
 
 namespace ReSharperPlugin.CodeCommenter.Util;
 
-public class TreeNodeHelper
+[SolutionComponent]
+public class TreeNodeHelper : ITreeNodeHelper
 {
-    public virtual IEnumerable<ITreeNode> Children(ITreeNode treeNode)
+    public IEnumerable<ITreeNode> Children(ITreeNode treeNode)
     {
         return treeNode.Children();
     }
