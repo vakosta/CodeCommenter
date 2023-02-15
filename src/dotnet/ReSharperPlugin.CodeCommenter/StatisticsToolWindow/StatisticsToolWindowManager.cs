@@ -39,7 +39,7 @@ public class StatisticsToolWindowManager
     {
         myStatisticsToolWindowModel.GetContent.Set((_, _) =>
         {
-            var modules = myDocstringPlacesFinder.GetAllMethodsInProject();
+            var modules = myDocstringPlacesFinder.GetModuleDescriptors();
             var rdRows = modules.ToRdRows();
             myStatisticsToolWindowModel.OnContentUpdated.Start(myLifetime, new RdToolWindowContent(rdRows));
 

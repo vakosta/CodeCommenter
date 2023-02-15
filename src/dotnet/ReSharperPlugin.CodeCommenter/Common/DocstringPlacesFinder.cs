@@ -39,7 +39,7 @@ public class DocstringPlacesFinder
         myTreeNodeHelper = treeNodeHelper;
     }
 
-    public IEnumerable<ModuleDescriptor> GetAllMethodsInProject()
+    public IList<ModuleDescriptor> GetModuleDescriptors()
     {
         var modules = new List<ModuleDescriptor>();
         if (!myLifetime.IsAlive) return modules;
