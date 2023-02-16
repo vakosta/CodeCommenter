@@ -43,10 +43,9 @@ public static class RdUtil
             fileDescriptor.Name,
             fileDescriptor.Name,
             null,
-            !methods.IsEmpty() ? fileDescriptor.Methods.Average(method => method.Coverage) : 0,
+            !methods.IsEmpty() ? methods.Average(method => method.Coverage) : 0,
             !methods.IsEmpty()
-                ? new RdQuality(fileDescriptor.Methods.Average(method => method.Quality.Value),
-                    RdQualityStatus.RelativeToChildren)
+                ? new RdQuality(methods.Average(method => method.Quality.Value), RdQualityStatus.RelativeToChildren)
                 : new RdQuality(0, RdQualityStatus.Success),
             methods);
         ;
