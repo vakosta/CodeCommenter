@@ -35,6 +35,11 @@ sourceSets {
         kotlin.srcDir 'src/rider/main/kotlin'
         resources.srcDir 'src/rider/main/resources'
     }
+    test {
+        java.srcDir 'src/rider/test/java'
+        kotlin.srcDir 'src/rider/test/kotlin'
+        resources.srcDir 'src/rider/test/resources'
+    }
 }
 
 compileKotlin {
