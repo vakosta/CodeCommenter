@@ -58,7 +58,7 @@ public class DocstringPlacesFinder
 
     private ModuleDescriptor GetModuleDescriptor(IPsiModule module)
     {
-        var moduleDescriptor = new ModuleDescriptor { Name = module.DisplayName };
+        var moduleDescriptor = new ModuleDescriptor { Identifier = module.ToString(), Name = module.DisplayName };
         if (!myLifetime.IsAlive) return moduleDescriptor;
 
         foreach (var sourceFile in module.SourceFiles.Where(sourceFile => sourceFile is IPsiProjectFile))
@@ -69,7 +69,7 @@ public class DocstringPlacesFinder
 
     private FileDescriptor GetFileDescriptor(IPsiSourceFile sourceFile)
     {
-        var fileDescriptor = new FileDescriptor { Name = sourceFile.Name };
+        var fileDescriptor = new FileDescriptor { Identifier = sourceFile.ToString(), Name = sourceFile.Name };
         if (!myLifetime.IsAlive) return fileDescriptor;
 
         foreach (var file in myPsiSourceFileHelper.GetPsiFiles(sourceFile))

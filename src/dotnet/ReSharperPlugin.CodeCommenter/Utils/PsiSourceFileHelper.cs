@@ -12,7 +12,7 @@ public class PsiSourceFileHelper : IPsiSourceFileHelper
 {
     public bool IsHidden(IPsiSourceFile psiSourceFile)
     {
-        return !psiSourceFile.ToProjectFile()!.Properties.IsHidden;
+        return psiSourceFile.ToProjectFile()!.Properties.IsHidden;
     }
 
     public IReadOnlyList<IFile> GetPsiFiles(IPsiSourceFile sourceFile)

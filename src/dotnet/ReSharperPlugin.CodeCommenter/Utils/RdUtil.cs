@@ -22,7 +22,7 @@ public static class RdUtil
             .ToList();
         return new RdRow(
             RdRowType.Module,
-            moduleDescriptor.Name,
+            moduleDescriptor.Identifier,
             moduleDescriptor.Name,
             null,
             !files.IsEmpty() ? files.Average(file => file.Coverage) : 0,
@@ -40,7 +40,7 @@ public static class RdUtil
             .ToList();
         return new RdRow(
             RdRowType.File,
-            fileDescriptor.Name,
+            fileDescriptor.Identifier,
             fileDescriptor.Name,
             null,
             !methods.IsEmpty() ? methods.Average(method => method.Coverage) : 0,

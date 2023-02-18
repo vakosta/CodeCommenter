@@ -12,24 +12,6 @@ class StatisticsTreeTableModel(
     root,
     columns.toTypedArray(),
 ) {
-    override fun nodeChanged(node: TreeNode?) {
-        // TODO: Optimize recursion.
-        super.nodeChanged(node)
-        if (node?.parent != null && node.parent is StatisticsData) {
-            (node.parent as StatisticsData).coverage = node.parent.children().asSequence()
-                .filter { it is StatisticsData }
-                .map { (it as StatisticsData).coverage }
-                .toList().average()
-
-            (node.parent as StatisticsData).quality.value = node.parent.children().asSequence()
-                .filter { it is StatisticsData }
-                .map { (it as StatisticsData).quality.value }
-                .toList().average()
-
-            nodeChanged(node.parent)
-        }
-    }
-
     fun findNodeByIdentifier(identifier: String, node: TreeNode = root): StatisticsData? {
         return if (node is StatisticsData && node.identifier == identifier)
             return node

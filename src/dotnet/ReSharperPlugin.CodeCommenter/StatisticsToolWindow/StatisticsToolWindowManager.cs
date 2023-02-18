@@ -46,19 +46,29 @@ public class StatisticsToolWindowManager
             foreach (var module in modules)
             foreach (var file in module.Files)
             foreach (var method in file.Methods)
-                myLifetime.StartMainReadAsync(() => UpdateRowQuality(method));
+                myLifetime.StartMainReadAsync(() => UpdateRowQuality(method, file, module));
 
             return RdTask<Unit>.Successful(Unit.Instance);
         });
     }
 
-    private async Task UpdateRowQuality(MethodDescriptor method)
+    private async Task UpdateRowQuality(
+        MethodDescriptor method,
+        FileDescriptor file,
+        ModuleDescriptor module)
     {
         var declaration = method.Declaration;
         method.Quality = await CalculateQuality(declaration,
-            SharedImplUtil.GetDocCommentBlockNode(declaration)?.GetText());
+            SharedImplUtil.GetDocCommentBlockNode(declaration)?.GetText() ?? "");
+
         var rdMethod = method.ToRdRow();
         myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdMethod));
+
+        var rdFile = file.ToRdRow();
+        myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdFile));
+
+        var rdModule = module.ToRdRow();
+        myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdModule));
     }
 
     private async Task<Quality> CalculateQuality([NotNull] IMethodDeclaration declaration,

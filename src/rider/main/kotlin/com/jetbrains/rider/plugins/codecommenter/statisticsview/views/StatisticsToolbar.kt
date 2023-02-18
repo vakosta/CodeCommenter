@@ -15,9 +15,9 @@ class StatisticsToolbar(
     object : ActionGroup() {
         override fun getChildren(actionEvent: AnActionEvent?): Array<AnAction> {
             return arrayOf(
-                StatisticsRefreshButton(project, getContentCall)
+                StatisticsRefreshButton(project, getContentCall),
             )
         }
     },
-    false,
+    true,
 )

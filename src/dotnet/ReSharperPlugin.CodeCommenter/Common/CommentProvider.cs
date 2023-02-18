@@ -35,7 +35,9 @@ public class CommentProvider
         return new CommentBlocksContext
         {
             OldDocCommentBlock = oldCommentBlock,
-            NewDocCommentBlock = myPsiHelper.CreateDocCommentBlock(declaration, comment.Docstring),
+            NewDocCommentBlock = comment.Status == GenerationStatus.Success
+                ? myPsiHelper.CreateDocCommentBlock(declaration, comment.Docstring)
+                : null,
             GenerationStatus = comment.Status
         };
     }
