@@ -4,7 +4,7 @@ import com.jetbrains.rider.plugins.codecommenter.commons.Quality
 import javax.swing.tree.DefaultMutableTreeNode
 
 data class StatisticsData(
-    var type: Type,
+    var type: StatisticsDataType,
     var identifier: String,
     var name: String,
     var docstring: String,
@@ -17,16 +17,9 @@ data class StatisticsData(
 
     override fun hashCode(): Int = EssentialData(this).hashCode()
 
-    enum class Type {
-        Module,
-        File,
-        Method,
-        Root,
-    }
-
     companion object {
         fun getRoot(): StatisticsData = StatisticsData(
-            type = Type.Root,
+            type = StatisticsDataType.Root,
             identifier = "",
             name = "",
             docstring = "",
@@ -36,7 +29,7 @@ data class StatisticsData(
     }
 }
 
-private data class EssentialData(
+data class EssentialData(
     val id: String,
     val name: String,
 ) {
@@ -44,18 +37,4 @@ private data class EssentialData(
         id = person.id,
         name = person.name,
     )
-}
-
-fun StatisticsData.isLoadingRecursive(): Boolean {
-    return quality.status == Quality.Status.Loading
-            || !isLeaf && quality.status == Quality.Status.RelativeToChildren && children().asSequence()
-        .filter { it is StatisticsData }
-        .any { (it as StatisticsData).isLoadingRecursive() }
-}
-
-fun StatisticsData.isErrorRecursive(): Boolean {
-    return quality.status == Quality.Status.Failed || quality.status == Quality.Status.Canceled
-            || !isLeaf && quality.status == Quality.Status.RelativeToChildren && children().asSequence()
-        .filter { it is StatisticsData }
-        .any { (it as StatisticsData).isErrorRecursive() }
 }

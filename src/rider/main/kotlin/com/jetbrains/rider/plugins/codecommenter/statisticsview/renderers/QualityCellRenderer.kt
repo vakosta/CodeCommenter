@@ -3,8 +3,8 @@ package com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers
 import com.intellij.icons.AllIcons
 import com.intellij.ui.components.JBLabel
 import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsData
-import com.jetbrains.rider.plugins.codecommenter.entities.statistics.isErrorRecursive
-import com.jetbrains.rider.plugins.codecommenter.entities.statistics.isLoadingRecursive
+import com.jetbrains.rider.plugins.codecommenter.utils.isErrorRecursive
+import com.jetbrains.rider.plugins.codecommenter.utils.isLoadingRecursive
 import java.awt.Component
 import javax.swing.JTable
 import javax.swing.SwingConstants

@@ -3,6 +3,7 @@ package com.jetbrains.rider.plugins.codecommenter.statisticsview.renderers
 import com.intellij.icons.AllIcons
 import com.intellij.ui.components.JBLabel
 import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsData
+import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsDataType
 import java.awt.Component
 import javax.swing.JTree
 import javax.swing.SwingConstants
@@ -25,9 +26,9 @@ class MainCellRenderer : JBLabel(), TreeCellRenderer {
             text = value.name
 
         icon = when (value.type) {
-            StatisticsData.Type.Module -> AllIcons.Actions.ModuleDirectory
-            StatisticsData.Type.File -> AllIcons.Actions.InlayRenameInNoCodeFiles
-            StatisticsData.Type.Method -> AllIcons.Nodes.Method
+            StatisticsDataType.Module -> AllIcons.Actions.ModuleDirectory
+            StatisticsDataType.File -> AllIcons.Actions.InlayRenameInNoCodeFiles
+            StatisticsDataType.Method -> AllIcons.Nodes.Method
             else -> null
         }
 

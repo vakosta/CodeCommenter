@@ -6,6 +6,7 @@ import com.jetbrains.rd.ide.model.RdRow
 import com.jetbrains.rd.ide.model.RdRowType
 import com.jetbrains.rider.plugins.codecommenter.commons.Quality
 import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsData
+import com.jetbrains.rider.plugins.codecommenter.entities.statistics.StatisticsDataType
 import javax.swing.tree.MutableTreeNode
 
 fun RdRow.toTreeNode(): MutableTreeNode {
@@ -30,19 +31,19 @@ fun RdQuality.toQuality(): Quality {
     )
 }
 
-fun RdRowType.toStatisticsDataType(): StatisticsData.Type =
+fun RdRowType.toStatisticsDataType(): StatisticsDataType =
         when (this) {
             RdRowType.Module ->
-                StatisticsData.Type.Module
+                StatisticsDataType.Module
 
             RdRowType.File ->
-                StatisticsData.Type.File
+                StatisticsDataType.File
 
             RdRowType.Method ->
-                StatisticsData.Type.Method
+                StatisticsDataType.Method
 
             RdRowType.Root ->
-                StatisticsData.Type.Root
+                StatisticsDataType.Root
         }
 
 fun RdQualityStatus.toQualityStatus(): Quality.Status =
