@@ -8,6 +8,10 @@ Rider is JetBrains' cross platform .NET IDE, based on ReSharper and the IntelliJ
 
 Make sure that you have a stable internet connection, because ML Model located on a separate server.
 
+## ML Model
+
+As the purpose of this project is to study the IntelliJ and ReSharper SDKs, our own neural network has not yet been fine-tuned for the task. Therefore, this plugin uses a pre-trained CodeTrans model from HuggingFace. Although not perfect, it works well and solves the problem at hand.
+
 ## Installation
 
 Download and install this plugin from [JetBrains Marketplace](https://plugins.jetbrains.com/). *Not available yet.*
