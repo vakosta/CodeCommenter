@@ -71,15 +71,31 @@ public class DocstringPlacesFinder
 
     private IFileSystemDescriptor GetProjectItemDescriptor(IProjectItem projectItem, IFileSystemDescriptor parent)
     {
-        if (projectItem is ProjectFileImpl { LanguageType: CSharpProjectFileType } file
+        if (projectItem is IProjectFile { LanguageType: CSharpProjectFileType } file
             && !myPsiSourceFileHelper.IsHidden(file))
             return GetFileDescriptor(file, parent);
-        if (projectItem is ProjectFolderImpl folder)
+        if (projectItem is IProjectFolder folder)
             return GetFolderDescriptor(folder, parent);
         return null;
     }
 
-    private FolderDescriptor GetFolderDescriptor(ProjectFolderImpl folder, IFileSystemDescriptor parent)
+    private FileDescriptor GetFileDescriptor(IProjectFile sourceFile, IFileSystemDescriptor parent)
+    {
+        var fileDescriptor = new FileDescriptor
+        {
+            Identifier = sourceFile.GetHashCode().ToString(),
+            Name = sourceFile.Name,
+            Parent = parent
+        };
+        if (!myLifetime.IsAlive) return fileDescriptor;
+
+        fileDescriptor.Children.AddAll(GetAllMethodsInFile(
+            myPsiSourceFileHelper.GetPsiFiles(sourceFile),
+            fileDescriptor));
+        return fileDescriptor;
+    }
+
+    private FolderDescriptor GetFolderDescriptor(IProjectFolder folder, IFileSystemDescriptor parent)
     {
         var folderDescriptor = new FolderDescriptor
         {
@@ -96,22 +112,6 @@ public class DocstringPlacesFinder
         }
 
         return folderDescriptor;
-    }
-
-    private FileDescriptor GetFileDescriptor(ProjectFileImpl sourceFile, IFileSystemDescriptor parent)
-    {
-        var fileDescriptor = new FileDescriptor
-        {
-            Identifier = sourceFile.GetHashCode().ToString(),
-            Name = sourceFile.Name,
-            Parent = parent
-        };
-        if (!myLifetime.IsAlive) return fileDescriptor;
-
-        fileDescriptor.Children.AddAll(GetAllMethodsInFile(
-            myPsiSourceFileHelper.GetPsiFiles(sourceFile),
-            fileDescriptor));
-        return fileDescriptor;
     }
 
     private IEnumerable<MethodDescriptor> GetAllMethodsInFile(ITreeNode treeNode, IFileSystemDescriptor parent)

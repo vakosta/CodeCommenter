@@ -270,10 +270,10 @@ public class DocstringPlacesFinderTest
         return project.Object;
     }
 
-    private ProjectFileImpl GetPsiProjectFile(ProjectFileType projectFileType, string name, bool isHidden,
+    private IProjectFile GetPsiProjectFile(ProjectFileType projectFileType, string name, bool isHidden,
         Mock<IPsiSourceFileHelper> psiSourceFileHelper, IFile file)
     {
-        var psiSourceFile = new Mock<ProjectFileImpl>();
+        var psiSourceFile = new Mock<IProjectFile>();
         psiSourceFile
             .Setup(psf => psf.Name)
             .Returns(name);

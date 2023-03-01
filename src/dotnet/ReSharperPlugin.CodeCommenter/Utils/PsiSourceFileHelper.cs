@@ -7,13 +7,13 @@ namespace ReSharperPlugin.CodeCommenter.Util;
 [SolutionComponent]
 public class PsiSourceFileHelper : IPsiSourceFileHelper
 {
-    public bool IsHidden(ProjectFileImpl psiSourceFile)
+    public bool IsHidden(IProjectFile projectFile)
     {
-        return psiSourceFile.Properties.IsHidden;
+        return projectFile.Properties.IsHidden;
     }
 
-    public IFile GetPsiFiles(ProjectFileImpl sourceFile)
+    public IFile GetPsiFiles(IProjectFile projectFile)
     {
-        return sourceFile.GetPrimaryPsiFile();
+        return projectFile.GetPrimaryPsiFile();
     }
 }
