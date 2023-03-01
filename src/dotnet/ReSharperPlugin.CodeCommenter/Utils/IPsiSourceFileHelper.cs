@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.Tree;
 
@@ -6,7 +7,7 @@ namespace ReSharperPlugin.CodeCommenter.Util;
 
 public interface IPsiSourceFileHelper
 {
-    public bool IsHidden(IPsiSourceFile psiSourceFile);
+    public bool IsHidden(ProjectFileImpl psiSourceFile);
 
-    public IReadOnlyList<IFile> GetPsiFiles(IPsiSourceFile sourceFile);
+    public IFile GetPsiFiles(ProjectFileImpl sourceFile);
 }

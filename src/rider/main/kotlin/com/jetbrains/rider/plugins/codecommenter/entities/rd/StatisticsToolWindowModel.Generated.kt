@@ -54,7 +54,7 @@ class StatisticsToolWindowModel private constructor(
         }
         
         
-        const val serializationHash = 8081157413960454048L
+        const val serializationHash = 5370089276212989102L
         
     }
     override val serializersOwner: ISerializersOwner get() = StatisticsToolWindowModel
@@ -107,7 +107,7 @@ val IProtocol.statisticsToolWindowModel get() = getOrCreateExtension(StatisticsT
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:50]
+ * #### Generated from [StatisticsToolWindowModel.kt:51]
  */
 data class RdChangeNodeContext (
     val newNode: RdRow
@@ -164,7 +164,7 @@ data class RdChangeNodeContext (
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:33]
+ * #### Generated from [StatisticsToolWindowModel.kt:34]
  */
 data class RdQuality (
     val value: Double,
@@ -227,7 +227,7 @@ data class RdQuality (
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:38]
+ * #### Generated from [StatisticsToolWindowModel.kt:39]
  */
 enum class RdQualityStatus {
     Loading, 
@@ -341,6 +341,7 @@ data class RdRow (
  */
 enum class RdRowType {
     Module, 
+    Folder, 
     File, 
     Method, 
     Root;
@@ -353,7 +354,7 @@ enum class RdRowType {
 
 
 /**
- * #### Generated from [StatisticsToolWindowModel.kt:46]
+ * #### Generated from [StatisticsToolWindowModel.kt:47]
  */
 data class RdToolWindowContent (
     val rows: List<RdRow>

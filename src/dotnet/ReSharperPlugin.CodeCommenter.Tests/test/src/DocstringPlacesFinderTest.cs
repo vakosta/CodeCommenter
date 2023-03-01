@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
-using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Rider.Model;
 using Moq;
@@ -21,13 +19,11 @@ public class DocstringPlacesFinderTest
     public void ZeroMethodsTest()
     {
         var solution = GetSolutionMock(new List<IProject>());
-        var projectHelper = new Mock<ProjectHelper>().Object;
         var psiSourceFileHelper = new Mock<PsiSourceFileHelper>().Object;
         var treeNodeHelper = new Mock<TreeNodeHelper>().Object;
         var docstringPlacesFinder = new DocstringPlacesFinder(
             new Lifetime(),
             solution,
-            projectHelper,
             psiSourceFileHelper,
             treeNodeHelper);
 
@@ -46,43 +42,37 @@ public class DocstringPlacesFinderTest
             {
                 GetProjectMock(
                     projectHelper,
-                    new List<IPsiModule>
+                    "Module123",
+                    new List<IProjectItem>
                     {
-                        GetPsiModuleMock(
-                            "Module123",
-                            new List<IPsiSourceFile>
-                            {
-                                GetPsiProjectFile(
-                                    CSharpProjectFileType.Instance,
-                                    "File1",
-                                    false,
-                                    psiSourceFileHelper,
-                                    new List<IFile>
-                                    {
-                                        GetFile(
-                                            treeNodeHelper,
-                                            new List<ITreeNode>
-                                            {
-                                                GetMethodDeclaration("Method1")
-                                            })
-                                    })
-                            })
+                        GetPsiProjectFile(
+                            CSharpProjectFileType.Instance,
+                            "File1",
+                            false,
+                            psiSourceFileHelper,
+                            GetFile(
+                                treeNodeHelper,
+                                new List<ITreeNode>
+                                {
+                                    GetMethodDeclaration("Method1")
+                                }))
                     })
-            }), projectHelper.Object, psiSourceFileHelper.Object, treeNodeHelper.Object);
+            }), psiSourceFileHelper.Object, treeNodeHelper.Object);
 
         IList<ModuleDescriptor> modules = docstringPlacesFinder.GetModuleDescriptors();
         Assert.AreEqual(1, modules.Count);
         Assert.AreEqual("Module123", modules[0].Name);
 
-        Assert.AreEqual(1, modules[0].Files.Count);
-        Assert.AreEqual("File1", modules[0].Files[0].Name);
+        Assert.AreEqual(1, modules[0].Children.Count);
+        Assert.AreEqual("File1", modules[0].Children[0].Name);
 
-        Assert.AreEqual(1, modules[0].Files[0].Methods.Count);
+        Assert.AreEqual(1, modules[0].Children[0].Children.Count);
 
-        Assert.AreEqual("Method1", modules[0].Files[0].Methods[0].Name);
-        Assert.AreEqual(0, modules[0].Files[0].Methods[0].Coverage);
-        Assert.AreEqual(0, modules[0].Files[0].Methods[0].Quality.Value);
-        Assert.AreEqual(GenerationStatus.Loading, modules[0].Files[0].Methods[0].Quality.Status);
+        Assert.AreEqual("Method1", modules[0].Children[0].Children[0].Name);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[0].Children[0].Children[0]).Coverage);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[0].Children[0].Children[0]).Quality.Value);
+        Assert.AreEqual(GenerationStatus.Loading,
+            ((MethodDescriptor)modules[0].Children[0].Children[0]).Quality.Status);
     }
 
     [Test]
@@ -96,53 +86,48 @@ public class DocstringPlacesFinderTest
             {
                 GetProjectMock(
                     projectHelper,
-                    new List<IPsiModule>
+                    "Module123",
+                    new List<IProjectItem>
                     {
-                        GetPsiModuleMock(
-                            "Module123",
-                            new List<IPsiSourceFile>
-                            {
-                                GetPsiProjectFile(
-                                    CSharpProjectFileType.Instance,
-                                    "File1",
-                                    false,
-                                    psiSourceFileHelper,
-                                    new List<IFile>
-                                    {
-                                        GetFile(
-                                            treeNodeHelper,
-                                            new List<ITreeNode>
-                                            {
-                                                GetMethodDeclaration("Method1"),
-                                                GetMethodDeclaration("Method2")
-                                            })
-                                    })
-                            })
+                        GetPsiProjectFile(
+                            CSharpProjectFileType.Instance,
+                            "File1",
+                            false,
+                            psiSourceFileHelper,
+                            GetFile(
+                                treeNodeHelper,
+                                new List<ITreeNode>
+                                {
+                                    GetMethodDeclaration("Method1"),
+                                    GetMethodDeclaration("Method2")
+                                }))
                     })
-            }), projectHelper.Object, psiSourceFileHelper.Object, treeNodeHelper.Object);
+            }), psiSourceFileHelper.Object, treeNodeHelper.Object);
 
         IList<ModuleDescriptor> modules = docstringPlacesFinder.GetModuleDescriptors();
         Assert.AreEqual(1, modules.Count);
         Assert.AreEqual("Module123", modules[0].Name);
 
-        Assert.AreEqual(1, modules[0].Files.Count);
-        Assert.AreEqual("File1", modules[0].Files[0].Name);
+        Assert.AreEqual(1, modules[0].Children.Count);
+        Assert.AreEqual("File1", modules[0].Children[0].Name);
 
-        Assert.AreEqual(2, modules[0].Files[0].Methods.Count);
+        Assert.AreEqual(2, modules[0].Children[0].Children.Count);
 
-        Assert.AreEqual("Method1", modules[0].Files[0].Methods[0].Name);
-        Assert.AreEqual(0, modules[0].Files[0].Methods[0].Coverage);
-        Assert.AreEqual(0, modules[0].Files[0].Methods[0].Quality.Value);
-        Assert.AreEqual(GenerationStatus.Loading, modules[0].Files[0].Methods[0].Quality.Status);
+        Assert.AreEqual("Method1", modules[0].Children[0].Children[0].Name);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[0].Children[0].Children[0]).Coverage);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[0].Children[0].Children[0]).Quality.Value);
+        Assert.AreEqual(GenerationStatus.Loading,
+            ((MethodDescriptor)modules[0].Children[0].Children[0]).Quality.Status);
 
-        Assert.AreEqual("Method2", modules[0].Files[0].Methods[1].Name);
-        Assert.AreEqual(0, modules[0].Files[0].Methods[1].Coverage);
-        Assert.AreEqual(0, modules[0].Files[0].Methods[1].Quality.Value);
-        Assert.AreEqual(GenerationStatus.Loading, modules[0].Files[0].Methods[1].Quality.Status);
+        Assert.AreEqual("Method2", modules[0].Children[0].Children[1].Name);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[0].Children[0].Children[1]).Coverage);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[0].Children[0].Children[1]).Quality.Value);
+        Assert.AreEqual(GenerationStatus.Loading,
+            ((MethodDescriptor)modules[0].Children[0].Children[1]).Quality.Status);
     }
 
     [Test]
-    public void FiveMethodsInTwoFilesInTwoModulesTest()
+    public void FiveMethodsInTwoChildrenInTwoModulesTest()
     {
         var projectHelper = new Mock<IProjectHelper>();
         var psiSourceFileHelper = new Mock<IPsiSourceFileHelper>();
@@ -152,117 +137,112 @@ public class DocstringPlacesFinderTest
             {
                 GetProjectMock(
                     projectHelper,
-                    new List<IPsiModule>
+                    "Module1",
+                    new List<IProjectItem>
                     {
-                        GetPsiModuleMock(
-                            "Module1",
-                            new List<IPsiSourceFile>
-                            {
-                                GetPsiProjectFile(
-                                    CSharpProjectFileType.Instance,
-                                    "File1",
-                                    false,
-                                    psiSourceFileHelper,
-                                    new List<IFile>
-                                    {
-                                        GetFile(
-                                            treeNodeHelper,
-                                            new List<ITreeNode>
-                                            {
-                                                GetMethodDeclaration("Method1"),
-                                                GetMethodDeclaration("Method2")
-                                            })
-                                    })
-                            }),
-                        GetPsiModuleMock(
-                            "Module2",
-                            new List<IPsiSourceFile>
-                            {
-                                GetPsiProjectFile(
-                                    CSharpProjectFileType.Instance,
-                                    "File2",
-                                    false,
-                                    psiSourceFileHelper,
-                                    new List<IFile>
-                                    {
-                                        GetFile(
-                                            treeNodeHelper,
-                                            new List<ITreeNode>
-                                            {
-                                                GetMethodDeclaration("Method3"),
-                                                GetMethodDeclaration("Method4"),
-                                                GetMethodDeclaration("Method5")
-                                            })
-                                    }),
-                                GetPsiProjectFile(
-                                    CSharpProjectFileType.Instance,
-                                    "File3",
-                                    false,
-                                    psiSourceFileHelper,
-                                    new List<IFile>
-                                    {
-                                        GetFile(
-                                            treeNodeHelper,
-                                            new List<ITreeNode>
-                                            {
-                                                GetMethodDeclaration("Method6"),
-                                                GetMethodDeclaration("Method7")
-                                            })
-                                    })
-                            })
+                        GetPsiProjectFile(
+                            CSharpProjectFileType.Instance,
+                            "File1",
+                            false,
+                            psiSourceFileHelper,
+                            GetFile(
+                                treeNodeHelper,
+                                new List<ITreeNode>
+                                {
+                                    GetMethodDeclaration("Method1"),
+                                    GetMethodDeclaration("Method2")
+                                }))
+                    }),
+                GetProjectMock(
+                    projectHelper,
+                    "Module2",
+                    new List<IProjectItem>
+                    {
+                        GetPsiProjectFile(
+                            CSharpProjectFileType.Instance,
+                            "File2",
+                            false,
+                            psiSourceFileHelper,
+                            GetFile(
+                                treeNodeHelper,
+                                new List<ITreeNode>
+                                {
+                                    GetMethodDeclaration("Method3"),
+                                    GetMethodDeclaration("Method4"),
+                                    GetMethodDeclaration("Method5")
+                                })),
+                        GetPsiProjectFile(
+                            CSharpProjectFileType.Instance,
+                            "File3",
+                            false,
+                            psiSourceFileHelper,
+                            GetFile(
+                                treeNodeHelper,
+                                new List<ITreeNode>
+                                {
+                                    GetMethodDeclaration("Method6"),
+                                    GetMethodDeclaration("Method7")
+                                }))
                     })
-            }), projectHelper.Object, psiSourceFileHelper.Object, treeNodeHelper.Object);
+            }), psiSourceFileHelper.Object, treeNodeHelper.Object);
 
         IList<ModuleDescriptor> modules = docstringPlacesFinder.GetModuleDescriptors();
         Assert.AreEqual(2, modules.Count);
         Assert.AreEqual("Module1", modules[0].Name);
         Assert.AreEqual("Module2", modules[1].Name);
 
-        Assert.AreEqual(1, modules[0].Files.Count);
-        Assert.AreEqual(2, modules[1].Files.Count);
-        Assert.AreEqual("File1", modules[0].Files[0].Name);
-        Assert.AreEqual("File2", modules[1].Files[0].Name);
+        Assert.AreEqual(1, modules[0].Children.Count);
+        Assert.AreEqual(2, modules[1].Children.Count);
+        Assert.AreEqual("File1", modules[0].Children[0].Name);
+        Assert.AreEqual("File2", modules[1].Children[0].Name);
 
-        Assert.AreEqual(2, modules[0].Files[0].Methods.Count);
+        Assert.AreEqual(2, modules[0].Children[0].Children.Count);
 
-        Assert.AreEqual("Method1", modules[0].Files[0].Methods[0].Name);
-        Assert.AreEqual(0, modules[0].Files[0].Methods[0].Coverage);
-        Assert.AreEqual(0, modules[0].Files[0].Methods[0].Quality.Value);
-        Assert.AreEqual(GenerationStatus.Loading, modules[0].Files[0].Methods[0].Quality.Status);
+        Assert.AreEqual("Method1", modules[0].Children[0].Children[0].Name);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[0].Children[0].Children[0]).Coverage);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[0].Children[0].Children[0]).Quality.Value);
+        Assert.AreEqual(GenerationStatus.Loading,
+            ((MethodDescriptor)modules[0].Children[0].Children[0]).Quality.Status);
 
-        Assert.AreEqual("Method2", modules[0].Files[0].Methods[1].Name);
-        Assert.AreEqual(0, modules[0].Files[0].Methods[1].Coverage);
-        Assert.AreEqual(0, modules[0].Files[0].Methods[1].Quality.Value);
-        Assert.AreEqual(GenerationStatus.Loading, modules[0].Files[0].Methods[1].Quality.Status);
+        Assert.AreEqual("Method2", modules[0].Children[0].Children[1].Name);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[0].Children[0].Children[1]).Coverage);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[0].Children[0].Children[1]).Quality.Value);
+        Assert.AreEqual(GenerationStatus.Loading,
+            ((MethodDescriptor)modules[0].Children[0].Children[1]).Quality.Status);
 
-        Assert.AreEqual(3, modules[1].Files[0].Methods.Count);
+        Assert.AreEqual(3, modules[1].Children[0].Children.Count);
 
-        Assert.AreEqual("Method3", modules[1].Files[0].Methods[0].Name);
-        Assert.AreEqual(0, modules[1].Files[0].Methods[0].Coverage);
-        Assert.AreEqual(0, modules[1].Files[0].Methods[0].Quality.Value);
-        Assert.AreEqual(GenerationStatus.Loading, modules[1].Files[0].Methods[0].Quality.Status);
+        Assert.AreEqual("Method3", modules[1].Children[0].Children[0].Name);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[1].Children[0].Children[0]).Coverage);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[1].Children[0].Children[0]).Quality.Value);
+        Assert.AreEqual(GenerationStatus.Loading,
+            ((MethodDescriptor)modules[1].Children[0].Children[0]).Quality.Status);
 
-        Assert.AreEqual("Method4", modules[1].Files[0].Methods[1].Name);
-        Assert.AreEqual(0, modules[1].Files[0].Methods[1].Coverage);
-        Assert.AreEqual(0, modules[1].Files[0].Methods[1].Quality.Value);
-        Assert.AreEqual(GenerationStatus.Loading, modules[1].Files[0].Methods[1].Quality.Status);
+        Assert.AreEqual("Method4", modules[1].Children[0].Children[1].Name);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[1].Children[0].Children[1]).Coverage);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[1].Children[0].Children[1]).Quality.Value);
+        Assert.AreEqual(GenerationStatus.Loading,
+            ((MethodDescriptor)modules[1].Children[0].Children[1]).Quality.Status);
 
-        Assert.AreEqual("Method5", modules[1].Files[0].Methods[2].Name);
-        Assert.AreEqual(0, modules[1].Files[0].Methods[2].Coverage);
-        Assert.AreEqual(0, modules[1].Files[0].Methods[2].Quality.Value);
-        Assert.AreEqual(GenerationStatus.Loading, modules[1].Files[0].Methods[2].Quality.Status);
+        Assert.AreEqual("Method5", modules[1].Children[0].Children[2].Name);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[1].Children[0].Children[2]).Coverage);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[1].Children[0].Children[2]).Quality.Value);
+        Assert.AreEqual(GenerationStatus.Loading,
+            ((MethodDescriptor)modules[1].Children[0].Children[2]).Quality.Status);
 
-        Assert.AreEqual(2, modules[1].Files[1].Methods.Count);
+        Assert.AreEqual(2, modules[1].Children[1].Children.Count);
 
-        Assert.AreEqual("Method6", modules[1].Files[1].Methods[0].Name);
-        Assert.AreEqual(0, modules[1].Files[1].Methods[0].Coverage);
-        Assert.AreEqual(0, modules[1].Files[1].Methods[0].Quality.Value);
-        Assert.AreEqual(GenerationStatus.Loading, modules[1].Files[1].Methods[0].Quality.Status);
+        Assert.AreEqual("Method6", modules[1].Children[1].Children[0].Name);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[1].Children[1].Children[0]).Coverage);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[1].Children[1].Children[0]).Quality.Value);
+        Assert.AreEqual(GenerationStatus.Loading,
+            ((MethodDescriptor)modules[1].Children[1].Children[0]).Quality.Status);
 
-        Assert.AreEqual("Method7", modules[1].Files[1].Methods[1].Name);
-        Assert.AreEqual(0, modules[1].Files[1].Methods[1].Coverage);
-        Assert.AreEqual(0, modules[1].Files[1].Methods[1].Quality.Value);
-        Assert.AreEqual(GenerationStatus.Loading, modules[1].Files[1].Methods[1].Quality.Status);
+        Assert.AreEqual("Method7", modules[1].Children[1].Children[1].Name);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[1].Children[1].Children[1]).Coverage);
+        Assert.AreEqual(0, ((MethodDescriptor)modules[1].Children[1].Children[1]).Quality.Value);
+        Assert.AreEqual(GenerationStatus.Loading,
+            ((MethodDescriptor)modules[1].Children[1].Children[1]).Quality.Status);
     }
 
     private ISolution GetSolutionMock(List<IProject> projects)
@@ -274,37 +254,26 @@ public class DocstringPlacesFinderTest
         return solution.Object;
     }
 
-    private IProject GetProjectMock(Mock<IProjectHelper> projectHelper, IList<IPsiModule> psiModules)
+    private IProject GetProjectMock(Mock<IProjectHelper> projectHelper, string displayName,
+        IList<IProjectItem> psiSourceChildren)
     {
         var project = new Mock<IProject>();
         project
             .Setup(p => p.ProjectFile)
             .Returns(new Mock<IProjectFile>().Object);
-        var projectObject = project.Object;
-
-        projectHelper
-            .Setup(ph => ph.GetPsiModules(projectObject))
-            .Returns(psiModules);
-
-        return projectObject;
-    }
-
-    private IPsiModule GetPsiModuleMock(string displayName, IList<IPsiSourceFile> psiSourceFiles)
-    {
-        var psiModule = new Mock<IPsiModule>();
-        psiModule
-            .Setup(pm => pm.DisplayName)
+        project
+            .Setup(pm => pm.Name)
             .Returns(displayName);
-        psiModule
-            .Setup(pm => pm.SourceFiles)
-            .Returns(psiSourceFiles);
-        return psiModule.Object;
+        project
+            .Setup(pm => pm.GetSubItems())
+            .Returns(psiSourceChildren);
+        return project.Object;
     }
 
-    private IPsiProjectFile GetPsiProjectFile(ProjectFileType projectFileType, string name, bool isHidden,
-        Mock<IPsiSourceFileHelper> psiSourceFileHelper, IReadOnlyList<IFile> files)
+    private ProjectFileImpl GetPsiProjectFile(ProjectFileType projectFileType, string name, bool isHidden,
+        Mock<IPsiSourceFileHelper> psiSourceFileHelper, IFile file)
     {
-        var psiSourceFile = new Mock<IPsiProjectFile>();
+        var psiSourceFile = new Mock<ProjectFileImpl>();
         psiSourceFile
             .Setup(psf => psf.Name)
             .Returns(name);
@@ -318,7 +287,7 @@ public class DocstringPlacesFinderTest
             .Returns(isHidden);
         psiSourceFileHelper
             .Setup(psfh => psfh.GetPsiFiles(psiSourceFileObject))
-            .Returns(files);
+            .Returns(file);
 
         return psiSourceFileObject;
     }

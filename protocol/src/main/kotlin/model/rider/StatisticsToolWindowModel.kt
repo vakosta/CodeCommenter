@@ -25,6 +25,7 @@ object StatisticsToolWindowModel : Ext(IdeRoot) {
 
     private val RdRowType = enum {
         +"Module"
+        +"Folder"
         +"File"
         +"Method"
         +"Root"

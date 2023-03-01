@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using JetBrains.ProjectModel;
+﻿using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.CSharp;
-using JetBrains.ReSharper.Psi.Files;
 using JetBrains.ReSharper.Psi.Tree;
 
 namespace ReSharperPlugin.CodeCommenter.Util;
@@ -10,13 +7,13 @@ namespace ReSharperPlugin.CodeCommenter.Util;
 [SolutionComponent]
 public class PsiSourceFileHelper : IPsiSourceFileHelper
 {
-    public bool IsHidden(IPsiSourceFile psiSourceFile)
+    public bool IsHidden(ProjectFileImpl psiSourceFile)
     {
-        return psiSourceFile.ToProjectFile()!.Properties.IsHidden;
+        return psiSourceFile.Properties.IsHidden;
     }
 
-    public IReadOnlyList<IFile> GetPsiFiles(IPsiSourceFile sourceFile)
+    public IFile GetPsiFiles(ProjectFileImpl sourceFile)
     {
-        return sourceFile.GetPsiFiles<CSharpLanguage>();
+        return sourceFile.GetPrimaryPsiFile();
     }
 }

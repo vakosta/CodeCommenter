@@ -82,7 +82,7 @@ namespace JetBrains.Rider.Model
     
     
     
-    protected override long SerializationHash => 8081157413960454048L;
+    protected override long SerializationHash => 5370089276212989102L;
     
     protected override Action<ISerializers> Register => RegisterDeclaredTypesSerializers;
     public static void RegisterDeclaredTypesSerializers(ISerializers serializers)
@@ -125,7 +125,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:50</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:51</p>
   /// </summary>
   public sealed class RdChangeNodeContext : IPrintable, IEquatable<RdChangeNodeContext>
   {
@@ -210,7 +210,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:33</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:34</p>
   /// </summary>
   public sealed class RdQuality : IPrintable, IEquatable<RdQuality>
   {
@@ -301,7 +301,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:38</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:39</p>
   /// </summary>
   public enum RdQualityStatus {
     Loading,
@@ -457,6 +457,7 @@ namespace JetBrains.Rider.Model
   /// </summary>
   public enum RdRowType {
     Module,
+    Folder,
     File,
     Method,
     Root
@@ -464,7 +465,7 @@ namespace JetBrains.Rider.Model
   
   
   /// <summary>
-  /// <p>Generated from: StatisticsToolWindowModel.kt:46</p>
+  /// <p>Generated from: StatisticsToolWindowModel.kt:47</p>
   /// </summary>
   public sealed class RdToolWindowContent : IPrintable, IEquatable<RdToolWindowContent>
   {

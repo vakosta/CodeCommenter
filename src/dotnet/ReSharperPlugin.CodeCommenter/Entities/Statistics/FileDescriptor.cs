@@ -2,9 +2,10 @@ using System.Collections.Generic;
 
 namespace JetBrains.Rider.Model;
 
-public class FileDescriptor
+public class FileDescriptor : IFileSystemDescriptor
 {
     public string Identifier { get; init; }
     public string Name { get; init; }
-    public List<MethodDescriptor> Methods { get; } = new();
+    public IFileSystemDescriptor Parent { get; init; }
+    public List<IFileSystemDescriptor> Children { get; } = new();
 }

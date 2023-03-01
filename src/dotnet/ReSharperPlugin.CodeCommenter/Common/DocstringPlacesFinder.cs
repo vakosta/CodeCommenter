@@ -3,10 +3,8 @@ using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.ReSharper.Psi.ExtensionsAPI;
-using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.ReSharper.PsiGen.Util;
 using JetBrains.ReSharper.Resources.Shell;
@@ -21,20 +19,17 @@ public class DocstringPlacesFinder
 {
     private readonly Lifetime myLifetime;
     [NotNull] private readonly ISolution mySolution;
-    [NotNull] private readonly IProjectHelper myProjectHelper;
     [NotNull] private readonly IPsiSourceFileHelper myPsiSourceFileHelper;
     [NotNull] private readonly ITreeNodeHelper myTreeNodeHelper;
 
     public DocstringPlacesFinder(
         Lifetime lifetime,
         [NotNull] ISolution solution,
-        [NotNull] IProjectHelper projectHelper,
         [NotNull] IPsiSourceFileHelper psiSourceFileHelper,
         [NotNull] ITreeNodeHelper treeNodeHelper)
     {
         myLifetime = lifetime;
         mySolution = solution;
-        myProjectHelper = projectHelper;
         myPsiSourceFileHelper = psiSourceFileHelper;
         myTreeNodeHelper = treeNodeHelper;
     }
@@ -48,7 +43,6 @@ public class DocstringPlacesFinder
         {
             var moduleDescriptors = mySolution.GetAllProjects()
                 .Where(project => project.ProjectFile != null)
-                .SelectMany(project => myProjectHelper.GetPsiModules(project))
                 .Select(GetModuleDescriptor);
             modules.AddRange(moduleDescriptors);
         }
@@ -56,28 +50,71 @@ public class DocstringPlacesFinder
         return modules;
     }
 
-    private ModuleDescriptor GetModuleDescriptor(IPsiModule module)
+    private ModuleDescriptor GetModuleDescriptor(IProject module)
     {
-        var moduleDescriptor = new ModuleDescriptor { Identifier = module.ToString(), Name = module.DisplayName };
+        var moduleDescriptor = new ModuleDescriptor
+        {
+            Identifier = module.GetHashCode().ToString(),
+            Name = module.Name
+        };
         if (!myLifetime.IsAlive) return moduleDescriptor;
 
-        foreach (var sourceFile in module.SourceFiles.Where(sourceFile => sourceFile is IPsiProjectFile))
-            if (sourceFile.LanguageType is CSharpProjectFileType && !myPsiSourceFileHelper.IsHidden(sourceFile))
-                moduleDescriptor.Files.Add(GetFileDescriptor(sourceFile));
+        foreach (var projectItem in module.GetSubItems())
+        {
+            IFileSystemDescriptor projectItemDescriptor = GetProjectItemDescriptor(projectItem, moduleDescriptor);
+            if (projectItemDescriptor != null)
+                moduleDescriptor.Children.Add(projectItemDescriptor);
+        }
+
         return moduleDescriptor;
     }
 
-    private FileDescriptor GetFileDescriptor(IPsiSourceFile sourceFile)
+    private IFileSystemDescriptor GetProjectItemDescriptor(IProjectItem projectItem, IFileSystemDescriptor parent)
     {
-        var fileDescriptor = new FileDescriptor { Identifier = sourceFile.ToString(), Name = sourceFile.Name };
+        if (projectItem is ProjectFileImpl { LanguageType: CSharpProjectFileType } file
+            && !myPsiSourceFileHelper.IsHidden(file))
+            return GetFileDescriptor(file, parent);
+        if (projectItem is ProjectFolderImpl folder)
+            return GetFolderDescriptor(folder, parent);
+        return null;
+    }
+
+    private FolderDescriptor GetFolderDescriptor(ProjectFolderImpl folder, IFileSystemDescriptor parent)
+    {
+        var folderDescriptor = new FolderDescriptor
+        {
+            Name = folder.Name,
+            Parent = parent
+        };
+        if (!myLifetime.IsAlive) return folderDescriptor;
+
+        foreach (var projectItem in folder.GetSubItems())
+        {
+            IFileSystemDescriptor projectItemDescriptor = GetProjectItemDescriptor(projectItem, folderDescriptor);
+            if (projectItemDescriptor != null)
+                folderDescriptor.Children.Add(projectItemDescriptor);
+        }
+
+        return folderDescriptor;
+    }
+
+    private FileDescriptor GetFileDescriptor(ProjectFileImpl sourceFile, IFileSystemDescriptor parent)
+    {
+        var fileDescriptor = new FileDescriptor
+        {
+            Identifier = sourceFile.GetHashCode().ToString(),
+            Name = sourceFile.Name,
+            Parent = parent
+        };
         if (!myLifetime.IsAlive) return fileDescriptor;
 
-        foreach (var file in myPsiSourceFileHelper.GetPsiFiles(sourceFile))
-            fileDescriptor.Methods.AddAll(GetAllMethodsInFile(file));
+        fileDescriptor.Children.AddAll(GetAllMethodsInFile(
+            myPsiSourceFileHelper.GetPsiFiles(sourceFile),
+            fileDescriptor));
         return fileDescriptor;
     }
 
-    private IEnumerable<MethodDescriptor> GetAllMethodsInFile(ITreeNode treeNode)
+    private IEnumerable<MethodDescriptor> GetAllMethodsInFile(ITreeNode treeNode, IFileSystemDescriptor parent)
     {
         var methods = new List<MethodDescriptor>();
         if (!myLifetime.IsAlive) return methods;
@@ -87,16 +124,19 @@ public class DocstringPlacesFinder
             if (child is IMethodDeclaration declaration)
             {
                 var commentBlock = SharedImplUtil.GetDocCommentBlockNode(child)?.GetText() ?? "";
-                methods.Add(CreateMethodDescriptor(declaration, commentBlock));
+                methods.Add(CreateMethodDescriptor(declaration, commentBlock, parent));
             }
 
-            methods.AddAll(GetAllMethodsInFile(child));
+            methods.AddAll(GetAllMethodsInFile(child, parent));
         }
 
         return methods;
     }
 
-    private static MethodDescriptor CreateMethodDescriptor(IMethodDeclaration declaration, string commentBlock)
+    private static MethodDescriptor CreateMethodDescriptor(
+        IMethodDeclaration declaration,
+        string commentBlock,
+        IFileSystemDescriptor parent)
     {
         return new MethodDescriptor
         {
@@ -112,7 +152,9 @@ public class DocstringPlacesFinder
 
             Docstring = commentBlock,
 
-            Quality = new Quality { Value = 0, Status = GenerationStatus.Loading }
+            Quality = new Quality { Value = 0, Status = GenerationStatus.Loading },
+
+            Parent = parent
         };
     }
 }

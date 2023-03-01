@@ -27,6 +27,7 @@ class MainCellRenderer : JBLabel(), TreeCellRenderer {
 
         icon = when (value.type) {
             StatisticsDataType.Module -> AllIcons.Actions.ModuleDirectory
+            StatisticsDataType.Folder -> AllIcons.Nodes.Folder
             StatisticsDataType.File -> AllIcons.Actions.InlayRenameInNoCodeFiles
             StatisticsDataType.Method -> AllIcons.Nodes.Method
             else -> null

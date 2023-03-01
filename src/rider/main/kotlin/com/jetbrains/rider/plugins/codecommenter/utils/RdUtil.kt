@@ -36,6 +36,9 @@ fun RdRowType.toStatisticsDataType(): StatisticsDataType =
             RdRowType.Module ->
                 StatisticsDataType.Module
 
+            RdRowType.Folder ->
+                StatisticsDataType.Folder
+
             RdRowType.File ->
                 StatisticsDataType.File
 

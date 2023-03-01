@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.Core;
@@ -44,34 +46,39 @@ public class StatisticsToolWindowManager
             myStatisticsToolWindowModel.OnContentUpdated.Start(myLifetime, new RdToolWindowContent(rdRows));
 
             foreach (var module in modules)
-            foreach (var file in module.Files)
-            foreach (var method in file.Methods)
-                myLifetime.StartMainReadAsync(() => UpdateRowQuality(method, file, module));
+                UpdateRowQuality(module);
 
             return RdTask<Unit>.Successful(Unit.Instance);
         });
     }
 
-    private async Task UpdateRowQuality(
-        MethodDescriptor method,
-        FileDescriptor file,
-        ModuleDescriptor module)
+    private void UpdateRowQuality(IFileSystemDescriptor descriptor)
     {
-        var declaration = method.Declaration;
-        method.Quality = await CalculateQuality(declaration,
-            SharedImplUtil.GetDocCommentBlockNode(declaration)?.GetText() ?? "");
-
-        var rdMethod = method.ToRdRow();
-        myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdMethod));
-
-        var rdFile = file.ToRdRow();
-        myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdFile));
-
-        var rdModule = module.ToRdRow();
-        myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdModule));
+        if (descriptor is MethodDescriptor methodDescriptor)
+            myLifetime.StartMainReadAsync(() => UpdateMethodQuality(methodDescriptor));
+        else
+            foreach (var child in descriptor.Children)
+                UpdateRowQuality(child);
     }
 
-    private async Task<Quality> CalculateQuality([NotNull] IMethodDeclaration declaration,
+    private async Task UpdateMethodQuality(MethodDescriptor methodDescriptor)
+    {
+        var declaration = methodDescriptor.Declaration;
+        methodDescriptor.Quality = await CalculateQuality(declaration,
+            SharedImplUtil.GetDocCommentBlockNode(declaration)?.GetText() ?? "");
+        SendUpdatedRow(methodDescriptor);
+    }
+
+    private void SendUpdatedRow(IFileSystemDescriptor descriptor)
+    {
+        if (descriptor == null) return;
+        var rdMethod = descriptor.ToRdRow();
+        myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdMethod));
+        SendUpdatedRow(descriptor.Parent);
+    }
+
+    private async Task<Quality> CalculateQuality(
+        [NotNull] IMethodDeclaration declaration,
         [NotNull] string commentBlock)
     {
         var generate = await myCommentProvider.TryGenerateAndCreateCommentAsync(declaration);

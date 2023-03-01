@@ -15,9 +15,25 @@ public static class RdUtil
             .ToList();
     }
 
+    public static RdRow ToRdRow(this IFileSystemDescriptor descriptor)
+    {
+        return descriptor switch
+        {
+            ModuleDescriptor moduleDescriptor =>
+                moduleDescriptor.ToRdRow(),
+            FolderDescriptor folderDescriptor =>
+                folderDescriptor.ToRdRow(),
+            FileDescriptor fileDescriptor =>
+                fileDescriptor.ToRdRow(),
+            MethodDescriptor methodDescriptor =>
+                methodDescriptor.ToRdRow(),
+            _ => null
+        };
+    }
+
     public static RdRow ToRdRow(this ModuleDescriptor moduleDescriptor)
     {
-        var files = moduleDescriptor.Files
+        var children = moduleDescriptor.Children
             .Select(file => file.ToRdRow())
             .ToList();
         return new RdRow(
@@ -25,17 +41,35 @@ public static class RdUtil
             moduleDescriptor.Identifier,
             moduleDescriptor.Name,
             null,
-            !files.IsEmpty() ? files.Average(file => file.Coverage) : 0,
-            !files.IsEmpty()
-                ? new RdQuality(files.Average(file => file.Quality.Value),
+            !children.IsEmpty() ? children.Average(file => file.Coverage) : 0,
+            !children.IsEmpty()
+                ? new RdQuality(children.Average(file => file.Quality.Value),
                     RdQualityStatus.RelativeToChildren)
                 : new RdQuality(0, RdQualityStatus.Success),
-            files);
+            children);
+    }
+
+    public static RdRow ToRdRow(this FolderDescriptor folderDescriptor)
+    {
+        var children = folderDescriptor.Children
+            .Select(file => file.ToRdRow())
+            .ToList();
+        return new RdRow(
+            RdRowType.Folder,
+            folderDescriptor.Name,
+            folderDescriptor.Name,
+            null,
+            !children.IsEmpty() ? children.Average(file => file.Coverage) : 0,
+            !children.IsEmpty()
+                ? new RdQuality(children.Average(file => file.Quality.Value),
+                    RdQualityStatus.RelativeToChildren)
+                : new RdQuality(0, RdQualityStatus.Success),
+            children);
     }
 
     public static RdRow ToRdRow(this FileDescriptor fileDescriptor)
     {
-        var methods = fileDescriptor.Methods
+        var methods = fileDescriptor.Children
             .Select(method => method.ToRdRow())
             .ToList();
         return new RdRow(
