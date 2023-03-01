@@ -14,7 +14,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fastenshtein" Version="1.0.0.8" />
     <PackageReference Include="JetBrains.ReSharper.SDK" Version="$(SdkVersion)" PrivateAssets="all" />
     <!-- TODO: https://github.com/NuGet/Home/issues/7154 -->
     <PackageReference Include="Wave" Version="[$(WaveVersion),$(UpperWaveVersion))" />

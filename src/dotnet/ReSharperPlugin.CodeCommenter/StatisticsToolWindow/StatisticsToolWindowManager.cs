@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.Core;
@@ -39,8 +40,8 @@ public class StatisticsToolWindowManager
     {
         myStatisticsToolWindowModel.GetContent.Set((_, _) =>
         {
-            var modules = myDocstringPlacesFinder.GetModuleDescriptors();
-            var rdRows = modules.ToRdRows();
+            IList<ModuleDescriptor> modules = myDocstringPlacesFinder.GetModuleDescriptors();
+            List<RdRow> rdRows = modules.ToRdRows();
             myStatisticsToolWindowModel.OnContentUpdated.Start(myLifetime, new RdToolWindowContent(rdRows));
 
             foreach (var module in modules)
@@ -61,7 +62,7 @@ public class StatisticsToolWindowManager
 
     private async Task UpdateMethodQuality(MethodDescriptor methodDescriptor)
     {
-        var declaration = methodDescriptor.Declaration;
+        IMethodDeclaration declaration = methodDescriptor.Declaration;
         methodDescriptor.Quality = await CalculateQuality(declaration,
             SharedImplUtil.GetDocCommentBlockNode(declaration)?.GetText() ?? "");
         SendUpdatedRow(methodDescriptor);
@@ -70,7 +71,7 @@ public class StatisticsToolWindowManager
     private void SendUpdatedRow(IFileSystemDescriptor descriptor)
     {
         if (descriptor == null) return;
-        var rdMethod = descriptor.ToRdRow();
+        RdRow rdMethod = descriptor.ToRdRow();
         myStatisticsToolWindowModel.OnNodeChanged.Start(myLifetime, new RdChangeNodeContext(rdMethod));
         SendUpdatedRow(descriptor.Parent);
     }
@@ -81,7 +82,7 @@ public class StatisticsToolWindowManager
         return new Quality
         {
             Value = generate.GenerationStatus == GenerationStatus.Success
-                ? Fastenshtein.Levenshtein.Distance(commentBlock, generate.NewDocCommentBlock.GetText())
+                ? Algos.CalculateSimilarity(commentBlock, generate.NewDocCommentBlock.GetText())
                 : 0,
             Status = generate.GenerationStatus
         };
