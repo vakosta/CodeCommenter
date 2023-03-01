@@ -36,4 +36,4 @@ The plugin can display statistics about docstring *coverage* and *quality* in yo
 
 Send me a message in Telegram: [@vakosta](https://t.me/vakosta).
 
-Or E-mail: [v.annkv@ya.ru](mailto:v.annkv@ya.ru).
+Or E-mail: [vld.annenkov@gmail.com](mailto:vld.annenkov@gmail.com).
