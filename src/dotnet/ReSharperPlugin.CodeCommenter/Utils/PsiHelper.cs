@@ -23,7 +23,9 @@ public class PsiHelper : IPsiHelper
             .CreateDocCommentBlock(comment);
     }
 
-    public void ModifyCommentBlockInPsi(ITreeNode declaration, IDocCommentBlock oldCommentBlock,
+    public void ModifyCommentBlockInPsi(
+        ITreeNode declaration,
+        IDocCommentBlock oldCommentBlock,
         IDocCommentBlock newCommentBlock)
     {
         if (oldCommentBlock != null)

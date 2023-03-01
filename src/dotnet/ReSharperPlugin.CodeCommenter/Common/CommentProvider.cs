@@ -27,6 +27,7 @@ public class CommentProvider
         myPsiHelper = psiHelper;
     }
 
+    [NotNull]
     public async Task<CommentBlocksContext> TryGenerateAndCreateCommentAsync([NotNull] ITreeNode declaration)
     {
         IDocCommentBlock oldCommentBlock = SharedImplUtil.GetDocCommentBlockNode(declaration);

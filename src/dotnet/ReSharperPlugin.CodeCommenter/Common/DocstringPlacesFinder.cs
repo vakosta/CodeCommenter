@@ -34,6 +34,7 @@ public class DocstringPlacesFinder
         myTreeNodeHelper = treeNodeHelper;
     }
 
+    [NotNull]
     public IList<ModuleDescriptor> GetModuleDescriptors()
     {
         var modules = new List<ModuleDescriptor>();

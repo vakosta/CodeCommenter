@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using JetBrains.Rider.Model;
 using JetBrains.Util;
 using ReSharperPlugin.CodeCommenter.Entities.Network;
@@ -8,6 +9,7 @@ namespace ReSharperPlugin.CodeCommenter.Util;
 
 public static class RdUtil
 {
+    [NotNull]
     public static List<RdRow> ToRdRows(this IEnumerable<ModuleDescriptor> descriptors)
     {
         return descriptors
@@ -15,6 +17,7 @@ public static class RdUtil
             .ToList();
     }
 
+    [CanBeNull]
     public static RdRow ToRdRow(this IFileSystemDescriptor descriptor)
     {
         return descriptor switch
@@ -31,6 +34,7 @@ public static class RdUtil
         };
     }
 
+    [NotNull]
     public static RdRow ToRdRow(this ModuleDescriptor moduleDescriptor)
     {
         var children = moduleDescriptor.Children
@@ -49,6 +53,7 @@ public static class RdUtil
             children);
     }
 
+    [NotNull]
     public static RdRow ToRdRow(this FolderDescriptor folderDescriptor)
     {
         var children = folderDescriptor.Children
@@ -67,6 +72,7 @@ public static class RdUtil
             children);
     }
 
+    [NotNull]
     public static RdRow ToRdRow(this FileDescriptor fileDescriptor)
     {
         var methods = fileDescriptor.Children
@@ -85,6 +91,7 @@ public static class RdUtil
         ;
     }
 
+    [NotNull]
     public static RdRow ToRdRow(this MethodDescriptor methodDescriptor)
     {
         return new RdRow(
@@ -97,6 +104,7 @@ public static class RdUtil
             new List<RdRow>());
     }
 
+    [NotNull]
     public static RdQuality ToRdQuality(this Quality quality)
     {
         return new RdQuality(quality.Value, quality.Status.ToRdQualityStatus());

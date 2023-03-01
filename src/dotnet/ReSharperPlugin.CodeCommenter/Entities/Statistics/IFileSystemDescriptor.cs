@@ -1,10 +1,11 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 
 namespace JetBrains.Rider.Model;
 
 public interface IFileSystemDescriptor
 {
-    public string Name { get; init; }
-    public IFileSystemDescriptor Parent { get; init; }
-    public List<IFileSystemDescriptor> Children { get; }
+    [NotNull] public string Name { get; }
+    [CanBeNull] public IFileSystemDescriptor Parent { get; }
+    [NotNull] public List<IFileSystemDescriptor> Children { get; }
 }

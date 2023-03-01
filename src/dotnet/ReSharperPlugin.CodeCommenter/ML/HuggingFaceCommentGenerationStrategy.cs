@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rider.Model;
@@ -48,12 +49,6 @@ public class HuggingFaceCommentGenerationStrategy : ICommentGenerationStrategy
         }
     }
 
-    /// <summary>
-    /// Executes post request asynchronously to convert a code text into a docstring text.
-    /// </summary>
-    /// <param name="code">A code text to convert.</param>
-    /// <param name="lifetime">A lifetime to receive info about cancellation.</param>
-    /// <returns>A docstring text after convert.</returns>
     private static async Task<string> Post(string code, Lifetime lifetime)
     {
         if (!lifetime.IsAlive) return string.Empty;

@@ -12,7 +12,7 @@ namespace ReSharperPlugin.CodeCommenter;
 
 [ContextAction(
     Name = "GenerateComment",
-    Description = "Generate comment by method code",
+    Description = "Generate docstring by method code",
     Group = "C#",
     Disabled = false,
     Priority = 1,
@@ -20,10 +20,10 @@ namespace ReSharperPlugin.CodeCommenter;
 )]
 public class GenerateCommentContextAction : ContextActionBase
 {
-    private readonly IMethodDeclaration myDeclaration;
+    [CanBeNull] private readonly IMethodDeclaration myDeclaration;
     [NotNull] private readonly CommentHandler myCommentHandler;
 
-    public GenerateCommentContextAction(LanguageIndependentContextActionDataProvider dataProvider)
+    public GenerateCommentContextAction([NotNull] LanguageIndependentContextActionDataProvider dataProvider)
     {
         myDeclaration = dataProvider.GetSelectedElement<IMethodDeclaration>();
         myCommentHandler = dataProvider.Solution.GetComponent<CommentHandler>();

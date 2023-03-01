@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using JetBrains.Core;
@@ -26,9 +24,9 @@ public class StatisticsToolWindowManager
 
     public StatisticsToolWindowManager(
         Lifetime lifetime,
-        StatisticsToolWindowModel statisticsToolWindowModel,
-        DocstringPlacesFinder docstringPlacesFinder,
-        CommentProvider commentProvider)
+        [NotNull] StatisticsToolWindowModel statisticsToolWindowModel,
+        [NotNull] DocstringPlacesFinder docstringPlacesFinder,
+        [NotNull] CommentProvider commentProvider)
     {
         myLifetime = lifetime;
         myStatisticsToolWindowModel = statisticsToolWindowModel;
@@ -77,15 +75,13 @@ public class StatisticsToolWindowManager
         SendUpdatedRow(descriptor.Parent);
     }
 
-    private async Task<Quality> CalculateQuality(
-        [NotNull] IMethodDeclaration declaration,
-        [NotNull] string commentBlock)
+    private async Task<Quality> CalculateQuality(IMethodDeclaration declaration, string commentBlock)
     {
         var generate = await myCommentProvider.TryGenerateAndCreateCommentAsync(declaration);
         return new Quality
         {
             Value = generate.GenerationStatus == GenerationStatus.Success
-                ? commentBlock.CalculateSimilarity(generate.NewDocCommentBlock.GetText())
+                ? Fastenshtein.Levenshtein.Distance(commentBlock, generate.NewDocCommentBlock.GetText())
                 : 0,
             Status = generate.GenerationStatus
         };

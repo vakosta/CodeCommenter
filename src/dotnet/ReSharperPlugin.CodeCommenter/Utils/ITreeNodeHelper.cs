@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using JetBrains.Annotations;
 using JetBrains.ReSharper.Psi.Tree;
 
 namespace ReSharperPlugin.CodeCommenter.Util;
 
 public interface ITreeNodeHelper
 {
-    public IEnumerable<ITreeNode> Children(ITreeNode treeNode);
+    [NotNull]
+    public IEnumerable<ITreeNode> Children([NotNull] ITreeNode treeNode);
 }

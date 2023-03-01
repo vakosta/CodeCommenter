@@ -38,7 +38,7 @@ public class CommentHandler
         myPsiHelper = psiHelper;
     }
 
-    public void GenerateComment(IMethodDeclaration declaration)
+    public void GenerateComment([NotNull] IMethodDeclaration declaration)
     {
         myLifetime.StartMainWriteAsync(async () =>
         {
